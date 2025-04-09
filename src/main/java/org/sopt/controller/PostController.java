@@ -4,16 +4,22 @@ import java.util.List;
 import org.sopt.domain.Post;
 import org.sopt.exceptions.PostNotFoundException;
 import org.sopt.service.PostService;
+import org.sopt.util.TimeIntervalUtil;
 
 public class PostController {
 
   private final PostService postService = new PostService();
 
+  private final TimeIntervalUtil postTimeIntervalUtil = new TimeIntervalUtil();
+
   private int postId;
 
   public void createPost(String title) {
-    throwIfTitleNotValid(title);
+    throwIfInputTimeIntervalNotValid();
+    throwIfTitleInputNotValid(title);
+
     postService.createPost(title);
+    postTimeIntervalUtil.startTimer();
   }
 
   public List<Post> getAllPosts() {
@@ -30,7 +36,7 @@ public class PostController {
 
   public Boolean updatePostTitle(final Integer updateId, final String newTitle) {
 
-    throwIfTitleNotValid(newTitle);
+    throwIfTitleInputNotValid(newTitle);
 
     try {
       postService.updatePostTitle(updateId, newTitle);
@@ -49,13 +55,19 @@ public class PostController {
    *
    * @param inputTitle 입력된 제목
    */
-  private void throwIfTitleNotValid(final String inputTitle) {
+  private void throwIfTitleInputNotValid(final String inputTitle) {
     if (inputTitle.isBlank()) {
       throw new IllegalArgumentException("제목이 비어있습니다.");
     }
 
     if (inputTitle.length() > 30) {
       throw new IllegalArgumentException("제목이 30자를 넘지 않도록 해주세요.");
+    }
+  }
+
+  private void throwIfInputTimeIntervalNotValid() {
+    if (!postTimeIntervalUtil.isAvailable()) {
+      throw new IllegalArgumentException("아직 새로운 게시물을 작성하실 수 없습니다.");
     }
   }
 }
