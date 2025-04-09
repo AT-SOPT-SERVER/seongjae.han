@@ -27,8 +27,9 @@ public class PostService {
 
   public Boolean updatePostTitle(final int updateId, final String newTitle) {
     Post post = postRepository.findOneById(updateId);
+
     if (post == null) {
-      return false;
+      throw new RuntimeException("존재하지 않는 post 입니다.");
     }
 
     post.setTitle(newTitle);

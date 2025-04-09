@@ -27,11 +27,27 @@ public class PostController {
     return postService.deletePostById(deleteId);
   }
 
-  public Boolean updatePostTitle(final int updateId, final String newTitle) {
-      return postService.updatePostTitle(updateId, newTitle);
+  public Boolean updatePostTitle(final Integer updateId, final String newTitle) {
+    throwIfTitleNotValid(newTitle);
+
+    return postService.updatePostTitle(updateId, newTitle);
   }
 
   public List<Post> searchPostsByKeyword(final String keyword) {
     return null;
+  }
+
+  /**
+   *
+   * @param inputTitle 입력된 제목
+   */
+  private void throwIfTitleNotValid(final String inputTitle) {
+    if (inputTitle.isBlank()) {
+      throw new IllegalArgumentException("제목이 비어있습니다.");
+    }
+
+    if (inputTitle.length() > 30) {
+      throw new IllegalArgumentException("제목이 30자를 넘지 않도록 해주세요.");
+    }
   }
 }
