@@ -2,13 +2,18 @@ package org.sopt.service;
 
 import java.util.List;
 import org.sopt.domain.Post;
+import org.sopt.exceptions.PostNotFoundException;
 import org.sopt.repository.PostRepository;
 
 public class PostService {
 
   private final PostRepository postRepository = new PostRepository();
 
-  public void createPost(Post post) {
+  public void createPost(String title) {
+    Post post = new Post(title);
+    if (postRepository.isExistByTitle(title)) {
+      throw new RuntimeException("중복된 제목의 게시물입니다.");
+    }
     postRepository.save(post);
   }
 
@@ -35,7 +40,10 @@ public class PostService {
     Post post = postRepository.findOneById(updateId);
 
     if (post == null) {
-      throw new RuntimeException("존재하지 않는 post 입니다.");
+      throw new PostNotFoundException();
+    }
+    if (postRepository.isExistByTitle(newTitle)) {
+      throw new RuntimeException("중복된 제목의 게시물입니다.");
     }
 
     post.setTitle(newTitle);

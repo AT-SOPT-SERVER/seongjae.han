@@ -2,15 +2,19 @@ package org.sopt.domain;
 
 public class Post {
 
-  private final int id;
+  private Integer id = null;
   private String title;
 
-  public Post(int id, String title) {
+  public Post(String title) {
+    this.title = title;
+  }
+
+  public Post(Integer id, String title) {
     this.id = id;
     this.title = title;
   }
 
-  public int getId() {
+  public Integer getId() {
     return id;
   }
 

@@ -2,6 +2,7 @@ package org.sopt.controller;
 
 import java.util.List;
 import org.sopt.domain.Post;
+import org.sopt.exceptions.PostNotFoundException;
 import org.sopt.service.PostService;
 
 public class PostController {
@@ -12,8 +13,7 @@ public class PostController {
 
   public void createPost(String title) {
     throwIfTitleNotValid(title);
-    Post post = new Post(postId++, title);
-    postService.createPost(post);
+    postService.createPost(title);
   }
 
   public List<Post> getAllPosts() {
@@ -29,12 +29,13 @@ public class PostController {
   }
 
   public Boolean updatePostTitle(final Integer updateId, final String newTitle) {
+
     throwIfTitleNotValid(newTitle);
 
     try {
       postService.updatePostTitle(updateId, newTitle);
       return true;
-    } catch (RuntimeException exception) {
+    } catch (PostNotFoundException e) {
       return false;
     }
   }
