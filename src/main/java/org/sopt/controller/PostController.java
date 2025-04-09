@@ -26,4 +26,12 @@ public class PostController {
   public boolean deletePostById(final int deleteId) {
     return postService.deletePostById(deleteId);
   }
+
+  public Boolean updatePostTitle(final int updateId, final String newTitle) {
+    return null;
+  }
+
+  public List<Post> searchPostsByKeyword(final String keyword) {
+    return null;
+  }
 }
