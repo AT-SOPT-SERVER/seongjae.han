@@ -28,11 +28,7 @@ public class PostController {
   }
 
   public Boolean updatePostTitle(final int updateId, final String newTitle) {
-    try {
       return postService.updatePostTitle(updateId, newTitle);
-    } catch (Exception exception) {
-      return false;
-    }
   }
 
   public List<Post> searchPostsByKeyword(final String keyword) {
