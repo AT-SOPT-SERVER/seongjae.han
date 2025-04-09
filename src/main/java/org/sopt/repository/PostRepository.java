@@ -9,6 +9,7 @@ public class PostRepository {
   List<Post> postList = new ArrayList<>();
 
   public void save(Post post) {
+    postList.removeIf(savedPost -> savedPost.getId() == post.getId());
     postList.add(post);
   }
 

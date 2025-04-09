@@ -3,7 +3,7 @@ package org.sopt.domain;
 public class Post {
 
   private final int id;
-  private final String title;
+  private String title;
 
   public Post(int id, String title) {
     this.id = id;
@@ -16,5 +16,9 @@ public class Post {
 
   public String getTitle() {
     return this.title;
+  }
+
+  public void setTitle(final String newTitle) {
+    this.title = newTitle;
   }
 }
