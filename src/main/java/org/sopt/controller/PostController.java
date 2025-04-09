@@ -31,7 +31,12 @@ public class PostController {
   public Boolean updatePostTitle(final Integer updateId, final String newTitle) {
     throwIfTitleNotValid(newTitle);
 
-    return postService.updatePostTitle(updateId, newTitle);
+    try {
+      postService.updatePostTitle(updateId, newTitle);
+      return true;
+    } catch (RuntimeException exception) {
+      return false;
+    }
   }
 
   public List<Post> searchPostsByKeyword(final String keyword) {
@@ -39,6 +44,7 @@ public class PostController {
   }
 
   /**
+   * 제목이 입력 규칙에 맞게 입력되지 않은 경우 예외 throw
    *
    * @param inputTitle 입력된 제목
    */

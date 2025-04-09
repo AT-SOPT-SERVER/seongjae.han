@@ -25,7 +25,13 @@ public class PostService {
     return postRepository.deleteById(deleteId);
   }
 
-  public Boolean updatePostTitle(final int updateId, final String newTitle) {
+  /**
+   * 기존 게시물의 제목 update
+   *
+   * @param updateId 업데이트 할 게시물 아이디
+   * @param newTitle 업데이트 할 게시물 제목
+   */
+  public void updatePostTitle(final int updateId, final String newTitle) {
     Post post = postRepository.findOneById(updateId);
 
     if (post == null) {
@@ -34,7 +40,5 @@ public class PostService {
 
     post.setTitle(newTitle);
     postRepository.save(post);
-
-    return true;
   }
 }
