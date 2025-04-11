@@ -1,16 +1,18 @@
 package org.sopt.domain;
 
-public class Post {
+import java.io.Serializable;
+
+public class Post implements Serializable {
 
   private Integer id = null;
   private String title;
 
-  public Post(String title) {
+  public Post(Integer id, String title) {
+    this.id = id;
     this.title = title;
   }
 
-  public Post(Integer id, String title) {
-    this.id = id;
+  public Post(String title) {
     this.title = title;
   }
 
@@ -24,5 +26,13 @@ public class Post {
 
   public void setTitle(final String newTitle) {
     this.title = newTitle;
+  }
+
+  @Override
+  public String toString() {
+    return "Post{" +
+        "id=" + id +
+        ", title='" + title + '\'' +
+        '}';
   }
 }
