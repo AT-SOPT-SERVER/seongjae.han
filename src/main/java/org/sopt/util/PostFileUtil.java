@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.sopt.domain.Post;
 
-public class FileRepositoryUtil {
+public class PostFileUtil {
 
   private static final String WORKSPACE_PATH = "src/main/java/org/sopt/assets";
 

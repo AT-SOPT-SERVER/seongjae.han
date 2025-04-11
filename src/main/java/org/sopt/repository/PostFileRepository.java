@@ -3,16 +3,16 @@ package org.sopt.repository;
 import java.util.List;
 import org.sopt.domain.Post;
 import org.sopt.util.DomainIdUtil;
-import org.sopt.util.FileRepositoryUtil;
+import org.sopt.util.PostFileUtil;
 import org.sopt.util.PostIdFileUtil;
 
 public class PostFileRepository implements PostRepository {
 
-  FileRepositoryUtil fileUtil;
+  PostFileUtil fileUtil;
   DomainIdUtil postIdUtil;
 
   public PostFileRepository() {
-    this.fileUtil = new FileRepositoryUtil();
+    this.fileUtil = new PostFileUtil();
     this.postIdUtil = new DomainIdUtil(new PostIdFileUtil());
   }
 
