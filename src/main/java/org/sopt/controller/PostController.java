@@ -1,6 +1,8 @@
 package org.sopt.controller;
 
+import java.text.BreakIterator;
 import java.util.List;
+import java.util.Locale;
 import org.sopt.domain.Post;
 import org.sopt.exceptions.PostNotFoundException;
 import org.sopt.service.PostService;
@@ -11,8 +13,6 @@ public class PostController {
   private final PostService postService = new PostService();
 
   private final TimeIntervalUtil postTimeIntervalUtil = new TimeIntervalUtil();
-
-  private int postId;
 
   public void createPost(String title) {
     throwIfInputTimeIntervalNotValid();
@@ -68,9 +68,22 @@ public class PostController {
       throw new IllegalArgumentException("제목이 비어있습니다.");
     }
 
-    if (inputTitle.length() > 30) {
+    int count = this.getGraphemeCount(inputTitle);
+    System.out.println(count);
+
+    if (count > 30) {
       throw new IllegalArgumentException("제목이 30자를 넘지 않도록 해주세요.");
     }
+  }
+
+  private int getGraphemeCount(String text) {
+    BreakIterator it = BreakIterator.getCharacterInstance();
+    it.setText(text);
+    int count = 0;
+    while (it.next() != BreakIterator.DONE) {
+      count++;
+    }
+    return count;
   }
 
   private void throwIfInputTimeIntervalNotValid() {
