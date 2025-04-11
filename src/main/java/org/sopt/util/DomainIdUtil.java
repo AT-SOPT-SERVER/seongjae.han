@@ -3,21 +3,21 @@ package org.sopt.util;
 public class DomainIdUtil {
 
   private Integer id = 0;
-  FileRepositoryUtil fileRepositoryUtil;
+  PostIdFileUtil postIdFileUtil;
 
   public DomainIdUtil() {
     this.id = 0;
   }
 
-  public DomainIdUtil(FileRepositoryUtil fileRepositoryUtil) {
-    this.id = fileRepositoryUtil.getGeneratedId();
-    this.fileRepositoryUtil = fileRepositoryUtil;
+  public DomainIdUtil(PostIdFileUtil postIdFileUtil) {
+    this.id = postIdFileUtil.getGeneratedId();
+    this.postIdFileUtil = postIdFileUtil;
   }
 
   public Integer generateId() {
 
-    if (fileRepositoryUtil != null) {
-      fileRepositoryUtil.saveGeneratedId(id+1);
+    if (postIdFileUtil != null) {
+      postIdFileUtil.saveGeneratedId(id+1);
     }
 
     return id++;

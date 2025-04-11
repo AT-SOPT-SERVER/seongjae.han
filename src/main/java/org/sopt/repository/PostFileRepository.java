@@ -4,6 +4,7 @@ import java.util.List;
 import org.sopt.domain.Post;
 import org.sopt.util.DomainIdUtil;
 import org.sopt.util.FileRepositoryUtil;
+import org.sopt.util.PostIdFileUtil;
 
 public class PostFileRepository implements PostRepository {
 
@@ -12,9 +13,8 @@ public class PostFileRepository implements PostRepository {
 
   public PostFileRepository() {
     this.fileUtil = new FileRepositoryUtil();
-    this.postIdUtil = new DomainIdUtil(fileUtil);
+    this.postIdUtil = new DomainIdUtil(new PostIdFileUtil());
   }
-
 
   @Override
   public void save(final Post post) {
