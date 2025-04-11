@@ -47,7 +47,15 @@ public class PostController {
   }
 
   public List<Post> searchPostsByKeyword(final String keyword) {
-    return null;
+    throwIfKeywordInputNotValid(keyword);
+
+    return postService.findPostsByKeyword(keyword);
+  }
+
+  private void throwIfKeywordInputNotValid(final String keyword) {
+    if (keyword.isBlank()) {
+      throw new IllegalArgumentException("입력이 비어있습니다.");
+    }
   }
 
   /**

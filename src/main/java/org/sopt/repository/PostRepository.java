@@ -48,6 +48,10 @@ public class PostRepository {
     return postList.stream().anyMatch(post -> post.getTitle().equals(newTitle));
   }
 
+  public List<Post> findPostsByTitleLike(final String keyword) {
+    return postList.stream().filter(post -> post.getTitle().contains(keyword)).toList();
+  }
+
   private void replacePost(final Post post) {
     postList.removeIf(savedPost -> savedPost.getId().equals(post.getId()));
     postList.add(post);
