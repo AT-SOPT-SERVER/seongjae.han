@@ -40,3 +40,9 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+
+### intelliJ ###
+.idea/
+src/main/java/org/sopt/assets/post_id.txt
+
+src/main/java/org/sopt/assets/post.txt
