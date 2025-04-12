@@ -2,7 +2,6 @@ package org.sopt.controller;
 
 import java.text.BreakIterator;
 import java.util.List;
-import java.util.Locale;
 import org.sopt.domain.Post;
 import org.sopt.exceptions.PostNotFoundException;
 import org.sopt.service.PostService;
