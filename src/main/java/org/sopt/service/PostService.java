@@ -3,27 +3,42 @@ package org.sopt.service;
 import java.util.List;
 import org.sopt.domain.Post;
 import org.sopt.exceptions.PostNotFoundException;
-import org.sopt.repository.PostFileRepository;
 import org.sopt.repository.PostRepository;
+import org.sopt.util.TimeIntervalUtil;
+import org.springframework.stereotype.Service;
 
+@Service
 public class PostService {
 
-  private final PostRepository postRepository = new PostFileRepository();
+  private final PostRepository postRepository;
+  private final TimeIntervalUtil postTimeIntervalUtil;
+
+  public PostService(
+      TimeIntervalUtil postTimeIntervalUtil,
+      PostRepository postRepository
+  ) {
+    this.postTimeIntervalUtil = postTimeIntervalUtil;
+    this.postRepository = postRepository;
+  }
 
   /**
    * 게시물 생성
+   *
    * @param title 제목
    */
   public void createPost(String title) {
+    throwIfInputTimeIntervalNotValid();
     Post post = new Post(title);
     if (postRepository.isExistByTitle(title)) {
       throw new RuntimeException("중복된 제목의 게시물입니다.");
     }
     postRepository.save(post);
+    postTimeIntervalUtil.startTimer();
   }
 
   /**
    * 게시물 전체 리스트
+   *
    * @return 게시물 리스트
    */
   public List<Post> getAllPosts() {
@@ -32,6 +47,7 @@ public class PostService {
 
   /**
    * 게시물 아이디로 검색
+   *
    * @param id 게시물 아이디
    * @return 게시물
    */
@@ -41,6 +57,7 @@ public class PostService {
 
   /**
    * 게시물 삭제
+   *
    * @param deleteId 삭제할 게시물 아이디
    * @return 게시물 삭제 여부
    */
@@ -70,10 +87,17 @@ public class PostService {
 
   /**
    * 게시물 제목으로 검색 (like %keyword%)
+   *
    * @param keyword 검색 키워드
    * @return 게시물 리스트
    */
   public List<Post> findPostsByKeyword(final String keyword) {
     return postRepository.findPostsByTitleLike(keyword);
+  }
+
+  private void throwIfInputTimeIntervalNotValid() {
+    if (!postTimeIntervalUtil.isAvailable()) {
+      throw new IllegalArgumentException("아직 새로운 게시물을 작성하실 수 없습니다.");
+    }
   }
 }

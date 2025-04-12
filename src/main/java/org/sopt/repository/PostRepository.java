@@ -2,7 +2,9 @@ package org.sopt.repository;
 
 import java.util.List;
 import org.sopt.domain.Post;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface PostRepository {
 
   public void save(Post post);

@@ -2,7 +2,9 @@ package org.sopt.util;
 
 import java.util.Timer;
 import java.util.TimerTask;
+import org.springframework.stereotype.Component;
 
+@Component
 public class TimeIntervalUtil {
 
   private static final Long TIME_INTERVAL_IN_MILLI = 3000L;

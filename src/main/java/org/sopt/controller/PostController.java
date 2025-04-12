@@ -3,24 +3,33 @@ package org.sopt.controller;
 import java.text.BreakIterator;
 import java.util.List;
 import org.sopt.domain.Post;
-import org.sopt.exceptions.PostNotFoundException;
+import org.sopt.dto.PostRequest;
 import org.sopt.service.PostService;
-import org.sopt.util.TimeIntervalUtil;
+import org.sopt.exceptions.PostNotFoundException;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
+@RestController
 public class PostController {
 
-  private final PostService postService = new PostService();
+  private final PostService postService;
 
-  private final TimeIntervalUtil postTimeIntervalUtil = new TimeIntervalUtil();
-
-  public void createPost(String title) {
-    throwIfInputTimeIntervalNotValid();
-    throwIfTitleInputNotValid(title);
-
-    postService.createPost(title);
-    postTimeIntervalUtil.startTimer();
+  public PostController(
+      final PostService postService
+  ) {
+    this.postService = postService;
   }
 
+  @PostMapping("/post")
+  public void createPost(@RequestBody final PostRequest postRequest) {
+    throwIfTitleInputNotValid(postRequest.getTitle());
+
+    postService.createPost(postRequest.getTitle());
+  }
+
+  @GetMapping("/posts")
   public List<Post> getAllPosts() {
     return postService.getAllPosts();
   }
@@ -66,9 +75,7 @@ public class PostController {
     if (inputTitle.isBlank()) {
       throw new IllegalArgumentException("제목이 비어있습니다.");
     }
-
     int count = this.getGraphemeCount(inputTitle);
-    System.out.println(count);
 
     if (count > 30) {
       throw new IllegalArgumentException("제목이 30자를 넘지 않도록 해주세요.");
@@ -83,11 +90,5 @@ public class PostController {
       count++;
     }
     return count;
-  }
-
-  private void throwIfInputTimeIntervalNotValid() {
-    if (!postTimeIntervalUtil.isAvailable()) {
-      throw new IllegalArgumentException("아직 새로운 게시물을 작성하실 수 없습니다.");
-    }
   }
 }
