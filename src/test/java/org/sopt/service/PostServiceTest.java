@@ -119,6 +119,40 @@ public class PostServiceTest {
       assertThat(result).extracting("title")
           .containsExactly("제목1", "제목2");
     }
+  }
 
+  @DisplayName("Post 게시물 아이디 검색 테스트")
+  @Nested
+  class PostGetPostByIdTest {
+
+    @Test
+    @DisplayName("성공 - 아이디로 검색")
+    void getPostById_ShouldSuccess() {
+      // given
+      Post mockPost = new Post("제목");
+      Long dummyId = 1L;
+      given(postRepository.findFirstById(dummyId)).willReturn(mockPost);
+
+      // when
+      Post result = postService.getPostById(1L);
+
+      // then
+      assertThat(result).isNotNull();
+      assertThat(result.getTitle()).isEqualTo("제목");
+    }
+
+    @Test
+    @DisplayName("실패 - 존재하지 않는 아이디")
+    void getPostById_NotExist() {
+      // given
+      Long dummyId = 1L;
+      given(postRepository.findFirstById(dummyId)).willReturn(null);
+
+      // when
+      Post result = postService.getPostById(1L);
+
+      // then
+      assertThat(result).isNull();
+    }
   }
 }
