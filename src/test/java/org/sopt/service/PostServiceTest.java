@@ -155,4 +155,21 @@ public class PostServiceTest {
       assertThat(result).isNull();
     }
   }
+
+  @DisplayName("Post 게시물 삭제 테스트")
+  @Nested
+  class PostDeleteTest {
+    @DisplayName("성공 - Id로 삭제")
+    @Test
+    void deletePostById_deletesPost() {
+      // given
+      Long deleteId = 1L;
+
+      // when
+      postService.deletePostById(deleteId);
+
+      // then
+      verify(postRepository, times(1)).deleteById(deleteId);
+    }
+  }
 }
