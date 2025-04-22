@@ -231,4 +231,29 @@ public class PostServiceTest {
       verify(postRepository, times(0)).save(any());
     }
   }
+
+  @DisplayName("Post 키워드 검색 테스트")
+  @Nested
+  class PostFindPostsByKeywordTest {
+
+    @Test
+    @DisplayName("성공 - 키워드 검색 결과 존재")
+    void findPostsByKeyword_ShouldSuccess() {
+      // given
+      List<Post> mockPosts = List.of(
+          new Post("제목1"),
+          new Post("제목2")
+      );
+      String keyword = "제목";
+      given(postRepository.findPostsByTitleLike(keyword)).willReturn(mockPosts);
+
+      // when
+      List<Post> result = postService.findPostsByKeyword(keyword);
+
+      // then
+      assertThat(result).hasSize(2);
+      assertThat(result).extracting(Post::getTitle)
+          .allMatch(title -> title.contains(keyword));
+    }
+  }
 }
