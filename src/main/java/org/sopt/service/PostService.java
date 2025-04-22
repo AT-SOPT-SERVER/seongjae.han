@@ -26,14 +26,16 @@ public class PostService {
    *
    * @param title 제목
    */
-  public void createPost(String title) {
+  public Post createPost(String title) {
     throwIfInputTimeIntervalNotValid();
     Post post = new Post(title);
     if (postRepository.existsByTitle(title)) {
       throw new RuntimeException("중복된 제목의 게시물입니다.");
     }
-    postRepository.save(post);
+    Post newPost = postRepository.save(post);
     postTimeIntervalUtil.startTimer();
+
+    return newPost;
   }
 
   /**
