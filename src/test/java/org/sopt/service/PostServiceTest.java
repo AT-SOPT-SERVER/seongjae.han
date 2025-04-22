@@ -1,5 +1,6 @@
 package org.sopt.service;
 
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -94,5 +95,30 @@ public class PostServiceTest {
       verify(postRepository, times(0)).save(any(Post.class));
       verify(timeIntervalUtil, times(0)).startTimer();
     }
+  }
+
+  @DisplayName("Post 전체 리스트 테스트")
+  @Nested
+  class PostListTest {
+
+    @Test
+    @DisplayName("성공 - 전체 리스트")
+    void getAllPosts_ShouldSuccess() {
+      // given
+      List<Post> mockPosts = List.of(
+          new Post("제목1"),
+          new Post("제목2")
+      );
+      given(postRepository.findAll()).willReturn(mockPosts);
+
+      // when
+      List<Post> result = postService.getAllPosts();
+
+      // then
+      assertThat(result).hasSize(2);
+      assertThat(result).extracting("title")
+          .containsExactly("제목1", "제목2");
+    }
+
   }
 }
