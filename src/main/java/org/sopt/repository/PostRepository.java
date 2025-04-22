@@ -12,5 +12,5 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
   Post findFirstById(Long id);
 
-  List<Post> findPostsByTitleLike(String keyword);
+  List<Post> findPostsByTitleContaining(String keyword);
 }

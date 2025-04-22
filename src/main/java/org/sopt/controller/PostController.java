@@ -6,9 +6,13 @@ import org.sopt.domain.Post;
 import org.sopt.dto.PostRequest;
 import org.sopt.service.PostService;
 import org.sopt.exceptions.PostNotFoundException;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -34,30 +38,35 @@ public class PostController {
     return postService.getAllPosts();
   }
 
-  public Post getPostById(final Long id) {
+  @GetMapping("/posts/search")
+  public List<Post> searchPostsByKeyword(@RequestParam(value = "keyword") final String keyword) {
+    System.out.println(keyword);
+    throwIfKeywordInputNotValid(keyword);
+
+    return postService.findPostsByKeyword(keyword);
+  }
+
+  @GetMapping("/post/{id}")
+  public Post getPostById(@PathVariable("id") final Long id) {
     return postService.getPostById(id);
   }
 
-  public void deletePostById(final Long deleteId) {
-    postService.deletePostById(deleteId);
-  }
+  @PutMapping("/post")
+  public Boolean updatePostTitle(@RequestBody final  PostRequest.UpdateRequest updateRequest) {
 
-  public Boolean updatePostTitle(final Long updateId, final String newTitle) {
-
-    throwIfTitleInputNotValid(newTitle);
+    throwIfTitleInputNotValid(updateRequest.getTitle());
 
     try {
-      postService.updatePostTitle(updateId, newTitle);
+      postService.updatePostTitle(updateRequest.getId(), updateRequest.getTitle());
       return true;
     } catch (PostNotFoundException e) {
       return false;
     }
   }
 
-  public List<Post> searchPostsByKeyword(final String keyword) {
-    throwIfKeywordInputNotValid(keyword);
-
-    return postService.findPostsByKeyword(keyword);
+  @DeleteMapping("/post/{deleteId}")
+  public void deletePostById(@PathVariable("deleteId") final Long deleteId) {
+    postService.deletePostById(deleteId);
   }
 
   private void throwIfKeywordInputNotValid(final String keyword) {

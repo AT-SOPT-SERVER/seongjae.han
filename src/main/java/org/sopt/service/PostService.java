@@ -93,7 +93,7 @@ public class PostService {
    * @return 게시물 리스트
    */
   public List<Post> findPostsByKeyword(final String keyword) {
-    return postRepository.findPostsByTitleLike(keyword);
+    return postRepository.findPostsByTitleContaining(keyword);
   }
 
   private void throwIfInputTimeIntervalNotValid() {

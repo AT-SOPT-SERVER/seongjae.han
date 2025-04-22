@@ -245,7 +245,7 @@ public class PostServiceTest {
           new Post("제목2")
       );
       String keyword = "제목";
-      given(postRepository.findPostsByTitleLike(keyword)).willReturn(mockPosts);
+      given(postRepository.findPostsByTitleContaining(keyword)).willReturn(mockPosts);
 
       // when
       List<Post> result = postService.findPostsByKeyword(keyword);

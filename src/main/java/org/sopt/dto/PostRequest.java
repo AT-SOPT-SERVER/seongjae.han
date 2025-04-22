@@ -14,4 +14,25 @@ public class PostRequest {
   public String getTitle() {
     return title;
   }
+
+  public static class UpdateRequest {
+    private Long id;
+    private String title;
+
+    public UpdateRequest() {
+    }
+
+    public UpdateRequest(final Long id, final String title) {
+      this.id = id;
+      this.title = title;
+    }
+
+    public String getTitle() {
+      return title;
+    }
+
+    public Long getId() {
+      return id;
+    }
+  }
 }
