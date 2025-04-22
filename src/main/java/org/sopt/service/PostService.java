@@ -29,7 +29,7 @@ public class PostService {
   public void createPost(String title) {
     throwIfInputTimeIntervalNotValid();
     Post post = new Post(title);
-    if (postRepository.isExistByTitle(title)) {
+    if (postRepository.existsByTitle(title)) {
       throw new RuntimeException("중복된 제목의 게시물입니다.");
     }
     postRepository.save(post);
@@ -51,18 +51,17 @@ public class PostService {
    * @param id 게시물 아이디
    * @return 게시물
    */
-  public Post getPostById(final int id) {
-    return postRepository.findOneById(id);
+  public Post getPostById(final Long id) {
+    return postRepository.findFirstById(id);
   }
 
   /**
    * 게시물 삭제
    *
    * @param deleteId 삭제할 게시물 아이디
-   * @return 게시물 삭제 여부
    */
-  public boolean deletePostById(final int deleteId) {
-    return postRepository.deleteById(deleteId);
+  public void deletePostById(final Long deleteId) {
+    postRepository.deleteById(deleteId);
   }
 
   /**
@@ -71,13 +70,13 @@ public class PostService {
    * @param updateId 업데이트 할 게시물 아이디
    * @param newTitle 업데이트 할 게시물 제목
    */
-  public void updatePostTitle(final int updateId, final String newTitle) {
-    Post post = postRepository.findOneById(updateId);
+  public void updatePostTitle(final Long updateId, final String newTitle) {
+    Post post = postRepository.findFirstById(updateId);
 
     if (post == null) {
       throw new PostNotFoundException();
     }
-    if (postRepository.isExistByTitle(newTitle)) {
+    if (postRepository.existsByTitle(newTitle)) {
       throw new RuntimeException("중복된 제목의 게시물입니다.");
     }
 

@@ -2,21 +2,15 @@ package org.sopt.repository;
 
 import java.util.List;
 import org.sopt.domain.Post;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface PostRepository {
+public interface PostRepository extends JpaRepository<Post, Long> {
 
-  public void save(Post post);
+  boolean existsByTitle(String title);
 
-  public List<Post> findAll();
+  Post findFirstById(Long id);
 
-  public Post findOneById(final int id);
-
-  public boolean deleteById(final int deleteId);
-
-  public boolean isExistByTitle(final String newTitle);
-
-  public List<Post> findPostsByTitleLike(final String keyword);
-
+  List<Post> findPostsByTitleLike(String keyword);
 }

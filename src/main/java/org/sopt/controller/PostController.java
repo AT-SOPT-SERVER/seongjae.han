@@ -34,15 +34,15 @@ public class PostController {
     return postService.getAllPosts();
   }
 
-  public Post getPostById(final int id) {
+  public Post getPostById(final Long id) {
     return postService.getPostById(id);
   }
 
-  public boolean deletePostById(final int deleteId) {
-    return postService.deletePostById(deleteId);
+  public void deletePostById(final Long deleteId) {
+    postService.deletePostById(deleteId);
   }
 
-  public Boolean updatePostTitle(final Integer updateId, final String newTitle) {
+  public Boolean updatePostTitle(final Long updateId, final String newTitle) {
 
     throwIfTitleInputNotValid(newTitle);
 

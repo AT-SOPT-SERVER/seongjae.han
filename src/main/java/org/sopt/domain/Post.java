@@ -1,22 +1,26 @@
 package org.sopt.domain;
 
-import java.io.Serializable;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
-public class Post implements Serializable {
-
-  private Integer id = null;
+@Entity
+public class Post {
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
   private String title;
 
-  public Post(Integer id, String title) {
-    this.id = id;
-    this.title = title;
+  public Post() {
+
   }
 
   public Post(String title) {
     this.title = title;
   }
 
-  public Integer getId() {
+  public Long getId() {
     return id;
   }
 
@@ -25,14 +29,6 @@ public class Post implements Serializable {
   }
 
   public void setTitle(final String newTitle) {
-    this.title = newTitle;
-  }
-
-  @Override
-  public String toString() {
-    return "Post{" +
-        "id=" + id +
-        ", title='" + title + '\'' +
-        '}';
+    title = newTitle;
   }
 }
