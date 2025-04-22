@@ -9,6 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.sopt.domain.Post;
+import org.sopt.exceptions.PostNotFoundException;
 import org.sopt.repository.PostRepository;
 import org.sopt.util.TimeIntervalUtil;
 
@@ -170,6 +171,64 @@ public class PostServiceTest {
 
       // then
       verify(postRepository, times(1)).deleteById(deleteId);
+    }
+  }
+
+  @DisplayName("Post 게시물 수정 테스트")
+  @Nested
+  class PostUpdateTest {
+    @DisplayName("성공 - 게시물 Id로 검색하여 제목 수정 성공")
+    @Test
+    void updatePost_ShouldSuccess() {
+      // given
+      Post mockPost = new Post("beforeUpdate");
+      String afterUpdateTitle = "afterUpdate";
+      Long dummyId = 1L;
+      given(postRepository.findFirstById(dummyId)).willReturn(mockPost);
+      given(postRepository.existsByTitle(afterUpdateTitle)).willReturn(false);
+
+      // when
+      postService.updatePostTitle(dummyId, afterUpdateTitle);
+
+      // then
+      assertThat(mockPost.getTitle()).isEqualTo(afterUpdateTitle);
+      verify(postRepository, times(1)).save(mockPost);
+    }
+
+    @DisplayName("실패 - 수정할 post가 존재하지 않음")
+    @Test
+    void updatePost_PostNotFound() {
+      // given
+      String afterUpdateTitle = "afterUpdate";
+      Long dummyId = 1L;
+      given(postRepository.findFirstById(dummyId)).willReturn(null);
+
+      // when
+      assertThatThrownBy(() -> postService.updatePostTitle(dummyId, afterUpdateTitle))
+          .isInstanceOf(PostNotFoundException.class)
+          .hasMessageContaining("존재하지 않는 게시물입니다.");
+
+      // then
+      verify(postRepository, times(0)).save(any());
+    }
+
+    @DisplayName("실패 - 중복된 제목")
+    @Test
+    void updatePost_DuplicateTitle() {
+      // given
+      String afterUpdateTitle = "afterUpdate";
+      Post mockPost = new Post("beforeUpdate");
+      Long dummyId = 1L;
+      given(postRepository.findFirstById(dummyId)).willReturn(mockPost);
+      given(postRepository.existsByTitle(afterUpdateTitle)).willReturn(true);
+
+      // when
+      assertThatThrownBy(() -> postService.updatePostTitle(dummyId, afterUpdateTitle))
+          .isInstanceOf(RuntimeException.class)
+          .hasMessageContaining("중복된 제목의 게시물입니다.");
+
+      // then
+      verify(postRepository, times(0)).save(any());
     }
   }
 }
