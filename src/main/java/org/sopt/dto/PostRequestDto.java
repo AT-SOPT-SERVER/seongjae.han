@@ -1,12 +1,14 @@
 package org.sopt.dto;
 
-public record PostRequestDto() {
+import org.sopt.dto.PostRequestDto.CreateRequest;
+import org.sopt.dto.PostRequestDto.UpdateRequest;
 
-  public record PostCreateRequestDto(String title) {
+public sealed interface PostRequestDto permits CreateRequest, UpdateRequest {
 
+  record CreateRequest(String title) implements PostRequestDto {
   }
 
-  public record PostUpdateRequestDto(Long id, String title) {
+  record UpdateRequest(Long id, String title) implements PostRequestDto {
 
   }
 }

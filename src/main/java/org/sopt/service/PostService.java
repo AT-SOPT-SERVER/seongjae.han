@@ -61,10 +61,10 @@ public class PostService {
   /**
    * 게시물 삭제
    *
-   * @param deleteId 삭제할 게시물 아이디
+   * @param postId 삭제할 게시물 아이디
    */
-  public void deletePostById(final Long deleteId) {
-    postRepository.deleteById(deleteId);
+  public void deletePostById(final Long postId) {
+    postRepository.deleteById(postId);
   }
 
   /**

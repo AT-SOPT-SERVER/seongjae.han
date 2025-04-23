@@ -1,18 +1,19 @@
 package org.sopt.controller;
 
-import java.text.BreakIterator;
 import java.util.List;
+import java.text.BreakIterator;
 import org.sopt.domain.Post;
-import org.sopt.dto.PostRequestDto;
+import org.sopt.dto.PostRequestDto.CreateRequest;
+import org.sopt.dto.PostRequestDto.UpdateRequest;
 import org.sopt.service.PostService;
 import org.sopt.exceptions.PostNotFoundException;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -26,32 +27,34 @@ public class PostController {
     this.postService = postService;
   }
 
-  @PostMapping("/post")
-  public void createPost(@RequestBody final PostRequestDto.PostCreateRequestDto postRequest) {
-    throwIfTitleInputNotValid(postRequest.title());
+  @PostMapping("/posts")
+  public void createPost(@RequestBody final CreateRequest createRequest) {
+    throwIfTitleInputNotValid(createRequest.title());
 
-    postService.createPost(postRequest.title());
+    postService.createPost(createRequest.title());
   }
 
   @GetMapping("/posts")
-  public List<Post> getAllPosts() {
-    return postService.getAllPosts();
-  }
+  public List<Post> getPosts(@RequestParam(value = "keyword") final String keyword) {
+    if (keyword == null) {
+      return postService.getAllPosts();
+    }
 
-  @GetMapping("/posts/search")
-  public List<Post> searchPostsByKeyword(@RequestParam(value = "keyword") final String keyword) {
-    throwIfKeywordInputNotValid(keyword);
+    if (keyword.isEmpty()) {
+      return List.of();
+    }
 
     return postService.findPostsByKeyword(keyword);
   }
 
-  @GetMapping("/post/{id}")
+  @GetMapping("/posts/{id}")
   public Post getPostById(@PathVariable("id") final Long id) {
     return postService.getPostById(id);
   }
 
-  @PutMapping("/post")
-  public Boolean updatePostTitle(@RequestBody final  PostRequestDto.PostUpdateRequestDto updateRequest) {
+  @PutMapping("/posts")
+  public Boolean updatePostTitle(
+      @RequestBody final UpdateRequest updateRequest) {
 
     throwIfTitleInputNotValid(updateRequest.title());
 
@@ -63,15 +66,9 @@ public class PostController {
     }
   }
 
-  @DeleteMapping("/post/{deleteId}")
-  public void deletePostById(@PathVariable("deleteId") final Long deleteId) {
-    postService.deletePostById(deleteId);
-  }
-
-  private void throwIfKeywordInputNotValid(final String keyword) {
-    if (keyword.isBlank()) {
-      throw new IllegalArgumentException("입력이 비어있습니다.");
-    }
+  @DeleteMapping("/posts/{postId}")
+  public void deletePostById(@PathVariable("postId") final Long postId) {
+    postService.deletePostById(postId);
   }
 
   /**
