@@ -3,7 +3,7 @@ package org.sopt.controller;
 import java.text.BreakIterator;
 import java.util.List;
 import org.sopt.domain.Post;
-import org.sopt.dto.PostRequest;
+import org.sopt.dto.PostRequestDto;
 import org.sopt.service.PostService;
 import org.sopt.exceptions.PostNotFoundException;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,10 +27,10 @@ public class PostController {
   }
 
   @PostMapping("/post")
-  public void createPost(@RequestBody final PostRequest postRequest) {
-    throwIfTitleInputNotValid(postRequest.getTitle());
+  public void createPost(@RequestBody final PostRequestDto.PostCreateRequestDto postRequest) {
+    throwIfTitleInputNotValid(postRequest.title());
 
-    postService.createPost(postRequest.getTitle());
+    postService.createPost(postRequest.title());
   }
 
   @GetMapping("/posts")
@@ -52,12 +52,12 @@ public class PostController {
   }
 
   @PutMapping("/post")
-  public Boolean updatePostTitle(@RequestBody final  PostRequest.UpdateRequest updateRequest) {
+  public Boolean updatePostTitle(@RequestBody final  PostRequestDto.PostUpdateRequestDto updateRequest) {
 
-    throwIfTitleInputNotValid(updateRequest.getTitle());
+    throwIfTitleInputNotValid(updateRequest.title());
 
     try {
-      postService.updatePostTitle(updateRequest.getId(), updateRequest.getTitle());
+      postService.updatePostTitle(updateRequest.id(), updateRequest.title());
       return true;
     } catch (PostNotFoundException e) {
       return false;

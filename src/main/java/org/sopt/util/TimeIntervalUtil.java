@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class TimeIntervalUtil {
 
-  private static final Long TIME_INTERVAL_IN_MILLI = 3000L;
+  private static final Long TIME_INTERVAL_IN_MILLI = 3000 * 60L;
 
   private boolean isAvailable = true;
   private final Timer timer = new Timer(true);
