@@ -2,6 +2,8 @@ package org.sopt.service;
 
 import java.util.List;
 import org.sopt.domain.Post;
+import org.sopt.exceptions.ApiException;
+import org.sopt.exceptions.ErrorCode;
 import org.sopt.repository.PostRepository;
 import org.sopt.util.TimeIntervalUtil;
 import org.springframework.stereotype.Service;
@@ -31,7 +33,7 @@ public class PostService {
     throwIfInputTimeIntervalNotValid();
     Post post = new Post(title);
     if (postRepository.existsByTitle(title)) {
-      throw new RuntimeException("중복된 제목의 게시물입니다.");
+      throw new ApiException(ErrorCode.DUPLICATE_POST_TITLE);
     }
     Post newPost = postRepository.save(post);
     postTimeIntervalUtil.startTimer();
@@ -56,7 +58,7 @@ public class PostService {
    */
   public Post getPostById(final Long id) {
     return postRepository.findFirstById(id)
-        .orElseThrow(() -> new RuntimeException("게시물이 존재하지 않습니다."));
+        .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_POST));
   }
 
   /**
@@ -76,10 +78,10 @@ public class PostService {
    */
   public Post updatePostTitle(final Long updateId, final String newTitle) {
     Post post = postRepository.findFirstById(updateId)
-        .orElseThrow(() -> new RuntimeException("게시물이 존재하지 않습니다."));
+        .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_POST));
 
     if (postRepository.existsByTitle(newTitle)) {
-      throw new RuntimeException("중복된 제목의 게시물입니다.");
+      throw new ApiException(ErrorCode.DUPLICATE_POST_TITLE);
     }
 
     post.setTitle(newTitle);
