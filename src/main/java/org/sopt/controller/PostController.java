@@ -8,7 +8,8 @@ import org.sopt.dto.PostRequestDto.CreateRequest;
 import org.sopt.dto.PostRequestDto.UpdateRequest;
 import org.sopt.responses.ApiResponse;
 import org.sopt.service.PostService;
-import org.sopt.exceptions.PostNotFoundException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,45 +31,51 @@ public class PostController {
   }
 
   @PostMapping("/posts")
-  public ApiResponse<Post> createPost(@RequestBody final CreateRequest createRequest) {
+  public ResponseEntity<ApiResponse<Post>> createPost(
+      @RequestBody final CreateRequest createRequest) {
     throwIfTitleInputNotValid(createRequest.title());
 
-    return ApiResponse.success(postService.createPost(createRequest.title()));
+    return ResponseEntity.status(HttpStatus.CREATED)
+        .body(ApiResponse.success(postService.createPost(createRequest.title())));
   }
 
   @GetMapping("/posts")
-  public ApiResponse<List<Post>> getPosts(
+  public ResponseEntity<ApiResponse<List<Post>>> getPosts(
       @RequestParam(value = "keyword") final Optional<String> keyword) {
     if (keyword.isEmpty()) {
-      return ApiResponse.success(postService.getAllPosts());
+      return ResponseEntity.status(HttpStatus.OK)
+          .body(ApiResponse.success(postService.getAllPosts()));
     }
 
     String trimmed = keyword.get().trim();
     if (trimmed.isEmpty()) {
-      return ApiResponse.success(List.of());
+      return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(List.of()));
     }
 
-    return ApiResponse.success(postService.findPostsByKeyword(trimmed));
+    return ResponseEntity.status(HttpStatus.OK)
+        .body(ApiResponse.success(postService.findPostsByKeyword(trimmed)));
   }
 
   @GetMapping("/posts/{id}")
-  public ApiResponse<Post> getPostById(@PathVariable("id") final Long id) {
-    return ApiResponse.success(postService.getPostById(id));
+  public ResponseEntity<ApiResponse<Post>> getPostById(@PathVariable("id") final Long id) {
+    return ResponseEntity.status(HttpStatus.OK)
+        .body(ApiResponse.success(postService.getPostById(id)));
   }
 
   @PutMapping("/posts")
-  public ApiResponse<Post> updatePostTitle(
+  public ResponseEntity<ApiResponse<Post>> updatePostTitle(
       @RequestBody final UpdateRequest updateRequest) {
 
     throwIfTitleInputNotValid(updateRequest.title());
 
-    return ApiResponse.success(
-        postService.updatePostTitle(updateRequest.id(), updateRequest.title()));
+    return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(
+        postService.updatePostTitle(updateRequest.id(), updateRequest.title())));
   }
 
   @DeleteMapping("/posts/{postId}")
-  public ApiResponse<Void> deletePostById(@PathVariable("postId") final Long postId) {
-    return ApiResponse.success();
+  public ResponseEntity<ApiResponse<Object>> deletePostById(
+      @PathVariable("postId") final Long postId) {
+    return ResponseEntity.status(HttpStatus.NO_CONTENT).body(ApiResponse.success());
   }
 
   /**
