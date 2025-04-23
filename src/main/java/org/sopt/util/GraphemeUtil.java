@@ -1,6 +1,7 @@
 package org.sopt.util;
 
-import java.text.BreakIterator;
+
+import com.ibm.icu.text.BreakIterator;
 
 public class GraphemeUtil {
 

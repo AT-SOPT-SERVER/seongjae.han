@@ -20,6 +20,7 @@ public class Post {
 
   public Post(String title) {
     int count = GraphemeUtil.count(title);
+    System.out.println(count);
     if (count > 30) {
       throw new ApiException(ErrorCode.TOO_LONG_POST_TITLE);
     }
