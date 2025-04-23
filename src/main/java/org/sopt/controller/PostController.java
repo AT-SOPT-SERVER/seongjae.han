@@ -89,20 +89,5 @@ public class PostController {
     if (inputTitle.isBlank()) {
       throw new ApiException(ErrorCode.BLANK_POST_TITLE);
     }
-    int count = this.getGraphemeCount(inputTitle);
-
-    if (count > 30) {
-      throw new ApiException(ErrorCode.TOO_LONG_POST_TITLE);
-    }
-  }
-
-  private int getGraphemeCount(String text) {
-    BreakIterator it = BreakIterator.getCharacterInstance();
-    it.setText(text);
-    int count = 0;
-    while (it.next() != BreakIterator.DONE) {
-      count++;
-    }
-    return count;
   }
 }

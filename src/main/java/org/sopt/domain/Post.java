@@ -4,6 +4,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import org.sopt.exceptions.ApiException;
+import org.sopt.exceptions.ErrorCode;
+import org.sopt.util.GraphemeUtil;
 
 @Entity
 public class Post {
@@ -13,10 +16,14 @@ public class Post {
   private String title;
 
   public Post() {
-
   }
 
   public Post(String title) {
+    int count = GraphemeUtil.count(title);
+    if (count > 30) {
+      throw new ApiException(ErrorCode.TOO_LONG_POST_TITLE);
+    }
+
     this.title = title;
   }
 
