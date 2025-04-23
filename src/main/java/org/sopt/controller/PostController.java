@@ -40,7 +40,6 @@ public class PostController {
 
   @GetMapping("/posts/search")
   public List<Post> searchPostsByKeyword(@RequestParam(value = "keyword") final String keyword) {
-    System.out.println(keyword);
     throwIfKeywordInputNotValid(keyword);
 
     return postService.findPostsByKeyword(keyword);
