@@ -2,12 +2,13 @@ package org.sopt.service;
 
 import java.util.List;
 import org.sopt.domain.Post;
-import org.sopt.exceptions.PostNotFoundException;
 import org.sopt.repository.PostRepository;
 import org.sopt.util.TimeIntervalUtil;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class PostService {
 
   private final PostRepository postRepository;
@@ -73,7 +74,7 @@ public class PostService {
    * @param updateId 업데이트 할 게시물 아이디
    * @param newTitle 업데이트 할 게시물 제목
    */
-  public void updatePostTitle(final Long updateId, final String newTitle) {
+  public Post updatePostTitle(final Long updateId, final String newTitle) {
     Post post = postRepository.findFirstById(updateId)
         .orElseThrow(() -> new RuntimeException("게시물이 존재하지 않습니다."));
 
@@ -82,7 +83,7 @@ public class PostService {
     }
 
     post.setTitle(newTitle);
-    postRepository.save(post);
+    return postRepository.save(post);
   }
 
   /**

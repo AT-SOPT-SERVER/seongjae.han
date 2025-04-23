@@ -2,9 +2,11 @@ package org.sopt.controller;
 
 import java.util.List;
 import java.text.BreakIterator;
+import java.util.Optional;
 import org.sopt.domain.Post;
 import org.sopt.dto.PostRequestDto.CreateRequest;
 import org.sopt.dto.PostRequestDto.UpdateRequest;
+import org.sopt.responses.ApiResponse;
 import org.sopt.service.PostService;
 import org.sopt.exceptions.PostNotFoundException;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,47 +30,45 @@ public class PostController {
   }
 
   @PostMapping("/posts")
-  public void createPost(@RequestBody final CreateRequest createRequest) {
+  public ApiResponse<Post> createPost(@RequestBody final CreateRequest createRequest) {
     throwIfTitleInputNotValid(createRequest.title());
 
-    postService.createPost(createRequest.title());
+    return ApiResponse.success(postService.createPost(createRequest.title()));
   }
 
   @GetMapping("/posts")
-  public List<Post> getPosts(@RequestParam(value = "keyword") final String keyword) {
-    if (keyword == null) {
-      return postService.getAllPosts();
-    }
-
+  public ApiResponse<List<Post>> getPosts(
+      @RequestParam(value = "keyword") final Optional<String> keyword) {
     if (keyword.isEmpty()) {
-      return List.of();
+      return ApiResponse.success(postService.getAllPosts());
     }
 
-    return postService.findPostsByKeyword(keyword);
+    String trimmed = keyword.get().trim();
+    if (trimmed.isEmpty()) {
+      return ApiResponse.success(List.of());
+    }
+
+    return ApiResponse.success(postService.findPostsByKeyword(trimmed));
   }
 
   @GetMapping("/posts/{id}")
-  public Post getPostById(@PathVariable("id") final Long id) {
-    return postService.getPostById(id);
+  public ApiResponse<Post> getPostById(@PathVariable("id") final Long id) {
+    return ApiResponse.success(postService.getPostById(id));
   }
 
   @PutMapping("/posts")
-  public Boolean updatePostTitle(
+  public ApiResponse<Post> updatePostTitle(
       @RequestBody final UpdateRequest updateRequest) {
 
     throwIfTitleInputNotValid(updateRequest.title());
 
-    try {
-      postService.updatePostTitle(updateRequest.id(), updateRequest.title());
-      return true;
-    } catch (PostNotFoundException e) {
-      return false;
-    }
+    return ApiResponse.success(
+        postService.updatePostTitle(updateRequest.id(), updateRequest.title()));
   }
 
   @DeleteMapping("/posts/{postId}")
-  public void deletePostById(@PathVariable("postId") final Long postId) {
-    postService.deletePostById(postId);
+  public ApiResponse<Void> deletePostById(@PathVariable("postId") final Long postId) {
+    return ApiResponse.success();
   }
 
   /**
