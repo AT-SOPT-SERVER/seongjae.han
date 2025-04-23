@@ -1,6 +1,7 @@
 package org.sopt.service;
 
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -132,7 +133,7 @@ public class PostServiceTest {
       // given
       Post mockPost = new Post("제목");
       Long dummyId = 1L;
-      given(postRepository.findFirstById(dummyId)).willReturn(mockPost);
+      given(postRepository.findFirstById(dummyId)).willReturn(Optional.of(mockPost));
 
       // when
       Post result = postService.getPostById(1L);
@@ -147,19 +148,19 @@ public class PostServiceTest {
     void getPostById_NotExist() {
       // given
       Long dummyId = 1L;
-      given(postRepository.findFirstById(dummyId)).willReturn(null);
+      given(postRepository.findFirstById(dummyId)).willReturn(Optional.empty());
 
-      // when
-      Post result = postService.getPostById(1L);
-
-      // then
-      assertThat(result).isNull();
+      // when & then
+      assertThatThrownBy(() -> postService.getPostById(1L))
+          .isInstanceOf(RuntimeException.class)
+          .hasMessageContaining("게시물이 존재하지 않습니다.");
     }
   }
 
   @DisplayName("Post 게시물 삭제 테스트")
   @Nested
   class PostDeleteTest {
+
     @DisplayName("성공 - Id로 삭제")
     @Test
     void deletePostById_deletesPost() {
@@ -177,6 +178,7 @@ public class PostServiceTest {
   @DisplayName("Post 게시물 수정 테스트")
   @Nested
   class PostUpdateTest {
+
     @DisplayName("성공 - 게시물 Id로 검색하여 제목 수정 성공")
     @Test
     void updatePost_ShouldSuccess() {
@@ -184,7 +186,7 @@ public class PostServiceTest {
       Post mockPost = new Post("beforeUpdate");
       String afterUpdateTitle = "afterUpdate";
       Long dummyId = 1L;
-      given(postRepository.findFirstById(dummyId)).willReturn(mockPost);
+      given(postRepository.findFirstById(dummyId)).willReturn(Optional.of(mockPost));
       given(postRepository.existsByTitle(afterUpdateTitle)).willReturn(false);
 
       // when
@@ -201,12 +203,12 @@ public class PostServiceTest {
       // given
       String afterUpdateTitle = "afterUpdate";
       Long dummyId = 1L;
-      given(postRepository.findFirstById(dummyId)).willReturn(null);
+      given(postRepository.findFirstById(dummyId)).willReturn(Optional.empty());
 
       // when
       assertThatThrownBy(() -> postService.updatePostTitle(dummyId, afterUpdateTitle))
-          .isInstanceOf(PostNotFoundException.class)
-          .hasMessageContaining("존재하지 않는 게시물입니다.");
+          .isInstanceOf(RuntimeException.class)
+          .hasMessageContaining("게시물이 존재하지 않습니다.");
 
       // then
       verify(postRepository, times(0)).save(any());
@@ -219,7 +221,7 @@ public class PostServiceTest {
       String afterUpdateTitle = "afterUpdate";
       Post mockPost = new Post("beforeUpdate");
       Long dummyId = 1L;
-      given(postRepository.findFirstById(dummyId)).willReturn(mockPost);
+      given(postRepository.findFirstById(dummyId)).willReturn(Optional.of(mockPost));
       given(postRepository.existsByTitle(afterUpdateTitle)).willReturn(true);
 
       // when

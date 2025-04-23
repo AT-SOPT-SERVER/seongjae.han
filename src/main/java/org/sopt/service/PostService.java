@@ -54,7 +54,8 @@ public class PostService {
    * @return 게시물
    */
   public Post getPostById(final Long id) {
-    return postRepository.findFirstById(id);
+    return postRepository.findFirstById(id)
+        .orElseThrow(() -> new RuntimeException("게시물이 존재하지 않습니다."));
   }
 
   /**
@@ -73,11 +74,9 @@ public class PostService {
    * @param newTitle 업데이트 할 게시물 제목
    */
   public void updatePostTitle(final Long updateId, final String newTitle) {
-    Post post = postRepository.findFirstById(updateId);
+    Post post = postRepository.findFirstById(updateId)
+        .orElseThrow(() -> new RuntimeException("게시물이 존재하지 않습니다."));
 
-    if (post == null) {
-      throw new PostNotFoundException();
-    }
     if (postRepository.existsByTitle(newTitle)) {
       throw new RuntimeException("중복된 제목의 게시물입니다.");
     }
