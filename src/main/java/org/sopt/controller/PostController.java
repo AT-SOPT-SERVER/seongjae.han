@@ -6,6 +6,8 @@ import java.util.Optional;
 import org.sopt.domain.Post;
 import org.sopt.dto.PostRequestDto.CreateRequest;
 import org.sopt.dto.PostRequestDto.UpdateRequest;
+import org.sopt.exceptions.ApiException;
+import org.sopt.exceptions.ErrorCode;
 import org.sopt.responses.ApiResponse;
 import org.sopt.service.PostService;
 import org.springframework.http.HttpStatus;
@@ -85,12 +87,12 @@ public class PostController {
    */
   private void throwIfTitleInputNotValid(final String inputTitle) {
     if (inputTitle.isBlank()) {
-      throw new IllegalArgumentException("제목이 비어있습니다.");
+      throw new ApiException(ErrorCode.BLANK_POST_TITLE);
     }
     int count = this.getGraphemeCount(inputTitle);
 
     if (count > 30) {
-      throw new IllegalArgumentException("제목이 30자를 넘지 않도록 해주세요.");
+      throw new ApiException(ErrorCode.TOO_LONG_POST_TITLE);
     }
   }
 

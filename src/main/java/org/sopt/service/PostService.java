@@ -100,7 +100,7 @@ public class PostService {
 
   private void throwIfInputTimeIntervalNotValid() {
     if (!postTimeIntervalUtil.isAvailable()) {
-      throw new IllegalArgumentException("아직 새로운 게시물을 작성하실 수 없습니다.");
+      throw new ApiException(ErrorCode.TOO_MANY_POST_REQUESTS);
     }
   }
 }
