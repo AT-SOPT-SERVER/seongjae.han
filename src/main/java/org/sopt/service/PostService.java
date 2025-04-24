@@ -49,7 +49,7 @@ public class PostService {
    * @return 게시물 리스트
    */
   public List<Post> getAllPosts() {
-    
+
     return postRepository.findAll();
   }
 
@@ -87,7 +87,8 @@ public class PostService {
       throw new ApiException(ErrorCode.DUPLICATE_POST_TITLE);
     }
 
-    post.setTitle(newTitle);
+    post.updateTitle(newTitle);
+
     return postRepository.save(post);
   }
 
