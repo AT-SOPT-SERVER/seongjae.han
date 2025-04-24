@@ -9,6 +9,5 @@ public sealed interface PostRequestDto permits CreateRequest, UpdateRequest {
   }
 
   record UpdateRequest(Long id, String title) implements PostRequestDto {
-
   }
 }

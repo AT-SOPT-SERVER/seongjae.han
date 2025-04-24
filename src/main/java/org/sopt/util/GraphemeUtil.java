@@ -2,16 +2,19 @@ package org.sopt.util;
 
 
 import com.ibm.icu.text.BreakIterator;
+import org.springframework.stereotype.Component;
 
+@Component
 public class GraphemeUtil {
 
   public static int count(String text) {
-    BreakIterator it = BreakIterator.getCharacterInstance();
-    it.setText(text);
+    BreakIterator breakIterator = BreakIterator.getCharacterInstance();
+    breakIterator.setText(text);
     int count = 0;
-    while (it.next() != BreakIterator.DONE) {
+    while (breakIterator.next() != BreakIterator.DONE) {
       count++;
     }
+
     return count;
   }
 }

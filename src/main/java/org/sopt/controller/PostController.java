@@ -1,7 +1,6 @@
 package org.sopt.controller;
 
 import java.util.List;
-import java.text.BreakIterator;
 import java.util.Optional;
 import org.sopt.domain.Post;
 import org.sopt.dto.PostRequestDto.CreateRequest;
@@ -35,24 +34,32 @@ public class PostController {
   @PostMapping("/posts")
   public ResponseEntity<ApiResponse<Post>> createPost(
       @RequestBody final CreateRequest createRequest) {
-    throwIfTitleInputNotValid(createRequest.title());
+
+    if (createRequest.title().isBlank()) {
+      throw new ApiException(ErrorCode.BLANK_POST_TITLE);
+    }
 
     return ResponseEntity.status(HttpStatus.CREATED)
         .body(ApiResponse.success(postService.createPost(createRequest.title())));
   }
 
   @GetMapping("/posts")
-  public ResponseEntity<ApiResponse<List<Post>>> getPosts(
-      @RequestParam(value = "keyword") final Optional<String> keyword) {
-    if (keyword.isEmpty()) {
+  public ResponseEntity<ApiResponse<List<Post>>> getPosts() {
+
       return ResponseEntity.status(HttpStatus.OK)
           .body(ApiResponse.success(postService.getAllPosts()));
-    }
 
-    String trimmed = keyword.get().trim();
-    if (trimmed.isEmpty()) {
+  }
+
+  @GetMapping("/posts/search")
+  public ResponseEntity<ApiResponse<List<Post>>> searchPostsByKeyword(
+      @RequestParam(value = "keyword") final String keyword) {
+
+    if (keyword.isBlank()) {
       return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(List.of()));
     }
+
+    String trimmed = keyword.trim();
 
     return ResponseEntity.status(HttpStatus.OK)
         .body(ApiResponse.success(postService.findPostsByKeyword(trimmed)));
@@ -60,6 +67,7 @@ public class PostController {
 
   @GetMapping("/posts/{id}")
   public ResponseEntity<ApiResponse<Post>> getPostById(@PathVariable("id") final Long id) {
+
     return ResponseEntity.status(HttpStatus.OK)
         .body(ApiResponse.success(postService.getPostById(id)));
   }
@@ -68,7 +76,9 @@ public class PostController {
   public ResponseEntity<ApiResponse<Post>> updatePostTitle(
       @RequestBody final UpdateRequest updateRequest) {
 
-    throwIfTitleInputNotValid(updateRequest.title());
+    if (updateRequest.title().isBlank()) {
+      throw new ApiException(ErrorCode.BLANK_POST_TITLE);
+    }
 
     return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(
         postService.updatePostTitle(updateRequest.id(), updateRequest.title())));
@@ -77,17 +87,7 @@ public class PostController {
   @DeleteMapping("/posts/{postId}")
   public ResponseEntity<ApiResponse<Object>> deletePostById(
       @PathVariable("postId") final Long postId) {
-    return ResponseEntity.status(HttpStatus.NO_CONTENT).body(ApiResponse.success());
-  }
 
-  /**
-   * 제목이 입력 규칙에 맞게 입력되지 않은 경우 예외 throw
-   *
-   * @param inputTitle 입력된 제목
-   */
-  private void throwIfTitleInputNotValid(final String inputTitle) {
-    if (inputTitle.isBlank()) {
-      throw new ApiException(ErrorCode.BLANK_POST_TITLE);
-    }
+    return ResponseEntity.status(HttpStatus.NO_CONTENT).body(ApiResponse.success());
   }
 }

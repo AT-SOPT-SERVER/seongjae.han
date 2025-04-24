@@ -31,10 +31,12 @@ public class PostService {
    */
   public Post createPost(String title) {
     throwIfInputTimeIntervalNotValid();
+
     Post post = new Post(title);
     if (postRepository.existsByTitle(title)) {
       throw new ApiException(ErrorCode.DUPLICATE_POST_TITLE);
     }
+
     Post newPost = postRepository.save(post);
     postTimeIntervalUtil.startTimer();
 
