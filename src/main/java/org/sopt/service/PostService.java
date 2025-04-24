@@ -49,6 +49,7 @@ public class PostService {
    * @return 게시물 리스트
    */
   public List<Post> getAllPosts() {
+    
     return postRepository.findAll();
   }
 
