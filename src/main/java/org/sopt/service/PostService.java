@@ -7,10 +7,9 @@ import org.sopt.exceptions.ErrorCode;
 import org.sopt.repository.PostRepository;
 import org.sopt.util.TimeIntervalUtil;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
+
 public class PostService {
 
   private final PostRepository postRepository;

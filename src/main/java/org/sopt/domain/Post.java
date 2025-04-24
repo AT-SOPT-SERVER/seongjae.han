@@ -1,5 +1,6 @@
 package org.sopt.domain;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -10,6 +11,7 @@ import org.sopt.util.GraphemeUtil;
 
 @Entity
 public class Post {
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -19,15 +21,30 @@ public class Post {
   }
 
   public Post(String title) {
-    int count = GraphemeUtil.count(title);
-    if (count > 30) {
-      throw new ApiException(ErrorCode.TOO_LONG_POST_TITLE);
-    }
+    throwIfTitleLengthLong(title);
 
     this.title = title;
   }
 
-  public void updateTitle(final String newTitle) {
-    title = newTitle;
+  public Long getId() {
+    return id;
   }
+
+  public String getTitle() {
+    return title;
+  }
+
+  public void updateTitle(final String newTitle) {
+    throwIfTitleLengthLong(title);
+
+    this.title = newTitle;
+  }
+
+  private static void throwIfTitleLengthLong(final String title) {
+    int count = GraphemeUtil.count(title);
+    if (count > 30) {
+      throw new ApiException(ErrorCode.TOO_LONG_POST_TITLE);
+    }
+  }
+
 }
