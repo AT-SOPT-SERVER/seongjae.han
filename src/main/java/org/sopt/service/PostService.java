@@ -2,13 +2,14 @@ package org.sopt.service;
 
 import java.util.List;
 import org.sopt.domain.Post;
+import org.sopt.exceptions.ApiException;
+import org.sopt.exceptions.ErrorCode;
 import org.sopt.repository.PostRepository;
 import org.sopt.util.TimeIntervalUtil;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
+
 public class PostService {
 
   private final PostRepository postRepository;
@@ -29,10 +30,12 @@ public class PostService {
    */
   public Post createPost(String title) {
     throwIfInputTimeIntervalNotValid();
+
     Post post = new Post(title);
     if (postRepository.existsByTitle(title)) {
-      throw new RuntimeException("중복된 제목의 게시물입니다.");
+      throw new ApiException(ErrorCode.DUPLICATE_POST_TITLE);
     }
+
     Post newPost = postRepository.save(post);
     postTimeIntervalUtil.startTimer();
 
@@ -45,6 +48,7 @@ public class PostService {
    * @return 게시물 리스트
    */
   public List<Post> getAllPosts() {
+
     return postRepository.findAll();
   }
 
@@ -56,7 +60,7 @@ public class PostService {
    */
   public Post getPostById(final Long id) {
     return postRepository.findFirstById(id)
-        .orElseThrow(() -> new RuntimeException("게시물이 존재하지 않습니다."));
+        .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_POST));
   }
 
   /**
@@ -76,13 +80,14 @@ public class PostService {
    */
   public Post updatePostTitle(final Long updateId, final String newTitle) {
     Post post = postRepository.findFirstById(updateId)
-        .orElseThrow(() -> new RuntimeException("게시물이 존재하지 않습니다."));
+        .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_POST));
 
     if (postRepository.existsByTitle(newTitle)) {
-      throw new RuntimeException("중복된 제목의 게시물입니다.");
+      throw new ApiException(ErrorCode.DUPLICATE_POST_TITLE);
     }
 
-    post.setTitle(newTitle);
+    post.updateTitle(newTitle);
+
     return postRepository.save(post);
   }
 
@@ -98,7 +103,7 @@ public class PostService {
 
   private void throwIfInputTimeIntervalNotValid() {
     if (!postTimeIntervalUtil.isAvailable()) {
-      throw new IllegalArgumentException("아직 새로운 게시물을 작성하실 수 없습니다.");
+      throw new ApiException(ErrorCode.TOO_MANY_POST_REQUESTS);
     }
   }
 }
