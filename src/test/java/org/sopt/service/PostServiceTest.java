@@ -73,7 +73,7 @@ public class PostServiceTest {
       // when & then
       assertThatThrownBy(() -> postService.createPost(dummyTitle))
           .isInstanceOf(RuntimeException.class)
-          .hasMessageContaining("중복된 제목의 게시물입니다.");
+          .hasMessageContaining("이미 존재하는 게시글 제목입니다.");
 
       verify(postRepository, times(0)).save(any(Post.class));
       verify(timeIntervalUtil, times(0)).startTimer();
@@ -89,8 +89,8 @@ public class PostServiceTest {
 
       // when & then
       assertThatThrownBy(() -> postService.createPost(dummyTitle))
-          .isInstanceOf(IllegalArgumentException.class)
-          .hasMessageContaining("아직 새로운 게시물을 작성하실 수 없습니다.");
+          .isInstanceOf(RuntimeException.class)
+          .hasMessageContaining("게시글은 3분 간격으로만 작성할 수 있습니다.");
 
       verify(postRepository, times(0)).save(any(Post.class));
       verify(timeIntervalUtil, times(0)).startTimer();
@@ -151,7 +151,7 @@ public class PostServiceTest {
       // when & then
       assertThatThrownBy(() -> postService.getPostById(1L))
           .isInstanceOf(RuntimeException.class)
-          .hasMessageContaining("게시물이 존재하지 않습니다.");
+          .hasMessageContaining("게시글을 찾을 수 없습니다.");
     }
   }
 
@@ -206,7 +206,7 @@ public class PostServiceTest {
       // when
       assertThatThrownBy(() -> postService.updatePostTitle(dummyId, afterUpdateTitle))
           .isInstanceOf(RuntimeException.class)
-          .hasMessageContaining("게시물이 존재하지 않습니다.");
+          .hasMessageContaining("게시글을 찾을 수 없습니다.");
 
       // then
       verify(postRepository, times(0)).save(any());
@@ -225,7 +225,7 @@ public class PostServiceTest {
       // when
       assertThatThrownBy(() -> postService.updatePostTitle(dummyId, afterUpdateTitle))
           .isInstanceOf(RuntimeException.class)
-          .hasMessageContaining("중복된 제목의 게시물입니다.");
+          .hasMessageContaining("이미 존재하는 게시글 제목입니다.");
 
       // then
       verify(postRepository, times(0)).save(any());
