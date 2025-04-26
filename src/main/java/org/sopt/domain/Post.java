@@ -1,38 +1,50 @@
 package org.sopt.domain;
 
-import java.io.Serializable;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import org.sopt.exceptions.ApiException;
+import org.sopt.exceptions.ErrorCode;
+import org.sopt.util.GraphemeUtil;
 
-public class Post implements Serializable {
+@Entity
+public class Post {
 
-  private Integer id = null;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
   private String title;
 
-  public Post(Integer id, String title) {
-    this.id = id;
-    this.title = title;
+  public Post() {
   }
 
   public Post(String title) {
+    throwIfTitleLengthLong(title);
+
     this.title = title;
   }
 
-  public Integer getId() {
+  public Long getId() {
     return id;
   }
 
   public String getTitle() {
-    return this.title;
+    return title;
   }
 
-  public void setTitle(final String newTitle) {
+  public void updateTitle(final String newTitle) {
+    throwIfTitleLengthLong(title);
+
     this.title = newTitle;
   }
 
-  @Override
-  public String toString() {
-    return "Post{" +
-        "id=" + id +
-        ", title='" + title + '\'' +
-        '}';
+  private static void throwIfTitleLengthLong(final String title) {
+    int count = GraphemeUtil.count(title);
+    if (count > 30) {
+      throw new ApiException(ErrorCode.TOO_LONG_POST_TITLE);
+    }
   }
+
 }

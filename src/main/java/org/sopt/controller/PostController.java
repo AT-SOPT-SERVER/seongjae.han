@@ -1,94 +1,93 @@
 package org.sopt.controller;
 
-import java.text.BreakIterator;
 import java.util.List;
-import java.util.Locale;
+import java.util.Optional;
 import org.sopt.domain.Post;
-import org.sopt.exceptions.PostNotFoundException;
+import org.sopt.dto.PostRequestDto.CreateRequest;
+import org.sopt.dto.PostRequestDto.UpdateRequest;
+import org.sopt.exceptions.ApiException;
+import org.sopt.exceptions.ErrorCode;
+import org.sopt.responses.ApiResponse;
 import org.sopt.service.PostService;
-import org.sopt.util.TimeIntervalUtil;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+@RestController
 public class PostController {
 
-  private final PostService postService = new PostService();
+  private final PostService postService;
 
-  private final TimeIntervalUtil postTimeIntervalUtil = new TimeIntervalUtil();
-
-  public void createPost(String title) {
-    throwIfInputTimeIntervalNotValid();
-    throwIfTitleInputNotValid(title);
-
-    postService.createPost(title);
-    postTimeIntervalUtil.startTimer();
+  public PostController(
+      final PostService postService
+  ) {
+    this.postService = postService;
   }
 
-  public List<Post> getAllPosts() {
-    return postService.getAllPosts();
-  }
+  @PostMapping("/posts")
+  public ResponseEntity<ApiResponse<Post>> createPost(
+      @RequestBody final CreateRequest createRequest) {
 
-  public Post getPostById(final int id) {
-    return postService.getPostById(id);
-  }
-
-  public boolean deletePostById(final int deleteId) {
-    return postService.deletePostById(deleteId);
-  }
-
-  public Boolean updatePostTitle(final Integer updateId, final String newTitle) {
-
-    throwIfTitleInputNotValid(newTitle);
-
-    try {
-      postService.updatePostTitle(updateId, newTitle);
-      return true;
-    } catch (PostNotFoundException e) {
-      return false;
+    if (createRequest.title().isBlank()) {
+      throw new ApiException(ErrorCode.BLANK_POST_TITLE);
     }
+
+    return ResponseEntity.status(HttpStatus.CREATED)
+        .body(ApiResponse.success(postService.createPost(createRequest.title())));
   }
 
-  public List<Post> searchPostsByKeyword(final String keyword) {
-    throwIfKeywordInputNotValid(keyword);
+  @GetMapping("/posts")
+  public ResponseEntity<ApiResponse<List<Post>>> getPosts() {
 
-    return postService.findPostsByKeyword(keyword);
+      return ResponseEntity.status(HttpStatus.OK)
+          .body(ApiResponse.success(postService.getAllPosts()));
+
   }
 
-  private void throwIfKeywordInputNotValid(final String keyword) {
+  @GetMapping("/posts/search")
+  public ResponseEntity<ApiResponse<List<Post>>> searchPostsByKeyword(
+      @RequestParam(value = "keyword") final String keyword) {
+
     if (keyword.isBlank()) {
-      throw new IllegalArgumentException("입력이 비어있습니다.");
+      return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(List.of()));
     }
+
+    String trimmed = keyword.trim();
+
+    return ResponseEntity.status(HttpStatus.OK)
+        .body(ApiResponse.success(postService.findPostsByKeyword(trimmed)));
   }
 
-  /**
-   * 제목이 입력 규칙에 맞게 입력되지 않은 경우 예외 throw
-   *
-   * @param inputTitle 입력된 제목
-   */
-  private void throwIfTitleInputNotValid(final String inputTitle) {
-    if (inputTitle.isBlank()) {
-      throw new IllegalArgumentException("제목이 비어있습니다.");
-    }
+  @GetMapping("/posts/{id}")
+  public ResponseEntity<ApiResponse<Post>> getPostById(@PathVariable("id") final Long id) {
 
-    int count = this.getGraphemeCount(inputTitle);
-    System.out.println(count);
-
-    if (count > 30) {
-      throw new IllegalArgumentException("제목이 30자를 넘지 않도록 해주세요.");
-    }
+    return ResponseEntity.status(HttpStatus.OK)
+        .body(ApiResponse.success(postService.getPostById(id)));
   }
 
-  private int getGraphemeCount(String text) {
-    BreakIterator it = BreakIterator.getCharacterInstance();
-    it.setText(text);
-    int count = 0;
-    while (it.next() != BreakIterator.DONE) {
-      count++;
+  @PutMapping("/posts")
+  public ResponseEntity<ApiResponse<Post>> updatePostTitle(
+      @RequestBody final UpdateRequest updateRequest) {
+
+    if (updateRequest.title().isBlank()) {
+      throw new ApiException(ErrorCode.BLANK_POST_TITLE);
     }
-    return count;
+
+    return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(
+        postService.updatePostTitle(updateRequest.id(), updateRequest.title())));
   }
 
-  private void throwIfInputTimeIntervalNotValid() {
-    if (!postTimeIntervalUtil.isAvailable()) {
-      throw new IllegalArgumentException("아직 새로운 게시물을 작성하실 수 없습니다.");
-    }
+  @DeleteMapping("/posts/{postId}")
+  public ResponseEntity<ApiResponse<Object>> deletePostById(
+      @PathVariable("postId") final Long postId) {
+
+    return ResponseEntity.status(HttpStatus.NO_CONTENT).body(ApiResponse.success());
   }
 }
