@@ -1,7 +1,6 @@
 package org.sopt.controller;
 
 import java.util.List;
-import java.util.Optional;
 import org.sopt.domain.Post;
 import org.sopt.dto.PostRequestDto.CreateRequest;
 import org.sopt.dto.PostRequestDto.UpdateRequest;

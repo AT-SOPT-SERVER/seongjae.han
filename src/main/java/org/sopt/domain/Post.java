@@ -1,6 +1,5 @@
 package org.sopt.domain;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -15,15 +14,17 @@ public class Post {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
+
   private String title;
 
-  public Post() {
+  private String content;
+
+  protected Post() {
   }
 
-  public Post(String title) {
-    throwIfTitleLengthLong(title);
-
+  public Post(String title, String content) {
     this.title = title;
+    this.content = content;
   }
 
   public Long getId() {
@@ -32,6 +33,10 @@ public class Post {
 
   public String getTitle() {
     return title;
+  }
+
+  public String getContent() {
+    return content;
   }
 
   public void updateTitle(final String newTitle) {
