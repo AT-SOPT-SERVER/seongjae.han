@@ -71,12 +71,9 @@ public class PostController {
   public ResponseEntity<ApiResponse<Post>> updatePostTitle(
       @RequestBody final UpdateRequest updateRequest) {
 
-    if (updateRequest.title().isBlank()) {
-      throw new ApiException(ErrorCode.BLANK_POST_TITLE);
-    }
 
     return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(
-        postService.updatePostTitle(updateRequest.id(), updateRequest.title())));
+        postService.updatePostTitle(updateRequest)));
   }
 
   @DeleteMapping("/posts/{postId}")

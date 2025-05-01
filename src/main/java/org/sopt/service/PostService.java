@@ -3,6 +3,7 @@ package org.sopt.service;
 import java.util.List;
 import org.sopt.domain.Post;
 import org.sopt.dto.PostRequestDto.CreateRequest;
+import org.sopt.dto.PostRequestDto.UpdateRequest;
 import org.sopt.exceptions.ApiException;
 import org.sopt.exceptions.ErrorCode;
 import org.sopt.repository.PostRepository;
@@ -79,22 +80,17 @@ public class PostService {
     postRepository.deleteById(postId);
   }
 
-  /**
-   * 기존 게시물의 제목 update
-   *
-   * @param updateId 업데이트 할 게시물 아이디
-   * @param newTitle 업데이트 할 게시물 제목
-   */
+
   @Transactional
-  public Post updatePostTitle(final Long updateId, final String newTitle) {
-    Post post = postRepository.findFirstById(updateId)
+  public Post updatePostTitle(final UpdateRequest updateRequest) {
+    Post post = postRepository.findFirstById(updateRequest.id())
         .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_POST));
 
-    if (postRepository.existsByTitle(newTitle)) {
+    if (postRepository.existsByTitle(updateRequest.title())) {
       throw new ApiException(ErrorCode.DUPLICATE_POST_TITLE);
     }
 
-    post.updateTitle(newTitle);
+    post.update(updateRequest.title(), updateRequest.content());
 
     return postRepository.save(post);
   }

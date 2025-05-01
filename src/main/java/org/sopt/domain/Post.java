@@ -56,10 +56,12 @@ public class Post {
     return content;
   }
 
-  public void updateTitle(final String newTitle) {
+  public void update(final String newTitle, final String content) {
+    throwIfFieldsBlank(newTitle, content);
     throwIfTitleLengthLong(title);
 
     this.title = newTitle;
+    this.content = content;
   }
 
   private static void throwIfFieldsBlank(final String title, final String content) {
