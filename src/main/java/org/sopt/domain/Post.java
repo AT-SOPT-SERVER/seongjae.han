@@ -4,6 +4,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import org.hibernate.mapping.Join;
 import org.sopt.exceptions.ApiException;
 import org.sopt.exceptions.ErrorCode;
 import org.sopt.util.GraphemeUtil;
@@ -26,6 +29,10 @@ public class Post {
     this.title = title;
     this.content = content;
   }
+
+  @ManyToOne
+  @JoinColumn(name = "user_id")
+  private User user;
 
   public Long getId() {
     return id;
