@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -32,22 +33,25 @@ public class PostController {
 
   @PostMapping("/posts")
   public ResponseEntity<ApiResponse<Post>> createPost(
+      @RequestHeader("userId") Long userId,
       @RequestBody final CreateRequest createRequest) {
 
     return ResponseEntity.status(HttpStatus.CREATED)
-        .body(ApiResponse.success(postService.createPost(createRequest)));
+        .body(ApiResponse.success(postService.createPost(userId, createRequest)));
   }
 
   @GetMapping("/posts")
-  public ResponseEntity<ApiResponse<List<Post>>> getPosts() {
-
-      return ResponseEntity.status(HttpStatus.OK)
-          .body(ApiResponse.success(postService.getAllPosts()));
+  public ResponseEntity<ApiResponse<List<Post>>> getPosts(
+      @RequestHeader(value = "userId") String userId
+  ) {
+    return ResponseEntity.status(HttpStatus.OK)
+        .body(ApiResponse.success(postService.getAllPosts()));
 
   }
 
   @GetMapping("/posts/search")
   public ResponseEntity<ApiResponse<List<Post>>> searchPostsByKeyword(
+      @RequestHeader(value = "userId") String userId,
       @RequestParam(value = "keyword") final String keyword) {
 
     if (keyword.isBlank()) {
@@ -61,7 +65,9 @@ public class PostController {
   }
 
   @GetMapping("/posts/{id}")
-  public ResponseEntity<ApiResponse<Post>> getPostById(@PathVariable("id") final Long id) {
+  public ResponseEntity<ApiResponse<Post>> getPostById(
+      @RequestHeader(value = "userId") String userId,
+      @PathVariable("id") final Long id) {
 
     return ResponseEntity.status(HttpStatus.OK)
         .body(ApiResponse.success(postService.getPostById(id)));
@@ -69,8 +75,8 @@ public class PostController {
 
   @PutMapping("/posts")
   public ResponseEntity<ApiResponse<Post>> updatePostTitle(
+      @RequestHeader(value = "userId") String userId,
       @RequestBody final UpdateRequest updateRequest) {
-
 
     return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(
         postService.updatePostTitle(updateRequest)));
@@ -78,6 +84,7 @@ public class PostController {
 
   @DeleteMapping("/posts/{postId}")
   public ResponseEntity<ApiResponse<Object>> deletePostById(
+      @RequestHeader(value = "userId") String userId,
       @PathVariable("postId") final Long postId) {
 
     return ResponseEntity.status(HttpStatus.NO_CONTENT).body(ApiResponse.success());

@@ -25,24 +25,25 @@ public class Post {
   @Column(name = "content", nullable = false)
   private String content;
 
-  protected Post() {
-  }
-
-  protected Post(String title, String content) {
-    this.title = title;
-    this.content = content;
-  }
-
-  public static Post of(String title, String content) {
-    throwIfFieldsBlank(title, content);
-    throwIfTitleLengthLong(title);
-
-    return new Post(title, content);
-  }
-
   @ManyToOne
   @JoinColumn(name = "user_id")
   private User user;
+
+  protected Post() {
+  }
+
+  protected Post(String title, String content, User user) {
+    this.title = title;
+    this.content = content;
+    this.user = user;
+  }
+
+  public static Post of(String title, String content, User user) {
+    throwIfFieldsBlank(title, content);
+    throwIfTitleLengthLong(title);
+
+    return new Post(title, content, user);
+  }
 
   public Long getId() {
     return id;

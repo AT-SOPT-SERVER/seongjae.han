@@ -2,11 +2,13 @@ package org.sopt.service;
 
 import java.util.List;
 import org.sopt.domain.Post;
+import org.sopt.domain.User;
 import org.sopt.dto.PostRequestDto.CreateRequest;
 import org.sopt.dto.PostRequestDto.UpdateRequest;
 import org.sopt.exceptions.ApiException;
 import org.sopt.exceptions.ErrorCode;
 import org.sopt.repository.PostRepository;
+import org.sopt.repository.UserRepository;
 import org.sopt.util.TimeIntervalUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,14 +18,17 @@ import org.springframework.transaction.annotation.Transactional;
 public class PostService {
 
   private final PostRepository postRepository;
+  private final UserRepository userRepository;
   private final TimeIntervalUtil postTimeIntervalUtil;
 
   public PostService(
-      TimeIntervalUtil postTimeIntervalUtil,
-      PostRepository postRepository
+      PostRepository postRepository,
+      UserRepository userRepository,
+      TimeIntervalUtil postTimeIntervalUtil
   ) {
-    this.postTimeIntervalUtil = postTimeIntervalUtil;
     this.postRepository = postRepository;
+    this.userRepository = userRepository;
+    this.postTimeIntervalUtil = postTimeIntervalUtil;
   }
 
   /**
@@ -32,10 +37,14 @@ public class PostService {
    * @return 작성 게시글 dto
    */
   @Transactional
-  public Post createPost(CreateRequest createRequest) {
+  public Post createPost(Long userId, CreateRequest createRequest) {
+
+    User user = userRepository.findById(userId)
+        .orElseThrow(() -> new ApiException(ErrorCode.USER_UNAUTHORIZED));
+
     throwIfInputTimeIntervalNotValid();
 
-    Post post = Post.of(createRequest.title(), createRequest.content());
+    Post post = Post.of(createRequest.title(), createRequest.content(), user);
 
     if (postRepository.existsByTitle(post.getTitle())) {
       throw new ApiException(ErrorCode.DUPLICATE_POST_TITLE);
