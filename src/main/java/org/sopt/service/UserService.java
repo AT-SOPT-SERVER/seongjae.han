@@ -14,7 +14,14 @@ public class UserService {
     this.userRepository = userRepository;
   }
 
+  /**
+   * 유저 생성 로직
+   * @param userCreateRequest 유저 생성 dto
+   * @return 생성된 유저 entity
+   */
   public User saveUser(UserRequest.CreateRequest userCreateRequest) {
-    return userRepository.save(new User(userCreateRequest.name(), userCreateRequest.email()));
+    User newUser = User.of(userCreateRequest.name(), userCreateRequest.email());
+
+    return userRepository.save(newUser);
   }
 }

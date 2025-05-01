@@ -8,6 +8,8 @@ public enum ErrorCode {
   BLANK_POST_TITLE(HttpStatus.BAD_REQUEST, "c4001", "제목이 비어있습니다."),
   TOO_LONG_POST_TITLE(HttpStatus.BAD_REQUEST, "c4002", "제목은 30글자를 넘을 수 없습니다."),
   BLANK_POST_CONTENT(HttpStatus.BAD_REQUEST, "c4003", "게시글 내용이 비어있습니다."),
+  BLANK_USER_NAME(HttpStatus.BAD_REQUEST, "c4004", "유저 이름이 비어있습니다."),
+  BLANK_USER_EMAIL(HttpStatus.BAD_REQUEST, "c4004", "유저 이메일이 비어있습니다."),
   DUPLICATE_POST_TITLE(HttpStatus.CONFLICT, "c4090", "이미 존재하는 게시글 제목입니다."),
   NOT_FOUND_POST(HttpStatus.NOT_FOUND, "c4041", "게시글을 찾을 수 없습니다."),
   TOO_MANY_POST_REQUESTS(HttpStatus.TOO_MANY_REQUESTS, "c4290", "게시글은 3분 간격으로만 작성할 수 있습니다."),
