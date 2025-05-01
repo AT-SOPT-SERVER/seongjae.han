@@ -7,7 +7,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import org.hibernate.mapping.Join;
 import org.sopt.exceptions.ApiException;
 import org.sopt.exceptions.ErrorCode;
 import org.sopt.util.GraphemeUtil;
@@ -55,6 +54,10 @@ public class Post {
 
   public String getContent() {
     return content;
+  }
+
+  public User getUser() {
+    return user;
   }
 
   public void update(final String newTitle, final String content) {

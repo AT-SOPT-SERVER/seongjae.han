@@ -5,6 +5,9 @@ import org.sopt.domain.Post;
 import org.sopt.domain.User;
 import org.sopt.dto.PostRequestDto.CreateRequest;
 import org.sopt.dto.PostRequestDto.UpdateRequest;
+import org.sopt.dto.PostResponseDto;
+import org.sopt.dto.PostResponseDto.ListDto;
+import org.sopt.dto.PostResponseDto.ListDto.PostHeaderDto;
 import org.sopt.exceptions.ApiException;
 import org.sopt.exceptions.ErrorCode;
 import org.sopt.repository.PostRepository;
@@ -33,6 +36,7 @@ public class PostService {
 
   /**
    * 게시물 생성
+   *
    * @param createRequest 게시물 생성 dto(제목, 내용)
    * @return 작성 게시글 dto
    */
@@ -62,9 +66,11 @@ public class PostService {
    * @return 게시물 리스트
    */
   @Transactional(readOnly = true)
-  public List<Post> getAllPosts() {
+  public PostResponseDto.ListDto getAllPosts() {
 
-    return postRepository.findAll();
+    return new ListDto(postRepository.findAll().stream()
+        .map(post -> new ListDto.PostHeaderDto(post.getTitle(), post.getUser().getName()))
+        .toList());
   }
 
   /**

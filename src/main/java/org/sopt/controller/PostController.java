@@ -4,6 +4,7 @@ import java.util.List;
 import org.sopt.domain.Post;
 import org.sopt.dto.PostRequestDto.CreateRequest;
 import org.sopt.dto.PostRequestDto.UpdateRequest;
+import org.sopt.dto.PostResponseDto;
 import org.sopt.exceptions.ApiException;
 import org.sopt.exceptions.ErrorCode;
 import org.sopt.responses.ApiResponse;
@@ -41,7 +42,7 @@ public class PostController {
   }
 
   @GetMapping("/posts")
-  public ResponseEntity<ApiResponse<List<Post>>> getPosts(
+  public ResponseEntity<ApiResponse<PostResponseDto.ListDto>> getPosts(
       @RequestHeader(value = "userId") String userId
   ) {
     return ResponseEntity.status(HttpStatus.OK)
