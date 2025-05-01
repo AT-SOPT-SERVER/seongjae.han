@@ -2,16 +2,22 @@ package org.sopt.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import java.time.LocalDateTime;
 import org.sopt.exceptions.ApiException;
 import org.sopt.exceptions.ErrorCode;
 import org.sopt.util.GraphemeUtil;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 public class Post {
 
   @Id
@@ -23,6 +29,13 @@ public class Post {
 
   @Column(name = "content", nullable = false)
   private String content;
+
+  @CreatedDate
+  @Column(updatable = false)
+  private LocalDateTime createdAt;
+
+  @LastModifiedDate
+  private LocalDateTime updatedAt;
 
   @ManyToOne
   @JoinColumn(name = "user_id")
@@ -58,6 +71,14 @@ public class Post {
 
   public User getUser() {
     return user;
+  }
+
+  public LocalDateTime getCreatedAt() {
+    return createdAt;
+  }
+
+  public LocalDateTime getUpdatedAt() {
+    return updatedAt;
   }
 
   public void update(final String newTitle, final String content) {

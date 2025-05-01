@@ -14,9 +14,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
   Optional<Post> findFirstById(Long id);
 
-  @Override
   @EntityGraph(attributePaths = {"user"})
-  List<Post> findAll();
+  List<Post> findAllByOrderByCreatedAtDesc();
 
   List<Post> findPostsByTitleContaining(String keyword);
 }

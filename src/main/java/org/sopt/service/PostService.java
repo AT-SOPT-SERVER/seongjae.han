@@ -46,7 +46,7 @@ public class PostService {
     User user = userRepository.findById(userId)
         .orElseThrow(() -> new ApiException(ErrorCode.USER_UNAUTHORIZED));
 
-    throwIfInputTimeIntervalNotValid();
+//    throwIfInputTimeIntervalNotValid();
 
     Post post = Post.of(createRequest.title(), createRequest.content(), user);
 
@@ -68,7 +68,7 @@ public class PostService {
   @Transactional(readOnly = true)
   public PostResponseDto.ListDto getAllPosts() {
 
-    return new ListDto(postRepository.findAll().stream()
+    return new ListDto(postRepository.findAllByOrderByCreatedAtDesc().stream()
         .map(post -> new ListDto.PostHeaderDto(post.getTitle(), post.getUser().getName()))
         .toList());
   }
