@@ -1,5 +1,6 @@
 package org.sopt.domain;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,16 +19,25 @@ public class Post {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  @Column(name = "title", nullable = false)
   private String title;
 
+  @Column(name = "content", nullable = false)
   private String content;
 
   protected Post() {
   }
 
-  public Post(String title, String content) {
+  protected Post(String title, String content) {
     this.title = title;
     this.content = content;
+  }
+
+  public static Post of(String title, String content) {
+    throwIfFieldsBlank(title, content);
+    throwIfTitleLengthLong(title);
+
+    return new Post(title, content);
   }
 
   @ManyToOne
@@ -50,6 +60,16 @@ public class Post {
     throwIfTitleLengthLong(title);
 
     this.title = newTitle;
+  }
+
+  private static void throwIfFieldsBlank(final String title, final String content) {
+    if (title == null || title.isBlank()) {
+      throw new ApiException(ErrorCode.BLANK_POST_TITLE);
+    }
+
+    if (content == null || content.isBlank()) {
+      throw new ApiException(ErrorCode.BLANK_POST_CONTENT);
+    }
   }
 
   private static void throwIfTitleLengthLong(final String title) {

@@ -5,9 +5,9 @@ import org.sopt.dto.PostRequestDto.UpdateRequest;
 
 public sealed interface PostRequestDto permits CreateRequest, UpdateRequest {
 
-  record CreateRequest(String title) implements PostRequestDto {
+  record CreateRequest(String title, String content) implements PostRequestDto {
   }
 
-  record UpdateRequest(Long id, String title) implements PostRequestDto {
+  record UpdateRequest(Long id, String title, String Content) implements PostRequestDto {
   }
 }

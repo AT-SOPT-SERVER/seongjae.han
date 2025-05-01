@@ -2,11 +2,13 @@ package org.sopt.service;
 
 import java.util.List;
 import org.sopt.domain.Post;
+import org.sopt.dto.PostRequestDto.CreateRequest;
 import org.sopt.exceptions.ApiException;
 import org.sopt.exceptions.ErrorCode;
 import org.sopt.repository.PostRepository;
 import org.sopt.util.TimeIntervalUtil;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 
@@ -25,14 +27,16 @@ public class PostService {
 
   /**
    * 게시물 생성
-   *
-   * @param title 제목
+   * @param createRequest 게시물 생성 dto(제목, 내용)
+   * @return 작성 게시글 dto
    */
-  public Post createPost(String title) {
+  @Transactional
+  public Post createPost(CreateRequest createRequest) {
     throwIfInputTimeIntervalNotValid();
 
-    Post post = new Post(title, "");
-    if (postRepository.existsByTitle(title)) {
+    Post post = Post.of(createRequest.title(), createRequest.content());
+
+    if (postRepository.existsByTitle(post.getTitle())) {
       throw new ApiException(ErrorCode.DUPLICATE_POST_TITLE);
     }
 
@@ -47,6 +51,7 @@ public class PostService {
    *
    * @return 게시물 리스트
    */
+  @Transactional(readOnly = true)
   public List<Post> getAllPosts() {
 
     return postRepository.findAll();
@@ -58,6 +63,7 @@ public class PostService {
    * @param id 게시물 아이디
    * @return 게시물
    */
+  @Transactional(readOnly = true)
   public Post getPostById(final Long id) {
     return postRepository.findFirstById(id)
         .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_POST));
@@ -68,6 +74,7 @@ public class PostService {
    *
    * @param postId 삭제할 게시물 아이디
    */
+  @Transactional
   public void deletePostById(final Long postId) {
     postRepository.deleteById(postId);
   }
@@ -78,6 +85,7 @@ public class PostService {
    * @param updateId 업데이트 할 게시물 아이디
    * @param newTitle 업데이트 할 게시물 제목
    */
+  @Transactional
   public Post updatePostTitle(final Long updateId, final String newTitle) {
     Post post = postRepository.findFirstById(updateId)
         .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_POST));
@@ -97,10 +105,14 @@ public class PostService {
    * @param keyword 검색 키워드
    * @return 게시물 리스트
    */
+  @Transactional(readOnly = true)
   public List<Post> findPostsByKeyword(final String keyword) {
     return postRepository.findPostsByTitleContaining(keyword);
   }
 
+  /**
+   * 게시글 작성 시간 validate 로직
+   */
   private void throwIfInputTimeIntervalNotValid() {
     if (!postTimeIntervalUtil.isAvailable()) {
       throw new ApiException(ErrorCode.TOO_MANY_POST_REQUESTS);

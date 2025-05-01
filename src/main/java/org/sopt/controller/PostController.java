@@ -34,12 +34,8 @@ public class PostController {
   public ResponseEntity<ApiResponse<Post>> createPost(
       @RequestBody final CreateRequest createRequest) {
 
-    if (createRequest.title().isBlank()) {
-      throw new ApiException(ErrorCode.BLANK_POST_TITLE);
-    }
-
     return ResponseEntity.status(HttpStatus.CREATED)
-        .body(ApiResponse.success(postService.createPost(createRequest.title())));
+        .body(ApiResponse.success(postService.createPost(createRequest)));
   }
 
   @GetMapping("/posts")
