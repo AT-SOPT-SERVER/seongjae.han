@@ -1,12 +1,9 @@
 package org.sopt.controller;
 
-import java.util.List;
 import org.sopt.dto.PostRequestDto.CreateRequest;
 import org.sopt.dto.PostRequestDto.UpdateRequest;
 import org.sopt.dto.PostResponseDto;
 import org.sopt.enums.PostSearchSort;
-import org.sopt.exceptions.ApiException;
-import org.sopt.exceptions.ErrorCode;
 import org.sopt.responses.ApiResponse;
 import org.sopt.service.PostService;
 import org.springframework.http.HttpStatus;
@@ -60,7 +57,7 @@ public class PostController {
 
     return ResponseEntity.status(HttpStatus.OK)
         .body(ApiResponse.success(
-            postService.findPostsByKeywordAndWriterName(postSearchSort, keyword)));
+            postService.searchPostsByKeyword(postSearchSort, keyword)));
   }
 
   @GetMapping("/posts/{id}")

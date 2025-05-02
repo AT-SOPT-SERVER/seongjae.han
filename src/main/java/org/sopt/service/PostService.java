@@ -135,7 +135,7 @@ public class PostService {
    * @return 게시물 리스트
    */
   @Transactional(readOnly = true)
-  public PostResponseDto.ListDto findPostsByKeywordAndWriterName(
+  public PostResponseDto.ListDto searchPostsByKeyword(
       final PostSearchSort searchSort,
       final String keyword
   ) {
