@@ -1,13 +1,11 @@
 package org.sopt.service;
 
-import java.util.List;
 import org.sopt.domain.Post;
 import org.sopt.domain.User;
 import org.sopt.dto.PostRequestDto.CreateRequest;
 import org.sopt.dto.PostRequestDto.UpdateRequest;
 import org.sopt.dto.PostResponseDto;
 import org.sopt.dto.PostResponseDto.ListDto;
-import org.sopt.dto.PostResponseDto.ListDto.PostHeaderDto;
 import org.sopt.exceptions.ApiException;
 import org.sopt.exceptions.ErrorCode;
 import org.sopt.repository.PostRepository;
@@ -41,11 +39,12 @@ public class PostService {
    * @return 작성 게시글 dto
    */
   @Transactional
-  public Post createPost(Long userId, CreateRequest createRequest) {
+  public PostResponseDto.itemDto createPost(Long userId, CreateRequest createRequest) {
 
     User user = userRepository.findById(userId)
         .orElseThrow(() -> new ApiException(ErrorCode.USER_UNAUTHORIZED));
 
+    // TODO: 개발 후 원상복귀
 //    throwIfInputTimeIntervalNotValid();
 
     Post post = Post.of(createRequest.title(), createRequest.content(), user);
@@ -57,7 +56,8 @@ public class PostService {
     Post newPost = postRepository.save(post);
     postTimeIntervalUtil.startTimer();
 
-    return newPost;
+    return new PostResponseDto.itemDto(newPost.getTitle(), newPost.getContent(),
+        newPost.getUser().getName());
   }
 
   /**
@@ -80,9 +80,12 @@ public class PostService {
    * @return 게시물
    */
   @Transactional(readOnly = true)
-  public Post getPostById(final Long id) {
-    return postRepository.findFirstById(id)
+  public PostResponseDto.itemDto getPostById(final Long id) {
+    Post post = postRepository.findFirstById(id)
         .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_POST));
+
+    return new PostResponseDto.itemDto(post.getTitle(), post.getContent(),
+        post.getUser().getName());
   }
 
   /**
@@ -92,12 +95,15 @@ public class PostService {
    */
   @Transactional
   public void deletePostById(final Long postId) {
-    postRepository.deleteById(postId);
+    Post post = postRepository.findFirstById(postId)
+        .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_POST));
+
+    postRepository.deleteById(post.getId());
   }
 
 
   @Transactional
-  public Post updatePostTitle(final UpdateRequest updateRequest) {
+  public PostResponseDto.itemDto updatePostTitle(final UpdateRequest updateRequest) {
     Post post = postRepository.findFirstById(updateRequest.id())
         .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_POST));
 
@@ -107,7 +113,10 @@ public class PostService {
 
     post.update(updateRequest.title(), updateRequest.content());
 
-    return postRepository.save(post);
+    postRepository.save(post);
+
+    return new PostResponseDto.itemDto(post.getTitle(), post.getContent(),
+        post.getUser().getName());
   }
 
   /**
@@ -117,8 +126,11 @@ public class PostService {
    * @return 게시물 리스트
    */
   @Transactional(readOnly = true)
-  public List<Post> findPostsByKeyword(final String keyword) {
-    return postRepository.findPostsByTitleContaining(keyword);
+  public PostResponseDto.ListDto findPostsByKeyword(final String keyword) {
+
+    return new ListDto(postRepository.findPostsByTitleContaining(keyword).stream()
+        .map(post -> new ListDto.PostHeaderDto(post.getTitle(), post.getUser().getName()))
+        .toList());
   }
 
   /**

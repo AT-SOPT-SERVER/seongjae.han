@@ -33,7 +33,7 @@ public class PostController {
   }
 
   @PostMapping("/posts")
-  public ResponseEntity<ApiResponse<Post>> createPost(
+  public ResponseEntity<ApiResponse<PostResponseDto.itemDto>> createPost(
       @RequestHeader("userId") Long userId,
       @RequestBody final CreateRequest createRequest) {
 
@@ -51,12 +51,13 @@ public class PostController {
   }
 
   @GetMapping("/posts/search")
-  public ResponseEntity<ApiResponse<List<Post>>> searchPostsByKeyword(
+  public ResponseEntity<ApiResponse<PostResponseDto.ListDto>> searchPostsByKeyword(
       @RequestHeader(value = "userId") String userId,
       @RequestParam(value = "keyword") final String keyword) {
 
     if (keyword.isBlank()) {
-      return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(List.of()));
+      return ResponseEntity.status(HttpStatus.OK)
+          .body(ApiResponse.success(new PostResponseDto.ListDto(List.of())));
     }
 
     String trimmed = keyword.trim();
@@ -66,7 +67,7 @@ public class PostController {
   }
 
   @GetMapping("/posts/{id}")
-  public ResponseEntity<ApiResponse<Post>> getPostById(
+  public ResponseEntity<ApiResponse<PostResponseDto.itemDto>> getPostById(
       @RequestHeader(value = "userId") String userId,
       @PathVariable("id") final Long id) {
 
@@ -75,7 +76,7 @@ public class PostController {
   }
 
   @PutMapping("/posts")
-  public ResponseEntity<ApiResponse<Post>> updatePostTitle(
+  public ResponseEntity<ApiResponse<PostResponseDto.itemDto>> updatePostTitle(
       @RequestHeader(value = "userId") String userId,
       @RequestBody final UpdateRequest updateRequest) {
 
@@ -87,6 +88,8 @@ public class PostController {
   public ResponseEntity<ApiResponse<Object>> deletePostById(
       @RequestHeader(value = "userId") String userId,
       @PathVariable("postId") final Long postId) {
+
+    postService.deletePostById(postId);
 
     return ResponseEntity.status(HttpStatus.NO_CONTENT).body(ApiResponse.success());
   }
