@@ -3,12 +3,17 @@ package org.sopt.domain;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import org.sopt.enums.PostTag;
 import org.sopt.exceptions.ApiException;
 import org.sopt.exceptions.ErrorCode;
 import org.sopt.util.GraphemeUtil;
@@ -18,6 +23,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
+@Table(name = "post", indexes = @Index(name = "idx_post_tag", columnList = "tag"))
 public class Post {
 
   @Id
@@ -34,12 +40,17 @@ public class Post {
   @Column(updatable = false)
   private LocalDateTime createdAt;
 
+  @Enumerated(EnumType.STRING)
+  private PostTag tag;
+
   @LastModifiedDate
   private LocalDateTime updatedAt;
 
   @ManyToOne
   @JoinColumn(name = "user_id")
   private User user;
+
+
 
   private static final int POST_CONTENT_MAX_LENGTH = 1000;
   private static final int POST_TITLE_MAX_LENGTH = 30;

@@ -3,6 +3,7 @@ package org.sopt.repository;
 import java.util.List;
 import java.util.Optional;
 import org.sopt.domain.Post;
+import org.sopt.enums.PostTag;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -26,4 +27,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
           + " where  user.name like concat('%', :keyword , '%') "
   )
   List<Post> findPostsByWriterNameContaining(@Param("keyword") String keyword);
+
+  List<Post> findPostsByTag(PostTag postTag);
 }

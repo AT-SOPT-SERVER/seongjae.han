@@ -7,6 +7,7 @@ import org.sopt.dto.PostRequestDto.CreateRequest;
 import org.sopt.dto.PostRequestDto.UpdateRequest;
 import org.sopt.dto.PostResponseDto;
 import org.sopt.dto.PostResponseDto.ListDto;
+import org.sopt.enums.PostTag;
 import org.sopt.exceptions.ApiException;
 import org.sopt.exceptions.ErrorCode;
 import org.sopt.repository.PostRepository;
@@ -137,12 +138,8 @@ public class PostService {
       final String searchSort,
       final String keyword
   ) {
-    List<Post> posts = List.of();
-    if (searchSort.equals("postTitle")) {
-      posts = postRepository.findPostsByTitleContaining(keyword);
-    } else if (searchSort.equals("writerName")) {
-      posts = postRepository.findPostsByWriterNameContaining(keyword);
-    }
+
+    List<Post> posts = getPosts(searchSort, keyword);
 
     return new ListDto(posts.stream()
         .map(post -> new ListDto.PostHeaderDto(post.getTitle(), post.getUser().getName()))
@@ -156,5 +153,28 @@ public class PostService {
     if (!postTimeIntervalUtil.isAvailable()) {
       throw new ApiException(ErrorCode.TOO_MANY_POST_REQUESTS);
     }
+  }
+
+  /**
+   *
+   * @param searchSort
+   * @param keyword
+   * @return
+   */
+  private List<Post> getPosts(final String searchSort, final String keyword) {
+
+    return switch (searchSort) {
+      case "postTitle" -> postRepository.findPostsByTitleContaining(keyword);
+      case "writerName" -> postRepository.findPostsByWriterNameContaining(keyword);
+      case "tag" -> {
+        try {
+          PostTag tag = PostTag.valueOf(keyword);
+          yield postRepository.findPostsByTag(tag);
+        } catch (IllegalArgumentException e) {
+          throw new ApiException(ErrorCode.ILLEGAL_POST_TAG);
+        }
+      }
+      default -> List.of();
+    };
   }
 }
