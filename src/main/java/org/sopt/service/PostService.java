@@ -37,7 +37,7 @@ public class PostService {
    * 게시물 생성
    *
    * @param createRequest 게시물 생성 dto(제목, 내용)
-   * @return 작성 게시글 dto
+   * @return 게시물 아이템 dto
    */
   @Transactional
   public PostResponseDto.itemDto createPost(Long userId, CreateRequest createRequest) {
@@ -64,7 +64,7 @@ public class PostService {
   /**
    * 게시물 전체 리스트
    *
-   * @return 게시물 리스트
+   * @return 게시물 리스트 dto
    */
   @Transactional(readOnly = true)
   public PostResponseDto.ListDto getAllPosts() {
@@ -78,7 +78,7 @@ public class PostService {
    * 게시물 아이디로 검색
    *
    * @param id 게시물 아이디
-   * @return 게시물
+   * @return 게시물 response item dto
    */
   @Transactional(readOnly = true)
   public PostResponseDto.itemDto getPostById(final Long id) {
@@ -103,6 +103,12 @@ public class PostService {
   }
 
 
+  /**
+   * 게시물 수정
+   *
+   * @param updateRequest 게시물 수정 dto(게시물 아이디, 제목, 내용)
+   * @return 게시물 response item dto
+   */
   @Transactional
   public PostResponseDto.itemDto updatePostTitle(final UpdateRequest updateRequest) {
     Post post = postRepository.findFirstById(updateRequest.id())
