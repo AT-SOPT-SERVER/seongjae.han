@@ -1,5 +1,6 @@
 package org.sopt.service;
 
+import java.util.List;
 import org.sopt.domain.Post;
 import org.sopt.domain.User;
 import org.sopt.dto.PostRequestDto.CreateRequest;
@@ -126,9 +127,18 @@ public class PostService {
    * @return 게시물 리스트
    */
   @Transactional(readOnly = true)
-  public PostResponseDto.ListDto findPostsByKeyword(final String keyword) {
+  public PostResponseDto.ListDto findPostsByKeywordAndWriterName(
+      final String searchSort,
+      final String keyword
+  ) {
+    List<Post> posts = List.of();
+    if (searchSort.equals("postTitle")) {
+      posts = postRepository.findPostsByTitleContaining(keyword);
+    } else if (searchSort.equals("writerName")) {
+      posts = postRepository.findPostsByWriterNameContaining(keyword);
+    }
 
-    return new ListDto(postRepository.findPostsByTitleContaining(keyword).stream()
+    return new ListDto(posts.stream()
         .map(post -> new ListDto.PostHeaderDto(post.getTitle(), post.getUser().getName()))
         .toList());
   }

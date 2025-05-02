@@ -53,17 +53,17 @@ public class PostController {
   @GetMapping("/posts/search")
   public ResponseEntity<ApiResponse<PostResponseDto.ListDto>> searchPostsByKeyword(
       @RequestHeader(value = "userId") String userId,
-      @RequestParam(value = "keyword") final String keyword) {
+      @RequestParam(value = "keyword") final String keyword,
+      @RequestParam(value = "searchSort", defaultValue = "postTitle") final String searchSort
+  ) {
 
     if (keyword.isBlank()) {
       return ResponseEntity.status(HttpStatus.OK)
           .body(ApiResponse.success(new PostResponseDto.ListDto(List.of())));
     }
 
-    String trimmed = keyword.trim();
-
     return ResponseEntity.status(HttpStatus.OK)
-        .body(ApiResponse.success(postService.findPostsByKeyword(trimmed)));
+        .body(ApiResponse.success(postService.findPostsByKeywordAndWriterName(searchSort, keyword)));
   }
 
   @GetMapping("/posts/{id}")

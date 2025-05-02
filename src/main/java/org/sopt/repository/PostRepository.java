@@ -5,6 +5,8 @@ import java.util.Optional;
 import org.sopt.domain.Post;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -18,4 +20,10 @@ public interface PostRepository extends JpaRepository<Post, Long> {
   List<Post> findAllByOrderByCreatedAtDesc();
 
   List<Post> findPostsByTitleContaining(String keyword);
+
+  @Query(
+      value = "select post FROM Post post JOIN FETCH post.user user"
+          + " where  user.name like concat('%', :keyword , '%') "
+  )
+  List<Post> findPostsByWriterNameContaining(@Param("keyword") String keyword);
 }
