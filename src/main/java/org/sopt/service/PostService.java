@@ -7,6 +7,7 @@ import org.sopt.dto.PostRequestDto.CreateRequest;
 import org.sopt.dto.PostRequestDto.UpdateRequest;
 import org.sopt.dto.PostResponseDto;
 import org.sopt.dto.PostResponseDto.ListDto;
+import org.sopt.enums.PostSearchSort;
 import org.sopt.enums.PostTag;
 import org.sopt.exceptions.ApiException;
 import org.sopt.exceptions.ErrorCode;
@@ -135,7 +136,7 @@ public class PostService {
    */
   @Transactional(readOnly = true)
   public PostResponseDto.ListDto findPostsByKeywordAndWriterName(
-      final String searchSort,
+      final PostSearchSort searchSort,
       final String keyword
   ) {
 
@@ -161,12 +162,12 @@ public class PostService {
    * @param keyword
    * @return
    */
-  private List<Post> getPosts(final String searchSort, final String keyword) {
+  private List<Post> getPosts(final PostSearchSort searchSort, final String keyword) {
 
     return switch (searchSort) {
-      case "postTitle" -> postRepository.findPostsByTitleContaining(keyword);
-      case "writerName" -> postRepository.findPostsByWriterNameContaining(keyword);
-      case "tag" -> {
+      case POST_TITLE -> postRepository.findPostsByTitleContaining(keyword);
+      case WRITER_NAME -> postRepository.findPostsByWriterNameContaining(keyword);
+      case POST_TAG -> {
         try {
           PostTag tag = PostTag.valueOf(keyword);
           yield postRepository.findPostsByTag(tag);
@@ -174,7 +175,6 @@ public class PostService {
           throw new ApiException(ErrorCode.ILLEGAL_POST_TAG);
         }
       }
-      default -> List.of();
     };
   }
 }

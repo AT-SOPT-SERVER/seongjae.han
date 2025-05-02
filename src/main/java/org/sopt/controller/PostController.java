@@ -5,6 +5,7 @@ import org.sopt.domain.Post;
 import org.sopt.dto.PostRequestDto.CreateRequest;
 import org.sopt.dto.PostRequestDto.UpdateRequest;
 import org.sopt.dto.PostResponseDto;
+import org.sopt.enums.PostSearchSort;
 import org.sopt.exceptions.ApiException;
 import org.sopt.exceptions.ErrorCode;
 import org.sopt.responses.ApiResponse;
@@ -62,8 +63,15 @@ public class PostController {
           .body(ApiResponse.success(new PostResponseDto.ListDto(List.of())));
     }
 
-    return ResponseEntity.status(HttpStatus.OK)
-        .body(ApiResponse.success(postService.findPostsByKeywordAndWriterName(searchSort, keyword)));
+    try {
+      PostSearchSort postSearchSort = PostSearchSort.valueOf(searchSort);
+
+      return ResponseEntity.status(HttpStatus.OK)
+          .body(ApiResponse.success(
+              postService.findPostsByKeywordAndWriterName(postSearchSort, keyword)));
+    } catch (IllegalArgumentException e) {
+      throw new ApiException(ErrorCode.ILLEGAL_POST_SEARCH_SORT);
+    }
   }
 
   @GetMapping("/posts/{id}")

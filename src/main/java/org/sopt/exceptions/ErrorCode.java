@@ -13,6 +13,7 @@ public enum ErrorCode {
   TOO_LONG_POST_CONTENT(HttpStatus.BAD_REQUEST, "c4006", "게시글 내용은 1000자를 넘을 수 없습니다."),
   TOO_LONG_USER_NAME(HttpStatus.BAD_REQUEST, "c4007", "닉네임은 10자를 넘을 수 없습니다."),
   ILLEGAL_POST_TAG(HttpStatus.BAD_REQUEST, "c4008", "존재하지 않는 태그입니다."),
+  ILLEGAL_POST_SEARCH_SORT(HttpStatus.BAD_REQUEST, "c4009", "존재하지 않는 게시물 검색 종류입니다."),
   DUPLICATE_POST_TITLE(HttpStatus.CONFLICT, "c4090", "이미 존재하는 게시글 제목입니다."),
   USER_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "c4011", "유저 정보가 존재하지 않습니다."),
   NOT_FOUND_POST(HttpStatus.NOT_FOUND, "c4041", "게시글을 찾을 수 없습니다."),
