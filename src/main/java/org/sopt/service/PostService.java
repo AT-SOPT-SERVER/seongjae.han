@@ -140,6 +140,10 @@ public class PostService {
       final String keyword
   ) {
 
+    if (keyword.isBlank()) {
+      return new ListDto(List.of());
+    }
+
     List<Post> posts = getPosts(searchSort, keyword);
 
     return new ListDto(posts.stream()
@@ -156,11 +160,13 @@ public class PostService {
     }
   }
 
+
   /**
+   * 게시물 검색 종류에 따라 게시물 검색 - 게시물 검색 종류: 제목, 작성자 이름, 게시물 태그
    *
-   * @param searchSort
-   * @param keyword
-   * @return
+   * @param searchSort 게시물 종류
+   * @param keyword    검색 키워드
+   * @return 게시물 리스트
    */
   private List<Post> getPosts(final PostSearchSort searchSort, final String keyword) {
 
@@ -168,12 +174,8 @@ public class PostService {
       case POST_TITLE -> postRepository.findPostsByTitleContaining(keyword);
       case WRITER_NAME -> postRepository.findPostsByWriterNameContaining(keyword);
       case POST_TAG -> {
-        try {
-          PostTag tag = PostTag.valueOf(keyword);
-          yield postRepository.findPostsByTag(tag);
-        } catch (IllegalArgumentException e) {
-          throw new ApiException(ErrorCode.ILLEGAL_POST_TAG);
-        }
+        PostTag tag = PostTag.from(keyword);
+        yield postRepository.findPostsByTag(tag);
       }
     };
   }

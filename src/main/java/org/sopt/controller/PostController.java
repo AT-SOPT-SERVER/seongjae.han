@@ -1,7 +1,6 @@
 package org.sopt.controller;
 
 import java.util.List;
-import org.sopt.domain.Post;
 import org.sopt.dto.PostRequestDto.CreateRequest;
 import org.sopt.dto.PostRequestDto.UpdateRequest;
 import org.sopt.dto.PostResponseDto;
@@ -55,23 +54,13 @@ public class PostController {
   public ResponseEntity<ApiResponse<PostResponseDto.ListDto>> searchPostsByKeyword(
       @RequestHeader(value = "userId") String userId,
       @RequestParam(value = "keyword") final String keyword,
-      @RequestParam(value = "searchSort", defaultValue = "postTitle") final String searchSort
+      @RequestParam(value = "searchSort", defaultValue = "POST_TITLE") final String searchSort
   ) {
+    PostSearchSort postSearchSort = PostSearchSort.from(searchSort);
 
-    if (keyword.isBlank()) {
-      return ResponseEntity.status(HttpStatus.OK)
-          .body(ApiResponse.success(new PostResponseDto.ListDto(List.of())));
-    }
-
-    try {
-      PostSearchSort postSearchSort = PostSearchSort.valueOf(searchSort);
-
-      return ResponseEntity.status(HttpStatus.OK)
-          .body(ApiResponse.success(
-              postService.findPostsByKeywordAndWriterName(postSearchSort, keyword)));
-    } catch (IllegalArgumentException e) {
-      throw new ApiException(ErrorCode.ILLEGAL_POST_SEARCH_SORT);
-    }
+    return ResponseEntity.status(HttpStatus.OK)
+        .body(ApiResponse.success(
+            postService.findPostsByKeywordAndWriterName(postSearchSort, keyword)));
   }
 
   @GetMapping("/posts/{id}")
