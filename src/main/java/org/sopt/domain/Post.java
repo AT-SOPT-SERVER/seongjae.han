@@ -41,6 +41,9 @@ public class Post {
   @JoinColumn(name = "user_id")
   private User user;
 
+  private static final int POST_CONTENT_MAX_LENGTH = 1000;
+  private static final int POST_TITLE_MAX_LENGTH = 30;
+
   protected Post() {
   }
 
@@ -53,6 +56,7 @@ public class Post {
   public static Post of(String title, String content, User user) {
     throwIfFieldsBlank(title, content);
     throwIfTitleLengthLong(title);
+    throwIfContentLengthLong(content);
 
     return new Post(title, content, user);
   }
@@ -84,6 +88,7 @@ public class Post {
   public void update(final String newTitle, final String content) {
     throwIfFieldsBlank(newTitle, content);
     throwIfTitleLengthLong(title);
+    throwIfContentLengthLong(content);
 
     this.title = newTitle;
     this.content = content;
@@ -101,8 +106,15 @@ public class Post {
 
   private static void throwIfTitleLengthLong(final String title) {
     int count = GraphemeUtil.count(title);
-    if (count > 30) {
+    if (count > POST_TITLE_MAX_LENGTH) {
       throw new ApiException(ErrorCode.TOO_LONG_POST_TITLE);
+    }
+  }
+
+  private static void throwIfContentLengthLong(final String content) {
+    int count = GraphemeUtil.count(content);
+    if (count > POST_CONTENT_MAX_LENGTH) {
+      throw new ApiException(ErrorCode.TOO_LONG_POST_CONTENT);
     }
   }
 
