@@ -2,65 +2,93 @@ package org.sopt.service;
 
 import java.util.List;
 import org.sopt.domain.Post;
+import org.sopt.domain.User;
+import org.sopt.dto.PostRequestDto.CreateRequest;
+import org.sopt.dto.PostRequestDto.UpdateRequest;
+import org.sopt.dto.PostResponseDto;
+import org.sopt.dto.PostResponseDto.ListDto;
+import org.sopt.enums.PostSearchSort;
+import org.sopt.enums.PostTag;
 import org.sopt.exceptions.ApiException;
 import org.sopt.exceptions.ErrorCode;
 import org.sopt.repository.PostRepository;
+import org.sopt.repository.UserRepository;
 import org.sopt.util.TimeIntervalUtil;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 
 public class PostService {
 
   private final PostRepository postRepository;
+  private final UserRepository userRepository;
   private final TimeIntervalUtil postTimeIntervalUtil;
 
   public PostService(
-      TimeIntervalUtil postTimeIntervalUtil,
-      PostRepository postRepository
+      PostRepository postRepository,
+      UserRepository userRepository,
+      TimeIntervalUtil postTimeIntervalUtil
   ) {
-    this.postTimeIntervalUtil = postTimeIntervalUtil;
     this.postRepository = postRepository;
+    this.userRepository = userRepository;
+    this.postTimeIntervalUtil = postTimeIntervalUtil;
   }
 
   /**
    * 게시물 생성
    *
-   * @param title 제목
+   * @param createRequest 게시물 생성 dto(제목, 내용)
+   * @return 게시물 아이템 dto
    */
-  public Post createPost(String title) {
-    throwIfInputTimeIntervalNotValid();
+  @Transactional
+  public PostResponseDto.itemDto createPost(Long userId, CreateRequest createRequest) {
 
-    Post post = new Post(title);
-    if (postRepository.existsByTitle(title)) {
+    User user = userRepository.findById(userId)
+        .orElseThrow(() -> new ApiException(ErrorCode.USER_UNAUTHORIZED));
+
+    // TODO: 개발 후 원상복귀
+//    throwIfInputTimeIntervalNotValid();
+
+    Post post = Post.of(createRequest.title(), createRequest.content(), user);
+
+    if (postRepository.existsByTitle(post.getTitle())) {
       throw new ApiException(ErrorCode.DUPLICATE_POST_TITLE);
     }
 
     Post newPost = postRepository.save(post);
     postTimeIntervalUtil.startTimer();
 
-    return newPost;
+    return new PostResponseDto.itemDto(newPost.getTitle(), newPost.getContent(),
+        newPost.getUser().getName());
   }
 
   /**
    * 게시물 전체 리스트
    *
-   * @return 게시물 리스트
+   * @return 게시물 리스트 dto
    */
-  public List<Post> getAllPosts() {
+  @Transactional(readOnly = true)
+  public PostResponseDto.ListDto getAllPosts() {
 
-    return postRepository.findAll();
+    return new ListDto(postRepository.findAllByOrderByCreatedAtDesc().stream()
+        .map(post -> new ListDto.PostHeaderDto(post.getTitle(), post.getUser().getName()))
+        .toList());
   }
 
   /**
    * 게시물 아이디로 검색
    *
    * @param id 게시물 아이디
-   * @return 게시물
+   * @return 게시물 response item dto
    */
-  public Post getPostById(final Long id) {
-    return postRepository.findFirstById(id)
+  @Transactional(readOnly = true)
+  public PostResponseDto.itemDto getPostById(final Long id) {
+    Post post = postRepository.findFirstById(id)
         .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_POST));
+
+    return new PostResponseDto.itemDto(post.getTitle(), post.getContent(),
+        post.getUser().getName());
   }
 
   /**
@@ -68,27 +96,36 @@ public class PostService {
    *
    * @param postId 삭제할 게시물 아이디
    */
+  @Transactional
   public void deletePostById(final Long postId) {
-    postRepository.deleteById(postId);
-  }
-
-  /**
-   * 기존 게시물의 제목 update
-   *
-   * @param updateId 업데이트 할 게시물 아이디
-   * @param newTitle 업데이트 할 게시물 제목
-   */
-  public Post updatePostTitle(final Long updateId, final String newTitle) {
-    Post post = postRepository.findFirstById(updateId)
+    Post post = postRepository.findFirstById(postId)
         .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_POST));
 
-    if (postRepository.existsByTitle(newTitle)) {
+    postRepository.deleteById(post.getId());
+  }
+
+
+  /**
+   * 게시물 수정
+   *
+   * @param updateRequest 게시물 수정 dto(게시물 아이디, 제목, 내용)
+   * @return 게시물 response item dto
+   */
+  @Transactional
+  public PostResponseDto.itemDto updatePostTitle(final UpdateRequest updateRequest) {
+    Post post = postRepository.findFirstById(updateRequest.id())
+        .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_POST));
+
+    if (postRepository.existsByTitle(updateRequest.title())) {
       throw new ApiException(ErrorCode.DUPLICATE_POST_TITLE);
     }
 
-    post.updateTitle(newTitle);
+    post.update(updateRequest.title(), updateRequest.content());
 
-    return postRepository.save(post);
+    postRepository.save(post);
+
+    return new PostResponseDto.itemDto(post.getTitle(), post.getContent(),
+        post.getUser().getName());
   }
 
   /**
@@ -97,13 +134,49 @@ public class PostService {
    * @param keyword 검색 키워드
    * @return 게시물 리스트
    */
-  public List<Post> findPostsByKeyword(final String keyword) {
-    return postRepository.findPostsByTitleContaining(keyword);
+  @Transactional(readOnly = true)
+  public PostResponseDto.ListDto searchPostsByKeyword(
+      final PostSearchSort searchSort,
+      final String keyword
+  ) {
+
+    if (keyword.isBlank()) {
+      return new ListDto(List.of());
+    }
+
+    List<Post> posts = getPosts(searchSort, keyword);
+
+    return new ListDto(posts.stream()
+        .map(post -> new ListDto.PostHeaderDto(post.getTitle(), post.getUser().getName()))
+        .toList());
   }
 
+  /**
+   * 게시글 작성 시간 validate 로직
+   */
   private void throwIfInputTimeIntervalNotValid() {
     if (!postTimeIntervalUtil.isAvailable()) {
       throw new ApiException(ErrorCode.TOO_MANY_POST_REQUESTS);
     }
+  }
+
+
+  /**
+   * 게시물 검색 종류에 따라 게시물 검색 - 게시물 검색 종류: 제목, 작성자 이름, 게시물 태그
+   *
+   * @param searchSort 게시물 종류
+   * @param keyword    검색 키워드
+   * @return 게시물 리스트
+   */
+  private List<Post> getPosts(final PostSearchSort searchSort, final String keyword) {
+
+    return switch (searchSort) {
+      case POST_TITLE -> postRepository.findPostsByTitleContaining(keyword);
+      case WRITER_NAME -> postRepository.findPostsByWriterNameContaining(keyword);
+      case POST_TAG -> {
+        PostTag tag = PostTag.from(keyword);
+        yield postRepository.findPostsByTag(tag);
+      }
+    };
   }
 }
