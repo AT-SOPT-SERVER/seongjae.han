@@ -47,8 +47,7 @@ public class PostService {
     User user = userRepository.findById(userId)
         .orElseThrow(() -> new ApiException(ErrorCode.USER_UNAUTHORIZED));
 
-    // TODO: 개발 후 원상복귀
-//    throwIfInputTimeIntervalNotValid();
+    throwIfInputTimeIntervalNotValid();
 
     Post post = Post.of(createRequest.title(), createRequest.content(), user);
 
@@ -57,6 +56,7 @@ public class PostService {
     }
 
     Post newPost = postRepository.save(post);
+
     postTimeIntervalUtil.startTimer();
 
     return new PostResponseDto.itemDto(newPost.getTitle(), newPost.getContent(),
@@ -162,11 +162,11 @@ public class PostService {
 
 
   /**
-   * 게시물 검색 종류에 따라 게시물 검색 - 게시물 검색 종류: 제목, 작성자 이름, 게시물 태그
+   * 게시물을 검색하는 메서드입니다.
    *
-   * @param searchSort 게시물 종류
-   * @param keyword    검색 키워드
-   * @return 게시물 리스트
+   * @param searchSort 검색 종류 (작성자, 제목)
+   * @param keyword 검색어
+   * @return 검색된 게시물 리스트 (생성 내림차순)
    */
   private List<Post> getPosts(final PostSearchSort searchSort, final String keyword) {
 
