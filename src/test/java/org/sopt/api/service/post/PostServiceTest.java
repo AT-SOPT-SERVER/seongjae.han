@@ -5,14 +5,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.sopt.api.service.post.dto.PostRequestDto.CreateRequest;
 import org.sopt.api.service.post.dto.PostResponseDto;
 import org.sopt.domain.post.Post;
@@ -21,10 +22,8 @@ import org.sopt.domain.user.User;
 import org.sopt.domain.user.UserRepository;
 import org.sopt.global.error.exception.ApiException;
 import org.sopt.global.util.TimeIntervalUtil;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 class PostServiceTest {
 
   @InjectMocks
