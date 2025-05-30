@@ -51,8 +51,6 @@ public class Post extends BaseEntity {
   @JoinColumn(name = "user_id")
   private User user;
 
-
-
   private static final int POST_CONTENT_MAX_LENGTH = 1000;
   private static final int POST_TITLE_MAX_LENGTH = 30;
 
