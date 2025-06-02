@@ -2,7 +2,7 @@ package org.sopt.global.error;
 
 import org.sopt.global.error.exception.ApiException;
 import org.sopt.global.error.exception.ErrorCode;
-import org.sopt.global.common.response.ApiResponse;
+import org.sopt.global.response.ApiResponse;
 import org.sopt.global.util.log.LoggingUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
