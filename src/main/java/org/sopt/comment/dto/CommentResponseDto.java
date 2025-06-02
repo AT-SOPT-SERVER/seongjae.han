@@ -3,6 +3,7 @@ package org.sopt.comment.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import java.time.LocalDateTime;
+import lombok.AccessLevel;
 import lombok.Builder;
 import org.sopt.comment.domain.Comment;
 import org.sopt.comment.dto.CommentResponseDto.CommentItemDto;
@@ -11,7 +12,7 @@ import org.sopt.comment.dto.CommentResponseDto.UserDto;
 @JsonInclude(Include.NON_NULL)
 public sealed interface CommentResponseDto permits CommentItemDto, UserDto {
 
-  @Builder
+  @Builder(access = AccessLevel.PROTECTED)
   record CommentItemDto(
       Long commentId,
       Long postId,

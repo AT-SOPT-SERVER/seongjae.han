@@ -12,6 +12,7 @@ import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.sopt.post.domain.Post;
 import org.sopt.user.domain.User;
 import org.sopt.global.entity.BaseEntity;
@@ -19,6 +20,7 @@ import org.sopt.global.entity.BaseEntity;
 @Entity
 @Getter
 @Table(name = "comment")
+@NoArgsConstructor
 public class Comment extends BaseEntity {
 
   @Id
@@ -52,5 +54,11 @@ public class Comment extends BaseEntity {
         .user(user)
         .post(post)
         .build();
+  }
+
+  public void update(final String content) {
+    CommentValidator.validateCommentLength(content);
+
+    this.content = content;
   }
 }

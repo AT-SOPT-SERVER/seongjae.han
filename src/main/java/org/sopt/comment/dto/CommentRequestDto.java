@@ -3,8 +3,9 @@ package org.sopt.comment.dto;
 import lombok.AccessLevel;
 import lombok.Builder;
 import org.sopt.comment.dto.CommentRequestDto.CommentCreateRequestDto;
+import org.sopt.comment.dto.CommentRequestDto.CommentUpdateRequestDto;
 
-public sealed interface CommentRequestDto permits CommentCreateRequestDto {
+public sealed interface CommentRequestDto permits CommentCreateRequestDto, CommentUpdateRequestDto {
 
   @Builder(access = AccessLevel.PRIVATE)
   record CommentCreateRequestDto(
@@ -21,6 +22,26 @@ public sealed interface CommentRequestDto permits CommentCreateRequestDto {
       return CommentCreateRequestDto.builder()
           .userId(userId)
           .postId(postId)
+          .content(content)
+          .build();
+    }
+  }
+
+  @Builder(access = AccessLevel.PRIVATE)
+  record CommentUpdateRequestDto(
+      Long userId,
+      Long commentId,
+      String content
+  ) implements CommentRequestDto {
+
+    public static CommentUpdateRequestDto of(
+        Long userId,
+        Long commentId,
+        String content
+    ) {
+      return CommentUpdateRequestDto.builder()
+          .userId(userId)
+          .commentId(commentId)
           .content(content)
           .build();
     }

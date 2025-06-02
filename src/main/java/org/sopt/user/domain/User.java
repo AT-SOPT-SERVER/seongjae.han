@@ -8,13 +8,20 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.hibernate.Hibernate;
+import org.hibernate.cache.spi.support.AbstractReadWriteAccess.Item;
 import org.sopt.post.domain.Post;
 import org.sopt.global.entity.BaseEntity;
 import org.sopt.global.error.exception.ApiException;
 import org.sopt.global.error.exception.ErrorCode;
 import org.sopt.global.util.GraphemeUtil;
 
+@Getter
 @Entity
+@NoArgsConstructor
 public class User extends BaseEntity {
 
   @Id
@@ -28,21 +35,6 @@ public class User extends BaseEntity {
   private String email;
 
   private static final int USER_NAME_MAX_LENGTH = 10;
-
-  public Long getId() {
-    return id;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public String getEmail() {
-    return email;
-  }
-
-  protected User() {
-  }
 
   protected User(final String name, final String email) {
     this.name = name;
@@ -74,5 +66,26 @@ public class User extends BaseEntity {
     if (count > USER_NAME_MAX_LENGTH) {
       throw new ApiException(ErrorCode.TOO_LONG_USER_NAME);
     }
+  }
+
+  @Override
+  public boolean equals(final Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null) {
+      return false;
+    }
+    if (this.getClass() != o.getClass()) {
+      return false;
+    }
+
+    User user = (User) o;
+    return Objects.equals(id, user.id);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id);
   }
 }
