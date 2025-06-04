@@ -4,10 +4,11 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import org.sopt.comment.dto.CommentRequestDto.CommentCreateRequestDto;
 import org.sopt.comment.dto.CommentRequestDto.CommentDeleteRequestDto;
+import org.sopt.comment.dto.CommentRequestDto.CommentListRequestDto;
 import org.sopt.comment.dto.CommentRequestDto.CommentUpdateRequestDto;
 
-public sealed interface CommentRequestDto permits CommentCreateRequestDto, CommentDeleteRequestDto,
-    CommentUpdateRequestDto {
+public sealed interface CommentRequestDto permits CommentCreateRequestDto,
+    CommentDeleteRequestDto, CommentListRequestDto, CommentUpdateRequestDto {
 
   @Builder(access = AccessLevel.PRIVATE)
   record CommentCreateRequestDto(
@@ -63,6 +64,23 @@ public sealed interface CommentRequestDto permits CommentCreateRequestDto, Comme
           .userId(userId)
           .commentId(commentId)
           .build();
+    }
+  }
+
+  @Builder(access = AccessLevel.PRIVATE)
+  record CommentListRequestDto(
+      Long postId,
+      int page,
+      int size,
+      String sortDirection
+  ) implements CommentRequestDto {
+
+    public CommentListRequestDto(Long postId, int page, int size) {
+      this(postId, page, size, "desc");
+    }
+
+    public CommentListRequestDto(Long postId) {
+      this(postId, 0, 20, "desc");
     }
   }
 }

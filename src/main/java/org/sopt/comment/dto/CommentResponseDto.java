@@ -3,14 +3,16 @@ package org.sopt.comment.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import org.sopt.comment.domain.Comment;
 import org.sopt.comment.dto.CommentResponseDto.CommentItemDto;
+import org.sopt.comment.dto.CommentResponseDto.CommentListDto;
 import org.sopt.comment.dto.CommentResponseDto.UserDto;
 
 @JsonInclude(Include.NON_NULL)
-public sealed interface CommentResponseDto permits CommentItemDto, UserDto {
+public sealed interface CommentResponseDto permits CommentListDto, CommentItemDto, UserDto {
 
   @Builder(access = AccessLevel.PROTECTED)
   record CommentItemDto(
@@ -39,6 +41,19 @@ public sealed interface CommentResponseDto permits CommentItemDto, UserDto {
 
   @Builder
   record UserDto(Long userId, String writerName) implements CommentResponseDto {
+
+  }
+
+  @Builder
+  record CommentListDto(
+      List<CommentItemDto> comments,
+      long totalElements,
+      int totalPages,
+      int currentPage,
+      int pageSize,
+      boolean hasNext,
+      boolean hasPrevious
+  ) implements CommentResponseDto {
 
   }
 }

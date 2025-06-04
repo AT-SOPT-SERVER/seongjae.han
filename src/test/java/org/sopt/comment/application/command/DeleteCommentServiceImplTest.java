@@ -15,7 +15,6 @@ import org.sopt.comment.application.reader.CommentReader;
 import org.sopt.comment.application.writer.CommentWriter;
 import org.sopt.comment.domain.Comment;
 import org.sopt.comment.dto.CommentRequestDto.CommentDeleteRequestDto;
-import org.sopt.comment.dto.CommentRequestDto.CommentUpdateRequestDto;
 import org.sopt.global.error.exception.ApiException;
 import org.sopt.global.error.exception.ErrorCode;
 import org.sopt.post.domain.Post;
