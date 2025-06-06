@@ -1,4 +1,4 @@
-package org.sopt.post.api;
+package org.sopt.post.application.query;
 
 import org.sopt.global.error.exception.ApiException;
 import org.sopt.global.error.exception.ErrorCode;

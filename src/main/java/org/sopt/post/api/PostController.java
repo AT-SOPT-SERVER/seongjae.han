@@ -7,6 +7,8 @@ import org.sopt.post.application.command.DeletePostService;
 import org.sopt.post.application.command.UpdatePostService;
 import org.sopt.post.application.query.GetAllPostsService;
 import org.sopt.post.application.query.GetPostByIdService;
+import org.sopt.post.application.query.PostSearchSort;
+import org.sopt.post.application.query.SearchPostsService;
 import org.sopt.post.dto.PostServiceRequestDto.CreatePostServiceRequest;
 import org.sopt.post.dto.PostServiceRequestDto.UpdatePostServiceRequest;
 import org.sopt.global.response.ApiResponse;
@@ -36,6 +38,7 @@ public class PostController {
   private final PostApiService postApiService;
   private final DeletePostService deletePostService;
   private final GetAllPostsService getAllPostsService;
+  private final SearchPostsService searchPostsService;
 
   @PostMapping
   public ResponseEntity<ApiResponse<PostItemServiceResponse>> createPost(
@@ -76,7 +79,7 @@ public class PostController {
 
   @GetMapping("/search")
   public ResponseEntity<ApiResponse<PostListServiceResponse>> searchPostsByKeyword(
-      @RequestHeader(value = "userId") String userId,
+      @RequestHeader(value = "userId") Long userId,
       @RequestParam(value = "keyword") final String keyword,
       @RequestParam(value = "searchSort", defaultValue = "POST_TITLE") final String searchSort
   ) {
@@ -84,7 +87,7 @@ public class PostController {
 
     return ResponseEntity.status(HttpStatus.OK)
         .body(ApiResponse.success(
-            postApiService.searchPostsByKeyword(postSearchSort, keyword)));
+            searchPostsService.execute(userId, postSearchSort, keyword)));
   }
 
   @GetMapping("/{postId}")

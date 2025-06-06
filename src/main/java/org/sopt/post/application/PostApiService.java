@@ -2,10 +2,8 @@ package org.sopt.post.application;
 
 import java.util.List;
 import org.sopt.post.domain.Post;
-import org.sopt.post.dto.PostServiceResponseDto.PostItemServiceResponse;
-import org.sopt.post.dto.PostServiceRequestDto.UpdatePostServiceRequest;
 import org.sopt.post.dto.PostServiceResponseDto.PostListServiceResponse;
-import org.sopt.post.api.PostSearchSort;
+import org.sopt.post.application.query.PostSearchSort;
 import org.sopt.post.PostTag;
 import org.sopt.global.error.exception.ApiException;
 import org.sopt.global.error.exception.ErrorCode;
