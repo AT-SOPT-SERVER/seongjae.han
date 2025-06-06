@@ -2,8 +2,8 @@ package org.sopt.comment.application.command;
 
 import lombok.RequiredArgsConstructor;
 import org.sopt.comment.application.writer.CommentWriter;
-import org.sopt.comment.dto.CommentRequestDto.CommentCreateRequestDto;
-import org.sopt.comment.dto.CommentResponseDto.CommentItemDto;
+import org.sopt.comment.application.dto.CommentServiceRequestDto.CommentCreateServiceRequestDto;
+import org.sopt.comment.application.dto.CommentServiceResponseDto.CommentItemDto;
 import org.sopt.comment.domain.Comment;
 import org.sopt.post.application.reader.PostReader;
 import org.sopt.post.domain.Post;
@@ -20,7 +20,7 @@ public class CreateCommentServiceImpl implements CreateCommentService {
   private final CommentWriter commentWriter;
 
   @Override
-  public CommentItemDto execute(final CommentCreateRequestDto commentCreateRequestDto) {
+  public CommentItemDto execute(final CommentCreateServiceRequestDto commentCreateRequestDto) {
     final User user = userReader.getUserOrThrow(commentCreateRequestDto.userId());
     final Post post = postReader.getPostOrThrow(commentCreateRequestDto.postId());
 

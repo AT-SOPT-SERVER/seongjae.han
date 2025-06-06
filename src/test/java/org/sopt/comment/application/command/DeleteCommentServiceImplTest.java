@@ -14,7 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.sopt.comment.application.reader.CommentReader;
 import org.sopt.comment.application.writer.CommentWriter;
 import org.sopt.comment.domain.Comment;
-import org.sopt.comment.dto.CommentRequestDto.CommentDeleteRequestDto;
+import org.sopt.comment.application.dto.CommentServiceRequestDto.CommentDeleteServiceRequestDto;
 import org.sopt.global.error.exception.ApiException;
 import org.sopt.global.error.exception.ErrorCode;
 import org.sopt.post.domain.Post;
@@ -54,7 +54,7 @@ class DeleteCommentServiceImplTest {
     given(userReader.getUserOrThrow(userId)).willReturn(user);
     given(commentReader.getCommentOrThrow(commentId)).willReturn(comment);
 
-    final CommentDeleteRequestDto commentDeleteRequestDto = CommentDeleteRequestDto.of(userId,
+    final CommentDeleteServiceRequestDto commentDeleteRequestDto = CommentDeleteServiceRequestDto.of(userId,
         commentId);
 
     // When & Then
@@ -84,7 +84,7 @@ class DeleteCommentServiceImplTest {
     given(userReader.getUserOrThrow(userId))
         .willThrow(new ApiException(ErrorCode.NOT_FOUND_USER));
 
-    final CommentDeleteRequestDto commentDeleteRequestDto = CommentDeleteRequestDto.of(userId,
+    final CommentDeleteServiceRequestDto commentDeleteRequestDto = CommentDeleteServiceRequestDto.of(userId,
         commentId);
 
     // When & Then
@@ -110,7 +110,7 @@ class DeleteCommentServiceImplTest {
     given(commentReader.getCommentOrThrow(commentId))
         .willThrow(new ApiException(ErrorCode.NOT_FOUND_COMMENT));
 
-    final CommentDeleteRequestDto commentDeleteRequestDto = CommentDeleteRequestDto.of(userId,
+    final CommentDeleteServiceRequestDto commentDeleteRequestDto = CommentDeleteServiceRequestDto.of(userId,
         commentId);
 
     // When & Then
@@ -136,7 +136,7 @@ class DeleteCommentServiceImplTest {
     given(userReader.getUserOrThrow(userId)).willReturn(user);
     given(commentReader.getCommentOrThrow(commentId)).willReturn(comment);
 
-    final CommentDeleteRequestDto commentDeleteRequestDto = CommentDeleteRequestDto.of(userId,
+    final CommentDeleteServiceRequestDto commentDeleteRequestDto = CommentDeleteServiceRequestDto.of(userId,
         commentId);
 
     // When & Then

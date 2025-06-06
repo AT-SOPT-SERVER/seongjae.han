@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.sopt.comment.application.reader.CommentReader;
 import org.sopt.comment.application.writer.CommentWriter;
 import org.sopt.comment.domain.Comment;
-import org.sopt.comment.dto.CommentRequestDto.CommentDeleteRequestDto;
+import org.sopt.comment.application.dto.CommentServiceRequestDto.CommentDeleteServiceRequestDto;
 import org.sopt.global.error.exception.ApiException;
 import org.sopt.global.error.exception.ErrorCode;
 import org.sopt.user.application.reader.UserReader;
@@ -21,7 +21,7 @@ public class DeleteCommentServiceImpl implements
   private final CommentWriter commentWriter;
 
   @Override
-  public void execute(final CommentDeleteRequestDto commentDeleteRequestDto) {
+  public void execute(final CommentDeleteServiceRequestDto commentDeleteRequestDto) {
     final Comment comment = commentReader.getCommentOrThrow(commentDeleteRequestDto.commentId());
     final User user = userReader.getUserOrThrow(commentDeleteRequestDto.userId());
 

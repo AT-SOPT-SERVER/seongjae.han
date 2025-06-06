@@ -1,8 +1,8 @@
 package org.sopt.comment.application.command;
 
-import org.sopt.comment.dto.CommentRequestDto.CommentDeleteRequestDto;
+import org.sopt.comment.application.dto.CommentServiceRequestDto.CommentDeleteServiceRequestDto;
 
 public interface DeleteCommentService {
 
-  void execute(CommentDeleteRequestDto commentDeleteRequestDto);
+  void execute(CommentDeleteServiceRequestDto commentDeleteRequestDto);
 }

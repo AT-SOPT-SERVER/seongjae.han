@@ -1,11 +1,14 @@
 package org.sopt.comment.api;
 
 import lombok.RequiredArgsConstructor;
+import org.sopt.comment.api.dto.CommentRequestDto;
+import org.sopt.comment.api.dto.CommentRequestDto.CommentListRequestDto;
+import org.sopt.comment.api.dto.CommentRequestDto.CommentUpdateRequestDto;
+import org.sopt.comment.api.dto.CommentResponseDto.CommentItemDto;
+import org.sopt.comment.api.dto.CommentResponseDto.CommentListDto;
 import org.sopt.comment.application.command.CreateCommentService;
 import org.sopt.comment.application.command.UpdateCommentService;
-import org.sopt.comment.dto.CommentRequestDto.CommentCreateRequestDto;
-import org.sopt.comment.dto.CommentRequestDto.CommentUpdateRequestDto;
-import org.sopt.comment.dto.CommentResponseDto.CommentItemDto;
+import org.sopt.comment.application.query.GetCommentListService;
 import org.sopt.global.response.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,14 +24,15 @@ public class CommentController {
 
   private final CreateCommentService createCommentService;
   private final UpdateCommentService updateCommentService;
+  private final GetCommentListService getCommentListService;
 
   @PostMapping
   public ResponseEntity<ApiResponse<CommentItemDto>> create(
-      @RequestBody CommentCreateRequestDto commentCreateRequestDto
+      @RequestBody CommentRequestDto.CommentCreateRequestDto commentCreateRequestDto
   ) {
 
-    return ResponseEntity.ok(
-        ApiResponse.success(createCommentService.execute(commentCreateRequestDto)));
+    return ResponseEntity.ok(ApiResponse.success(CommentItemDto.from(
+        createCommentService.execute(commentCreateRequestDto.toServiceRequest()))));
   }
 
   @PutMapping
@@ -37,6 +41,16 @@ public class CommentController {
   ) {
 
     return ResponseEntity.ok(
-        ApiResponse.success(updateCommentService.execute(commentUpdateRequestDto)));
+        ApiResponse.success(CommentItemDto.from(
+            updateCommentService.execute(commentUpdateRequestDto.toServiceRequest()))));
+  }
+
+  @PostMapping("/list")
+  public ResponseEntity<ApiResponse<CommentListDto>> list(
+      @RequestBody CommentListRequestDto commentListRequestDto
+  ) {
+
+    return ResponseEntity.ok(ApiResponse.success(CommentListDto.from(
+        getCommentListService.execute(commentListRequestDto.toServiceRequest()))));
   }
 }

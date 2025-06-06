@@ -12,9 +12,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.sopt.comment.application.reader.CommentReader;
 import org.sopt.comment.domain.Comment;
-import org.sopt.comment.dto.CommentRequestDto.CommentListRequestDto;
-import org.sopt.comment.dto.CommentResponseDto.CommentItemDto;
-import org.sopt.comment.dto.CommentResponseDto.CommentListDto;
+import org.sopt.comment.application.dto.CommentServiceRequestDto.CommentListServiceRequestDto;
+import org.sopt.comment.application.dto.CommentServiceResponseDto.CommentItemDto;
+import org.sopt.comment.application.dto.CommentServiceResponseDto.CommentListDto;
 import org.sopt.global.error.exception.ApiException;
 import org.sopt.global.error.exception.ErrorCode;
 import org.sopt.post.application.reader.PostReader;
@@ -53,7 +53,7 @@ class GetCommentListServiceImplTest {
   private Comment comment1;
   private Comment comment2;
   private Comment comment3;
-  private CommentListRequestDto basicRequest;
+  private CommentListServiceRequestDto basicRequest;
   private Pageable expectedPageable;
 
   @BeforeEach
@@ -68,7 +68,7 @@ class GetCommentListServiceImplTest {
     comment2 = createComment(2L, "두 번째 댓글", user2, post, now.minusHours(1));
     comment3 = createComment(3L, "세 번째 댓글", user1, post, now);
 
-    basicRequest = new CommentListRequestDto(1L, 0, 20, "asc");
+    basicRequest = new CommentListServiceRequestDto(1L, 0, 20, "asc");
     expectedPageable = PageRequest.of(0, 20, Sort.by(Direction.ASC, "createdAt"));
   }
 
@@ -110,7 +110,7 @@ class GetCommentListServiceImplTest {
   @DisplayName("내림차순 정렬 요청시 최신 댓글부터 반환한다")
   void getCommentList_whenDescOrder_thenReturnsCommentsInDescOrder() {
     // given
-    CommentListRequestDto descRequest = new CommentListRequestDto(1L, 0, 20, "desc");
+    CommentListServiceRequestDto descRequest = new CommentListServiceRequestDto(1L, 0, 20, "desc");
     Pageable descPageable = PageRequest.of(0, 20, Sort.by(Sort.Direction.DESC, "createdAt"));
 
     List<Comment> comments = List.of(comment3, comment2, comment1); // 최신순
@@ -134,7 +134,7 @@ class GetCommentListServiceImplTest {
   @DisplayName("두 번째 페이지 조회시 올바른 페이징 정보를 반환한다")
   void getCommentList_whenSecondPage_thenReturnsCorrectPagingInfo() {
     // given
-    CommentListRequestDto secondPageRequest = new CommentListRequestDto(1L, 1, 2, "asc");
+    CommentListServiceRequestDto secondPageRequest = new CommentListServiceRequestDto(1L, 1, 2, "asc");
     Pageable secondPagePageable = PageRequest.of(1, 2, Sort.by(Sort.Direction.ASC, "createdAt"));
 
     List<Comment> secondPageComments = List.of(comment3);
@@ -180,7 +180,7 @@ class GetCommentListServiceImplTest {
   @DisplayName("존재하지 않는 게시글 조회시 예외가 발생한다")
   void getCommentList_whenPostNotFound_thenThrowsException() {
     // given
-    CommentListRequestDto invalidRequest = new CommentListRequestDto(999L, 0, 20, "asc");
+    CommentListServiceRequestDto invalidRequest = new CommentListServiceRequestDto(999L, 0, 20, "asc");
     given(postReader.getPostOrThrow(999L))
         .willThrow(new ApiException(ErrorCode.NOT_FOUND_POST));
 
@@ -210,7 +210,7 @@ class GetCommentListServiceImplTest {
   @DisplayName("기본 생성자로 생성된 요청은 기본값을 적용한다")
   void getCommentList_whenDefaultRequest_thenAppliesDefaultValues() {
     // given
-    CommentListRequestDto defaultRequest = new CommentListRequestDto(
+    CommentListServiceRequestDto defaultRequest = new CommentListServiceRequestDto(
         1L); // 기본값: page=0, size=20, sort=asc
     Pageable defaultPageable = PageRequest.of(0, 20, Sort.by(Direction.DESC, "createdAt"));
 
@@ -235,7 +235,7 @@ class GetCommentListServiceImplTest {
   @DisplayName("잘못된 정렬 방향 입력시 기본값(desc)을 적용한다")
   void getCommentList_whenInvalidSortDirection_thenAppliesDefaultSort() {
     // given
-    CommentListRequestDto invalidSortRequest = new CommentListRequestDto(1L, 0, 20, "invalid");
+    CommentListServiceRequestDto invalidSortRequest = new CommentListServiceRequestDto(1L, 0, 20, "invalid");
     Pageable defaultPageable = PageRequest.of(0, 20, Sort.by(Direction.DESC, "createdAt"));
 
     List<Comment> comments = List.of(comment1);

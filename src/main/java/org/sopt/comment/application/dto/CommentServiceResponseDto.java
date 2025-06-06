@@ -1,4 +1,4 @@
-package org.sopt.comment.dto;
+package org.sopt.comment.application.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -7,12 +7,13 @@ import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import org.sopt.comment.domain.Comment;
-import org.sopt.comment.dto.CommentResponseDto.CommentItemDto;
-import org.sopt.comment.dto.CommentResponseDto.CommentListDto;
-import org.sopt.comment.dto.CommentResponseDto.UserDto;
+import org.sopt.comment.application.dto.CommentServiceResponseDto.CommentItemDto;
+import org.sopt.comment.application.dto.CommentServiceResponseDto.CommentListDto;
+import org.sopt.comment.application.dto.CommentServiceResponseDto.UserDto;
+import org.springframework.data.domain.Page;
 
 @JsonInclude(Include.NON_NULL)
-public sealed interface CommentResponseDto permits CommentListDto, CommentItemDto, UserDto {
+public sealed interface CommentServiceResponseDto permits CommentListDto, CommentItemDto, UserDto {
 
   @Builder(access = AccessLevel.PROTECTED)
   record CommentItemDto(
@@ -22,7 +23,7 @@ public sealed interface CommentResponseDto permits CommentListDto, CommentItemDt
       String content,
       LocalDateTime createdAt,
       LocalDateTime updatedAt
-  ) implements CommentResponseDto {
+  ) implements CommentServiceResponseDto {
 
     public static CommentItemDto from(final Comment saved) {
       return CommentItemDto.builder()
@@ -40,7 +41,7 @@ public sealed interface CommentResponseDto permits CommentListDto, CommentItemDt
   }
 
   @Builder
-  record UserDto(Long userId, String writerName) implements CommentResponseDto {
+  record UserDto(Long userId, String writerName) implements CommentServiceResponseDto {
 
   }
 
@@ -53,7 +54,22 @@ public sealed interface CommentResponseDto permits CommentListDto, CommentItemDt
       int pageSize,
       boolean hasNext,
       boolean hasPrevious
-  ) implements CommentResponseDto {
+  ) implements CommentServiceResponseDto {
 
+    public static CommentListDto from(final Page<Comment> commentPage) {
+      final List<CommentItemDto> comments = commentPage.getContent().stream()
+          .map(CommentItemDto::from)
+          .toList();
+
+      return CommentListDto.builder()
+          .comments(comments)
+          .totalElements(commentPage.getTotalElements())
+          .totalPages(commentPage.getTotalPages())
+          .currentPage(commentPage.getNumber())
+          .pageSize(commentPage.getSize())
+          .hasNext(commentPage.hasNext())
+          .hasPrevious(commentPage.hasPrevious())
+          .build();
+    }
   }
 }

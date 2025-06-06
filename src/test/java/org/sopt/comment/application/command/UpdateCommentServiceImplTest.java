@@ -2,7 +2,6 @@ package org.sopt.comment.application.command;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 
 import org.junit.jupiter.api.DisplayName;
@@ -13,8 +12,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.sopt.comment.application.reader.CommentReader;
 import org.sopt.comment.domain.Comment;
-import org.sopt.comment.dto.CommentRequestDto.CommentUpdateRequestDto;
-import org.sopt.comment.dto.CommentResponseDto.CommentItemDto;
+import org.sopt.comment.application.dto.CommentServiceRequestDto.CommentUpdateServiceRequestDto;
+import org.sopt.comment.application.dto.CommentServiceResponseDto.CommentItemDto;
 import org.sopt.global.error.exception.ApiException;
 import org.sopt.global.error.exception.ErrorCode;
 import org.sopt.post.domain.Post;
@@ -52,7 +51,7 @@ class UpdateCommentServiceImplTest {
     given(userReader.getUserOrThrow(userId)).willReturn(user);
     given(commentReader.getCommentOrThrow(commentId)).willReturn(comment);
 
-    final CommentUpdateRequestDto commentUpdateRequestDto = CommentUpdateRequestDto.of(
+    final CommentUpdateServiceRequestDto commentUpdateRequestDto = CommentUpdateServiceRequestDto.of(
         userId, commentId, "b".repeat(300));
 
     // when
@@ -81,7 +80,7 @@ class UpdateCommentServiceImplTest {
 
     given(userReader.getUserOrThrow(userId)).willThrow(new ApiException(ErrorCode.NOT_FOUND_USER));
 
-    final CommentUpdateRequestDto commentUpdateRequestDto = CommentUpdateRequestDto.of(
+    final CommentUpdateServiceRequestDto commentUpdateRequestDto = CommentUpdateServiceRequestDto.of(
         userId, commentId, "b".repeat(300));
 
     // when & then
@@ -108,7 +107,7 @@ class UpdateCommentServiceImplTest {
     given(commentReader.getCommentOrThrow(commentId))
         .willThrow(new ApiException(ErrorCode.NOT_FOUND_COMMENT));
 
-    final CommentUpdateRequestDto commentUpdateRequestDto = CommentUpdateRequestDto.of(
+    final CommentUpdateServiceRequestDto commentUpdateRequestDto = CommentUpdateServiceRequestDto.of(
         userId, commentId, "b".repeat(300));
 
     // when & then
@@ -134,7 +133,7 @@ class UpdateCommentServiceImplTest {
     given(userReader.getUserOrThrow(userId)).willReturn(user);
     given(commentReader.getCommentOrThrow(commentId)).willReturn(comment);
 
-    final CommentUpdateRequestDto commentUpdateRequestDto = CommentUpdateRequestDto.of(
+    final CommentUpdateServiceRequestDto commentUpdateRequestDto = CommentUpdateServiceRequestDto.of(
         userId, commentId, "b".repeat(300));
 
     // when & then
@@ -160,7 +159,7 @@ class UpdateCommentServiceImplTest {
     given(userReader.getUserOrThrow(userId)).willReturn(user);
     given(commentReader.getCommentOrThrow(commentId)).willReturn(comment);
 
-    final CommentUpdateRequestDto commentUpdateRequestDto = CommentUpdateRequestDto.of(
+    final CommentUpdateServiceRequestDto commentUpdateRequestDto = CommentUpdateServiceRequestDto.of(
         userId, commentId, "b".repeat(301));
 
     // when & then

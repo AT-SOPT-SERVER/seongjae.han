@@ -15,8 +15,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.sopt.comment.application.writer.CommentWriter;
 import org.sopt.comment.domain.Comment;
-import org.sopt.comment.dto.CommentRequestDto.CommentCreateRequestDto;
-import org.sopt.comment.dto.CommentResponseDto.CommentItemDto;
+import org.sopt.comment.application.dto.CommentServiceRequestDto.CommentCreateServiceRequestDto;
+import org.sopt.comment.application.dto.CommentServiceResponseDto.CommentItemDto;
 import org.sopt.global.error.exception.ApiException;
 import org.sopt.global.error.exception.ErrorCode;
 import org.sopt.post.application.reader.PostReader;
@@ -55,7 +55,7 @@ class CreateCommentServiceImplTest {
     given(commentWriter.save(any(Comment.class))).willAnswer(
         invocationOnMock -> invocationOnMock.getArgument(0));
 
-    CommentCreateRequestDto dto = CommentCreateRequestDto.of(userId, postId, content);
+    CommentCreateServiceRequestDto dto = CommentCreateServiceRequestDto.of(userId, postId, content);
 
     // when
     final CommentItemDto result = createCommentService.execute(dto);
@@ -77,7 +77,7 @@ class CreateCommentServiceImplTest {
 
     given(userReader.getUserOrThrow(userId)).willThrow(new ApiException(ErrorCode.NOT_FOUND_USER));
 
-    CommentCreateRequestDto dto = CommentCreateRequestDto.of(userId, postId, content);
+    CommentCreateServiceRequestDto dto = CommentCreateServiceRequestDto.of(userId, postId, content);
 
     // when & then
     assertThatThrownBy(() -> createCommentService.execute(dto))
@@ -101,7 +101,7 @@ class CreateCommentServiceImplTest {
     given(userReader.getUserOrThrow(userId)).willReturn(user);
     given(postReader.getPostOrThrow(postId)).willThrow(new ApiException(ErrorCode.NOT_FOUND_POST));
 
-    CommentCreateRequestDto dto = CommentCreateRequestDto.of(userId, postId, content);
+    CommentCreateServiceRequestDto dto = CommentCreateServiceRequestDto.of(userId, postId, content);
 
     // when & then
     assertThatThrownBy(() -> createCommentService.execute(dto))
@@ -127,7 +127,7 @@ class CreateCommentServiceImplTest {
     given(userReader.getUserOrThrow(userId)).willReturn(user);
     given(postReader.getPostOrThrow(postId)).willReturn(post);
 
-    CommentCreateRequestDto dto = CommentCreateRequestDto.of(userId, postId, content);
+    CommentCreateServiceRequestDto dto = CommentCreateServiceRequestDto.of(userId, postId, content);
 
     // when & then
     assertThatThrownBy(() -> createCommentService.execute(dto))

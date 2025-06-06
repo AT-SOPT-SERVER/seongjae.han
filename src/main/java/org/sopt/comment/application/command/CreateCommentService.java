@@ -1,9 +1,9 @@
 package org.sopt.comment.application.command;
 
-import org.sopt.comment.dto.CommentRequestDto.CommentCreateRequestDto;
-import org.sopt.comment.dto.CommentResponseDto.CommentItemDto;
+import org.sopt.comment.application.dto.CommentServiceRequestDto.CommentCreateServiceRequestDto;
+import org.sopt.comment.application.dto.CommentServiceResponseDto.CommentItemDto;
 
 public interface CreateCommentService {
 
-  CommentItemDto execute(final CommentCreateRequestDto commentCreateRequestDto);
+  CommentItemDto execute(final CommentCreateServiceRequestDto commentCreateRequestDto);
 }
