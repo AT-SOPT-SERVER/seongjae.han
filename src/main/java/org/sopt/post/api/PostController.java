@@ -5,6 +5,7 @@ import org.sopt.post.application.PostApiService;
 import org.sopt.post.application.command.CreatePostService;
 import org.sopt.post.application.command.DeletePostService;
 import org.sopt.post.application.command.UpdatePostService;
+import org.sopt.post.application.query.GetAllPostsService;
 import org.sopt.post.application.query.GetPostByIdService;
 import org.sopt.post.dto.PostServiceRequestDto.CreatePostServiceRequest;
 import org.sopt.post.dto.PostServiceRequestDto.UpdatePostServiceRequest;
@@ -34,6 +35,7 @@ public class PostController {
   private final GetPostByIdService getPostByIdService;
   private final PostApiService postApiService;
   private final DeletePostService deletePostService;
+  private final GetAllPostsService getAllPostsService;
 
   @PostMapping
   public ResponseEntity<ApiResponse<PostItemServiceResponse>> createPost(
@@ -61,6 +63,15 @@ public class PostController {
     deletePostService.execute(userId, postId);
 
     return ResponseEntity.status(HttpStatus.NO_CONTENT).body(ApiResponse.success());
+  }
+
+  @GetMapping
+  public ResponseEntity<ApiResponse<PostListServiceResponse>> getAllPosts(
+      @RequestHeader(value = "userId") Long userId
+  ) {
+    return ResponseEntity.status(HttpStatus.OK)
+        .body(ApiResponse.success(
+            getAllPostsService.execute(userId)));
   }
 
   @GetMapping("/search")

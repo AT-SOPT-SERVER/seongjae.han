@@ -1,5 +1,6 @@
 package org.sopt.post.application.reader;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.sopt.global.error.exception.ApiException;
 import org.sopt.global.error.exception.ErrorCode;
@@ -22,5 +23,10 @@ public class PostReaderImpl implements PostReader{
   @Override
   public boolean existsByTitle(final String title) {
     return postRepository.existsByTitle(title);
+  }
+
+  @Override
+  public List<Post> getPosts() {
+    return postRepository.findAll();
   }
 }
