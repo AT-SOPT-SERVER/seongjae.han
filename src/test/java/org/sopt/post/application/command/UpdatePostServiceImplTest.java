@@ -4,10 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.BDDMockito.willThrow;
-import static org.mockito.Mockito.never;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,7 +18,6 @@ import org.sopt.global.error.exception.ApiException;
 import org.sopt.global.error.exception.ErrorCode;
 import org.sopt.post.application.reader.PostReader;
 import org.sopt.post.domain.Post;
-import org.sopt.post.dto.PostServiceRequestDto.CreatePostServiceRequest;
 import org.sopt.post.dto.PostServiceRequestDto.UpdatePostServiceRequest;
 import org.sopt.post.dto.PostServiceResponseDto.PostItemServiceResponse;
 import org.sopt.support.fixture.PostFixture;
