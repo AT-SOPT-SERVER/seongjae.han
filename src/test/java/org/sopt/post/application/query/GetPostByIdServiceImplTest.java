@@ -2,14 +2,12 @@ package org.sopt.post.application.query;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -17,7 +15,7 @@ import org.sopt.global.error.exception.ApiException;
 import org.sopt.global.error.exception.ErrorCode;
 import org.sopt.post.application.reader.PostReader;
 import org.sopt.post.domain.Post;
-import org.sopt.post.dto.PostServiceResponseDto.PostItemServiceResponse;
+import org.sopt.post.application.dto.PostServiceResponseDto.PostItemServiceResponse;
 import org.sopt.support.fixture.PostFixture;
 import org.sopt.support.fixture.UserFixture;
 import org.sopt.user.application.reader.UserReader;

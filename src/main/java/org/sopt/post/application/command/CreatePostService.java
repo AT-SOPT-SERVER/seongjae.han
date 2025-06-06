@@ -1,7 +1,7 @@
 package org.sopt.post.application.command;
 
-import org.sopt.post.dto.PostServiceResponseDto.PostItemServiceResponse;
-import org.sopt.post.dto.PostServiceRequestDto.CreatePostServiceRequest;
+import org.sopt.post.application.dto.PostServiceResponseDto.PostItemServiceResponse;
+import org.sopt.post.application.dto.PostServiceRequestDto.CreatePostServiceRequest;
 
 public interface CreatePostService {
 

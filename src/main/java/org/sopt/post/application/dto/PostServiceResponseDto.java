@@ -1,11 +1,11 @@
-package org.sopt.post.dto;
+package org.sopt.post.application.dto;
 
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import org.sopt.post.domain.Post;
-import org.sopt.post.dto.PostServiceResponseDto.PostItemServiceResponse;
-import org.sopt.post.dto.PostServiceResponseDto.PostListServiceResponse;
+import org.sopt.post.application.dto.PostServiceResponseDto.PostItemServiceResponse;
+import org.sopt.post.application.dto.PostServiceResponseDto.PostListServiceResponse;
 
 public sealed interface PostServiceResponseDto permits PostListServiceResponse,
     PostItemServiceResponse {
@@ -24,7 +24,7 @@ public sealed interface PostServiceResponseDto permits PostListServiceResponse,
     }
 
     @Builder(access = AccessLevel.PROTECTED)
-    public static record PostHeaderDto(String title, String writerName) {
+    public record PostHeaderDto(String title, String writerName) {
 
       public static PostHeaderDto from(Post post) {
 

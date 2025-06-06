@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.sopt.post.PostTag;
 import org.sopt.post.application.reader.PostReader;
 import org.sopt.post.domain.Post;
-import org.sopt.post.dto.PostServiceResponseDto.PostListServiceResponse;
+import org.sopt.post.application.dto.PostServiceResponseDto.PostListServiceResponse;
 import org.sopt.user.application.reader.UserReader;
 import org.sopt.user.domain.User;
 import org.springframework.stereotype.Service;

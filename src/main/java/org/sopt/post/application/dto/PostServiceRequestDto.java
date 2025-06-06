@@ -1,9 +1,9 @@
-package org.sopt.post.dto;
+package org.sopt.post.application.dto;
 
 import lombok.AccessLevel;
 import lombok.Builder;
-import org.sopt.post.dto.PostServiceRequestDto.CreatePostServiceRequest;
-import org.sopt.post.dto.PostServiceRequestDto.UpdatePostServiceRequest;
+import org.sopt.post.application.dto.PostServiceRequestDto.CreatePostServiceRequest;
+import org.sopt.post.application.dto.PostServiceRequestDto.UpdatePostServiceRequest;
 
 public sealed interface PostServiceRequestDto permits CreatePostServiceRequest,
     UpdatePostServiceRequest {

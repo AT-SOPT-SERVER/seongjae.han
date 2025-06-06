@@ -1,6 +1,6 @@
 package org.sopt.post.application.query;
 
-import org.sopt.post.dto.PostServiceResponseDto.PostItemServiceResponse;
+import org.sopt.post.application.dto.PostServiceResponseDto.PostItemServiceResponse;
 
 public interface GetPostByIdService {
 
