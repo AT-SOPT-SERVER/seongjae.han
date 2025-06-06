@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.sopt.post.application.PostApiService;
 import org.sopt.post.application.command.CreatePostService;
 import org.sopt.post.application.command.UpdatePostService;
+import org.sopt.post.application.query.GetPostByIdService;
 import org.sopt.post.dto.PostServiceRequestDto.CreatePostServiceRequest;
 import org.sopt.post.dto.PostServiceRequestDto.UpdatePostServiceRequest;
 import org.sopt.global.response.ApiResponse;
@@ -29,6 +30,7 @@ public class PostController {
 
   private final CreatePostService createPostService;
   private final UpdatePostService updatePostService;
+  private final GetPostByIdService getPostByIdService;
   private final PostApiService postApiService;
 
   @PostMapping
@@ -59,14 +61,6 @@ public class PostController {
     return ResponseEntity.status(HttpStatus.NO_CONTENT).body(ApiResponse.success());
   }
 
-  @GetMapping
-  public ResponseEntity<ApiResponse<PostListServiceResponse>> getPosts(
-      @RequestHeader(value = "userId") String userId
-  ) {
-    return ResponseEntity.status(HttpStatus.OK)
-        .body(ApiResponse.success(postApiService.getAllPosts()));
-  }
-
   @GetMapping("/search")
   public ResponseEntity<ApiResponse<PostListServiceResponse>> searchPostsByKeyword(
       @RequestHeader(value = "userId") String userId,
@@ -82,10 +76,10 @@ public class PostController {
 
   @GetMapping("/{postId}")
   public ResponseEntity<ApiResponse<PostItemServiceResponse>> getPostById(
-      @RequestHeader(value = "userId") String userId,
+      @RequestHeader(value = "userId") Long userId,
       @PathVariable("postId") final Long postId) {
 
     return ResponseEntity.status(HttpStatus.OK)
-        .body(ApiResponse.success(postApiService.getPostById(postId)));
+        .body(ApiResponse.success(getPostByIdService.execute(userId, postId)));
   }
 }

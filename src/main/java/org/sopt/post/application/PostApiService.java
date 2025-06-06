@@ -34,34 +34,6 @@ public class PostApiService {
   }
 
   /**
-   * 게시물 전체 리스트
-   *
-   * @return 게시물 리스트 dto
-   */
-  @Transactional(readOnly = true)
-  public PostListServiceResponse getAllPosts() {
-
-    return new PostListServiceResponse(postRepository.findAllByOrderByCreatedAtDesc().stream()
-        .map(post -> new PostListServiceResponse.PostHeaderDto(post.getTitle(), post.getUser().getName()))
-        .toList());
-  }
-
-  /**
-   * 게시물 아이디로 검색
-   *
-   * @param id 게시물 아이디
-   * @return 게시물 response item dto
-   */
-  @Transactional(readOnly = true)
-  public PostItemServiceResponse getPostById(final Long id) {
-    Post post = postRepository.findFirstById(id)
-        .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_POST));
-
-    return new PostItemServiceResponse(post.getTitle(), post.getContent(),
-        post.getUser().getName());
-  }
-
-  /**
    * 게시물 삭제
    *
    * @param postId 삭제할 게시물 아이디
@@ -72,30 +44,6 @@ public class PostApiService {
         .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_POST));
 
     postRepository.deleteById(post.getId());
-  }
-
-
-  /**
-   * 게시물 수정
-   *
-   * @param updateRequest 게시물 수정 dto(게시물 아이디, 제목, 내용)
-   * @return 게시물 response item dto
-   */
-  @Transactional
-  public PostItemServiceResponse updatePostTitle(final UpdatePostServiceRequest updateRequest) {
-    Post post = postRepository.findFirstById(updateRequest.postId())
-        .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_POST));
-
-    if (postRepository.existsByTitle(updateRequest.title())) {
-      throw new ApiException(ErrorCode.DUPLICATE_POST_TITLE);
-    }
-
-    post.update(updateRequest.title(), updateRequest.content());
-
-    postRepository.save(post);
-
-    return new PostItemServiceResponse(post.getTitle(), post.getContent(),
-        post.getUser().getName());
   }
 
   /**
