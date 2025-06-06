@@ -3,6 +3,7 @@ package org.sopt.post.api;
 import lombok.RequiredArgsConstructor;
 import org.sopt.post.application.PostApiService;
 import org.sopt.post.application.command.CreatePostService;
+import org.sopt.post.application.command.DeletePostService;
 import org.sopt.post.application.command.UpdatePostService;
 import org.sopt.post.application.query.GetPostByIdService;
 import org.sopt.post.dto.PostServiceRequestDto.CreatePostServiceRequest;
@@ -32,6 +33,7 @@ public class PostController {
   private final UpdatePostService updatePostService;
   private final GetPostByIdService getPostByIdService;
   private final PostApiService postApiService;
+  private final DeletePostService deletePostService;
 
   @PostMapping
   public ResponseEntity<ApiResponse<PostItemServiceResponse>> createPost(
@@ -53,10 +55,10 @@ public class PostController {
 
   @DeleteMapping("/{postId}")
   public ResponseEntity<ApiResponse<Object>> deletePostById(
-      @RequestHeader(value = "userId") String userId,
+      @RequestHeader(value = "userId") Long userId,
       @PathVariable("postId") final Long postId) {
 
-    postApiService.deletePostById(postId);
+    deletePostService.execute(userId, postId);
 
     return ResponseEntity.status(HttpStatus.NO_CONTENT).body(ApiResponse.success());
   }
