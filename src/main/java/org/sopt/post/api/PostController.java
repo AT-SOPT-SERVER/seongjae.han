@@ -1,7 +1,6 @@
 package org.sopt.post.api;
 
 import lombok.RequiredArgsConstructor;
-import org.sopt.post.application.PostApiService;
 import org.sopt.post.application.command.CreatePostService;
 import org.sopt.post.application.command.DeletePostService;
 import org.sopt.post.application.command.UpdatePostService;
@@ -35,7 +34,6 @@ public class PostController {
   private final CreatePostService createPostService;
   private final UpdatePostService updatePostService;
   private final GetPostByIdService getPostByIdService;
-  private final PostApiService postApiService;
   private final DeletePostService deletePostService;
   private final GetAllPostsService getAllPostsService;
   private final SearchPostsService searchPostsService;
