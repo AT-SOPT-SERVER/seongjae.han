@@ -2,11 +2,11 @@ package org.sopt.post.application;
 
 import java.util.List;
 import org.sopt.post.domain.Post;
+import org.sopt.post.dto.PostServiceResponseDto.itemServiceResponse;
 import org.sopt.user.domain.User;
-import org.sopt.post.dto.PostRequestDto.CreateRequest;
-import org.sopt.post.dto.PostRequestDto.UpdateRequest;
-import org.sopt.post.dto.PostResponseDto;
-import org.sopt.post.dto.PostResponseDto.ListDto;
+import org.sopt.post.dto.PostServiceRequestDto.CreateServiceRequest;
+import org.sopt.post.dto.PostServiceRequestDto.UpdateServiceRequest;
+import org.sopt.post.dto.PostServiceResponseDto.ListServiceResponse;
 import org.sopt.post.api.PostSearchSort;
 import org.sopt.post.PostTag;
 import org.sopt.global.error.exception.ApiException;
@@ -36,43 +36,15 @@ public class PostApiService {
   }
 
   /**
-   * 게시물 생성
-   *
-   * @param createRequest 게시물 생성 dto(제목, 내용)
-   * @return 게시물 아이템 dto
-   */
-  @Transactional
-  public PostResponseDto.itemDto createPost(Long userId, CreateRequest createRequest) {
-
-    User user = userRepository.findById(userId)
-        .orElseThrow(() -> new ApiException(ErrorCode.USER_UNAUTHORIZED));
-
-    throwIfInputTimeIntervalNotValid();
-
-    Post post = Post.of(createRequest.title(), createRequest.content(), user);
-
-    if (postRepository.existsByTitle(post.getTitle())) {
-      throw new ApiException(ErrorCode.DUPLICATE_POST_TITLE);
-    }
-
-    Post newPost = postRepository.save(post);
-
-    postTimeIntervalUtil.startTimer();
-
-    return new PostResponseDto.itemDto(newPost.getTitle(), newPost.getContent(),
-        newPost.getUser().getName());
-  }
-
-  /**
    * 게시물 전체 리스트
    *
    * @return 게시물 리스트 dto
    */
   @Transactional(readOnly = true)
-  public PostResponseDto.ListDto getAllPosts() {
+  public ListServiceResponse getAllPosts() {
 
-    return new ListDto(postRepository.findAllByOrderByCreatedAtDesc().stream()
-        .map(post -> new ListDto.PostHeaderDto(post.getTitle(), post.getUser().getName()))
+    return new ListServiceResponse(postRepository.findAllByOrderByCreatedAtDesc().stream()
+        .map(post -> new ListServiceResponse.PostHeaderDto(post.getTitle(), post.getUser().getName()))
         .toList());
   }
 
@@ -83,11 +55,11 @@ public class PostApiService {
    * @return 게시물 response item dto
    */
   @Transactional(readOnly = true)
-  public PostResponseDto.itemDto getPostById(final Long id) {
+  public itemServiceResponse getPostById(final Long id) {
     Post post = postRepository.findFirstById(id)
         .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_POST));
 
-    return new PostResponseDto.itemDto(post.getTitle(), post.getContent(),
+    return new itemServiceResponse(post.getTitle(), post.getContent(),
         post.getUser().getName());
   }
 
@@ -112,7 +84,7 @@ public class PostApiService {
    * @return 게시물 response item dto
    */
   @Transactional
-  public PostResponseDto.itemDto updatePostTitle(final UpdateRequest updateRequest) {
+  public itemServiceResponse updatePostTitle(final UpdateServiceRequest updateRequest) {
     Post post = postRepository.findFirstById(updateRequest.id())
         .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_POST));
 
@@ -124,7 +96,7 @@ public class PostApiService {
 
     postRepository.save(post);
 
-    return new PostResponseDto.itemDto(post.getTitle(), post.getContent(),
+    return new itemServiceResponse(post.getTitle(), post.getContent(),
         post.getUser().getName());
   }
 
@@ -135,29 +107,20 @@ public class PostApiService {
    * @return 게시물 리스트
    */
   @Transactional(readOnly = true)
-  public PostResponseDto.ListDto searchPostsByKeyword(
+  public ListServiceResponse searchPostsByKeyword(
       final PostSearchSort searchSort,
       final String keyword
   ) {
 
     if (keyword.isBlank()) {
-      return new ListDto(List.of());
+      return new ListServiceResponse(List.of());
     }
 
     List<Post> posts = getPosts(searchSort, keyword);
 
-    return new ListDto(posts.stream()
-        .map(post -> new ListDto.PostHeaderDto(post.getTitle(), post.getUser().getName()))
+    return new ListServiceResponse(posts.stream()
+        .map(post -> new ListServiceResponse.PostHeaderDto(post.getTitle(), post.getUser().getName()))
         .toList());
-  }
-
-  /**
-   * 게시글 작성 시간 validate 로직
-   */
-  private void throwIfInputTimeIntervalNotValid() {
-    if (!postTimeIntervalUtil.isAvailable()) {
-      throw new ApiException(ErrorCode.TOO_MANY_POST_REQUESTS);
-    }
   }
 
 

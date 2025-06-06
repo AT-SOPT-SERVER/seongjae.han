@@ -18,4 +18,9 @@ public class PostReaderImpl implements PostReader{
     return postRepository.findById(postId)
         .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_POST));
   }
+
+  @Override
+  public boolean existsByTitle(final String title) {
+    return postRepository.existsByTitle(title);
+  }
 }
