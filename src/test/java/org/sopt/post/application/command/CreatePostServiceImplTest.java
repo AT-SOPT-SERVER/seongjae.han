@@ -2,20 +2,17 @@ package org.sopt.post.application.command;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -24,8 +21,8 @@ import org.sopt.global.error.exception.ErrorCode;
 import org.sopt.global.util.TimeIntervalUtil;
 import org.sopt.post.application.writer.PostWriter;
 import org.sopt.post.domain.Post;
-import org.sopt.post.dto.PostServiceRequestDto.CreateServiceRequest;
-import org.sopt.post.dto.PostServiceResponseDto.itemServiceResponse;
+import org.sopt.post.dto.PostServiceRequestDto.CreatePostServiceRequest;
+import org.sopt.post.dto.PostServiceResponseDto.PostItemServiceResponse;
 import org.sopt.support.fixture.PostFixture;
 import org.sopt.support.fixture.UserFixture;
 import org.sopt.user.application.reader.UserReader;
@@ -59,7 +56,6 @@ class CreatePostServiceImplTest {
     user = UserFixture.create(1L);
     writer = UserFixture.create(2L);
     post = PostFixture.create(3L, writer);
-
   }
 
   @DisplayName("게시물 작성을 성공한다.")
@@ -76,10 +72,10 @@ class CreatePostServiceImplTest {
         .given(timeIntervalUtil).startTimer();
 
     final String content = "a".repeat(100);
-    final CreateServiceRequest request = CreateServiceRequest.of("title", content);
+    final CreatePostServiceRequest request = CreatePostServiceRequest.of("title", content);
 
     // when
-    final itemServiceResponse result = createPostService.execute(1L, request);
+    final PostItemServiceResponse result = createPostService.execute(1L, request);
 
     // then
     // String title, String content, String writerName
@@ -96,7 +92,7 @@ class CreatePostServiceImplTest {
     given(userReader.getUserOrThrow(1L)).willThrow(new ApiException(ErrorCode.NOT_FOUND_USER));
 
     final String content = "a".repeat(100);
-    final CreateServiceRequest request = CreateServiceRequest.of("title", content);
+    final CreatePostServiceRequest request = CreatePostServiceRequest.of("title", content);
 
     // when & then
     assertThatThrownBy(() -> createPostService.execute(1L, request))
@@ -115,7 +111,7 @@ class CreatePostServiceImplTest {
     given(timeIntervalUtil.isAvailable()).willReturn(false);
 
     final String content = "a".repeat(100);
-    final CreateServiceRequest request = CreateServiceRequest.of("title", content);
+    final CreatePostServiceRequest request = CreatePostServiceRequest.of("title", content);
 
     // when & then
     assertThatThrownBy(() -> createPostService.execute(1L, request))
@@ -135,7 +131,7 @@ class CreatePostServiceImplTest {
         .given(postValidator).validateDuplicateTitle(any(String.class));
 
     final String content = "a".repeat(100);
-    final CreateServiceRequest request = CreateServiceRequest.of("title", content);
+    final CreatePostServiceRequest request = CreatePostServiceRequest.of("title", content);
 
     // when & then
     assertThatThrownBy(() -> createPostService.execute(1L, request))

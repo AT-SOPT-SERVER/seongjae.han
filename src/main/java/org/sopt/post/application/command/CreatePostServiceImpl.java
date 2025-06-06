@@ -4,13 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.sopt.global.error.exception.ApiException;
 import org.sopt.global.error.exception.ErrorCode;
 import org.sopt.global.util.TimeIntervalUtil;
-import org.sopt.post.application.reader.PostReader;
 import org.sopt.post.application.writer.PostWriter;
 import org.sopt.post.domain.Post;
-import org.sopt.post.dto.PostServiceRequestDto.CreateServiceRequest;
-import org.sopt.post.dto.PostServiceResponseDto.itemServiceResponse;
+import org.sopt.post.dto.PostServiceRequestDto.CreatePostServiceRequest;
+import org.sopt.post.dto.PostServiceResponseDto.PostItemServiceResponse;
 import org.sopt.user.application.reader.UserReader;
-import org.sopt.user.application.reader.UserReaderImpl;
 import org.sopt.user.domain.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,7 +31,7 @@ public class CreatePostServiceImpl implements
    * @return 게시물 아이템 dto
    */
   @Override
-  public itemServiceResponse execute(final Long userId, final CreateServiceRequest createRequest) {
+  public PostItemServiceResponse execute(final Long userId, final CreatePostServiceRequest createRequest) {
 
     User user = userReader.getUserOrThrow(userId);
     throwIfInputTimeIntervalNotValid();
@@ -45,7 +43,7 @@ public class CreatePostServiceImpl implements
 
     timeIntervalUtil.startTimer();
 
-    return new itemServiceResponse(saved.getTitle(), saved.getContent(),
+    return new PostItemServiceResponse(saved.getTitle(), saved.getContent(),
         saved.getUser().getName());
   }
 

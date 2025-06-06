@@ -3,11 +3,12 @@ package org.sopt.post.api;
 import lombok.RequiredArgsConstructor;
 import org.sopt.post.application.PostApiService;
 import org.sopt.post.application.command.CreatePostService;
-import org.sopt.post.dto.PostServiceRequestDto.CreateServiceRequest;
-import org.sopt.post.dto.PostServiceRequestDto.UpdateServiceRequest;
+import org.sopt.post.application.command.UpdatePostService;
+import org.sopt.post.dto.PostServiceRequestDto.CreatePostServiceRequest;
+import org.sopt.post.dto.PostServiceRequestDto.UpdatePostServiceRequest;
 import org.sopt.global.response.ApiResponse;
-import org.sopt.post.dto.PostServiceResponseDto.ListServiceResponse;
-import org.sopt.post.dto.PostServiceResponseDto.itemServiceResponse;
+import org.sopt.post.dto.PostServiceResponseDto.PostListServiceResponse;
+import org.sopt.post.dto.PostServiceResponseDto.PostItemServiceResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,24 +28,25 @@ import org.springframework.web.bind.annotation.RestController;
 public class PostController {
 
   private final CreatePostService createPostService;
+  private final UpdatePostService updatePostService;
   private final PostApiService postApiService;
 
   @PostMapping
-  public ResponseEntity<ApiResponse<itemServiceResponse>> createPost(
+  public ResponseEntity<ApiResponse<PostItemServiceResponse>> createPost(
       @RequestHeader("userId") Long userId,
-      @RequestBody final CreateServiceRequest createRequest) {
+      @RequestBody final CreatePostServiceRequest createRequest) {
 
     return ResponseEntity.status(HttpStatus.CREATED)
         .body(ApiResponse.success(createPostService.execute(userId, createRequest)));
   }
 
   @PutMapping
-  public ResponseEntity<ApiResponse<itemServiceResponse>> updatePostTitle(
-      @RequestHeader(value = "userId") String userId,
-      @RequestBody final UpdateServiceRequest updateRequest) {
+  public ResponseEntity<ApiResponse<PostItemServiceResponse>> updatePostTitle(
+      @RequestHeader(value = "userId") Long userId,
+      @RequestBody final UpdatePostServiceRequest updateRequest) {
 
     return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(
-        postApiService.updatePostTitle(updateRequest)));
+        updatePostService.execute(userId, updateRequest)));
   }
 
   @DeleteMapping("/{postId}")
@@ -58,7 +60,7 @@ public class PostController {
   }
 
   @GetMapping
-  public ResponseEntity<ApiResponse<ListServiceResponse>> getPosts(
+  public ResponseEntity<ApiResponse<PostListServiceResponse>> getPosts(
       @RequestHeader(value = "userId") String userId
   ) {
     return ResponseEntity.status(HttpStatus.OK)
@@ -66,7 +68,7 @@ public class PostController {
   }
 
   @GetMapping("/search")
-  public ResponseEntity<ApiResponse<ListServiceResponse>> searchPostsByKeyword(
+  public ResponseEntity<ApiResponse<PostListServiceResponse>> searchPostsByKeyword(
       @RequestHeader(value = "userId") String userId,
       @RequestParam(value = "keyword") final String keyword,
       @RequestParam(value = "searchSort", defaultValue = "POST_TITLE") final String searchSort
@@ -79,7 +81,7 @@ public class PostController {
   }
 
   @GetMapping("/{postId}")
-  public ResponseEntity<ApiResponse<itemServiceResponse>> getPostById(
+  public ResponseEntity<ApiResponse<PostItemServiceResponse>> getPostById(
       @RequestHeader(value = "userId") String userId,
       @PathVariable("postId") final Long postId) {
 

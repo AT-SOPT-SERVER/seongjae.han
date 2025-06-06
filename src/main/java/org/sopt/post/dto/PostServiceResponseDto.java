@@ -1,18 +1,19 @@
 package org.sopt.post.dto;
 
 import java.util.List;
-import org.sopt.post.dto.PostServiceResponseDto.ListServiceResponse;
-import org.sopt.post.dto.PostServiceResponseDto.itemServiceResponse;
+import org.sopt.post.dto.PostServiceResponseDto.PostListServiceResponse;
+import org.sopt.post.dto.PostServiceResponseDto.PostItemServiceResponse;
 
-public sealed interface PostServiceResponseDto permits ListServiceResponse, itemServiceResponse {
+public sealed interface PostServiceResponseDto permits PostListServiceResponse,
+    PostItemServiceResponse {
 
-  record ListServiceResponse(List<PostHeaderDto> postHeaders) implements PostServiceResponseDto {
+  record PostListServiceResponse(List<PostHeaderDto> postHeaders) implements PostServiceResponseDto {
 
     public static record PostHeaderDto(String title, String writerName) {
     }
   }
 
-  record itemServiceResponse(String title, String content, String writerName) implements
+  record PostItemServiceResponse(String title, String content, String writerName) implements
       PostServiceResponseDto {
 
   }

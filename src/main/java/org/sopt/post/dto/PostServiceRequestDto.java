@@ -2,25 +2,36 @@ package org.sopt.post.dto;
 
 import lombok.AccessLevel;
 import lombok.Builder;
-import org.sopt.post.dto.PostServiceRequestDto.CreateServiceRequest;
-import org.sopt.post.dto.PostServiceRequestDto.UpdateServiceRequest;
+import org.sopt.post.dto.PostServiceRequestDto.CreatePostServiceRequest;
+import org.sopt.post.dto.PostServiceRequestDto.UpdatePostServiceRequest;
 
-public sealed interface PostServiceRequestDto permits CreateServiceRequest, UpdateServiceRequest {
+public sealed interface PostServiceRequestDto permits CreatePostServiceRequest,
+    UpdatePostServiceRequest {
 
   @Builder(access = AccessLevel.PROTECTED)
-  record CreateServiceRequest(String title, String content) implements PostServiceRequestDto {
+  record CreatePostServiceRequest(String title, String content) implements PostServiceRequestDto {
 
-    public static CreateServiceRequest of(String title, String content) {
+    public static CreatePostServiceRequest of(String title, String content) {
 
-      return CreateServiceRequest.builder()
+      return CreatePostServiceRequest.builder()
           .title(title)
           .content(content)
           .build();
     }
   }
 
-  record UpdateServiceRequest(Long id, String title, String content) implements
+  @Builder(access = AccessLevel.PROTECTED)
+  record UpdatePostServiceRequest(Long postId, String title, String content) implements
       PostServiceRequestDto {
+
+    public static UpdatePostServiceRequest of(Long postId, String title, String content) {
+
+      return UpdatePostServiceRequest.builder()
+          .postId(postId)
+          .title(title)
+          .content(content)
+          .build();
+    }
 
   }
 }
