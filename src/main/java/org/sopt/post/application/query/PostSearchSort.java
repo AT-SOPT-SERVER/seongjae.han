@@ -1,8 +1,10 @@
 package org.sopt.post.application.query;
 
+import lombok.Getter;
 import org.sopt.global.error.exception.ApiException;
 import org.sopt.global.error.exception.ErrorCode;
 
+@Getter
 public enum PostSearchSort {
 
   POST_TITLE("게시물 제목"),
@@ -26,7 +28,4 @@ public enum PostSearchSort {
   }
 
 
-  public String getDescription() {
-    return description;
-  }
 }

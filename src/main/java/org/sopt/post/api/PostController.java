@@ -2,6 +2,7 @@ package org.sopt.post.api;
 
 import lombok.RequiredArgsConstructor;
 import org.sopt.post.api.dto.PostRequestDto.CreatePostRequest;
+import org.sopt.post.api.dto.PostRequestDto.SearchPostListRequest;
 import org.sopt.post.api.dto.PostRequestDto.UpdatePostRequest;
 import org.sopt.post.api.dto.PostResponseDto.PostItemResponse;
 import org.sopt.post.api.dto.PostResponseDto.PostListResponse;
@@ -81,17 +82,15 @@ public class PostController {
             PostListResponse.from(getAllPostsService.execute(userId))));
   }
 
-  @GetMapping("/search")
+  @PostMapping("/search")
   public ResponseEntity<ApiResponse<PostListResponse>> searchPostsByKeyword(
       @RequestHeader(value = "userId") Long userId,
-      @RequestParam(value = "keyword") final String keyword,
-      @RequestParam(value = "searchSort", defaultValue = "POST_TITLE") final String searchSort
+      @RequestBody SearchPostListRequest searchPostListRequest
   ) {
-    PostSearchSort postSearchSort = PostSearchSort.from(searchSort);
-
     return ResponseEntity.status(HttpStatus.OK)
         .body(ApiResponse.success(
-            PostListResponse.from(searchPostsService.execute(userId, postSearchSort, keyword))));
+            PostListResponse.from(
+                searchPostsService.execute(userId, searchPostListRequest.toServiceRequest()))));
   }
 
   @GetMapping("/{postId}")

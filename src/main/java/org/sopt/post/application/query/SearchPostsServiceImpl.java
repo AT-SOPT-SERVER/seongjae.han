@@ -3,6 +3,7 @@ package org.sopt.post.application.query;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.sopt.post.PostTag;
+import org.sopt.post.application.dto.PostServiceRequestDto.SearchPostListServiceRequest;
 import org.sopt.post.application.reader.PostReader;
 import org.sopt.post.domain.Post;
 import org.sopt.post.application.dto.PostServiceResponseDto.PostListServiceResponse;
@@ -22,9 +23,12 @@ public class SearchPostsServiceImpl implements
   private final PostReader postReader;
 
   @Override
-  public PostListServiceResponse execute(final Long userId, final PostSearchSort searchSort,
-      final String keyword) {
+  public PostListServiceResponse execute(final Long userId,
+      final SearchPostListServiceRequest serviceRequest) {
     final User user = userReader.getUserOrThrow(userId);
+
+    final String keyword = serviceRequest.keyword();
+    final PostSearchSort searchSort = serviceRequest.searchSort();
 
     if (keyword.isBlank()) {
       return new PostListServiceResponse(List.of());
