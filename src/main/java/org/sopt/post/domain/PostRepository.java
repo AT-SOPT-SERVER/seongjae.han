@@ -12,13 +12,17 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
 
-  boolean existsByTitle(String title);
+  // 상세 조회 전용
+  @EntityGraph(attributePaths = {"comments", "comments.user"})
+  @Query("select p from Post p where p.id = :postId")
+  Optional<Post> findWithCommentsUsersById(@Param("postId") Long postId);
 
-  Optional<Post> findFirstById(Long id);
+  boolean existsByTitle(String title);
 
   @EntityGraph(attributePaths = {"user"})
   List<Post> findAllByOrderByCreatedAtDesc();
 
+  @EntityGraph(attributePaths = {"user"})
   List<Post> findPostsByTitleContaining(String keyword);
 
   @Query(
@@ -27,5 +31,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
   )
   List<Post> findPostsByWriterNameContaining(@Param("keyword") String keyword);
 
+  @EntityGraph(attributePaths = {"user"})
   List<Post> findPostsByTag(PostTag postTag);
 }

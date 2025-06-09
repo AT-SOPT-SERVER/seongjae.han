@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-// TODO: test 작성
 public class GetAllPostsServiceImpl implements
     GetAllPostsService {
 

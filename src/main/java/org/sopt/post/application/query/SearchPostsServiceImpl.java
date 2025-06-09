@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-// TODO: test 코드 작성
 public class SearchPostsServiceImpl implements
     SearchPostsService {
 
@@ -29,7 +28,6 @@ public class SearchPostsServiceImpl implements
 
     List<Post> posts = postReader.searchPosts(serviceRequest);
 
-    // TODO: n+1 방어
     return new PostListServiceResponse(posts.stream()
         .map(PostHeaderDto::from)
         .toList());

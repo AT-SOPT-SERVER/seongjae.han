@@ -26,15 +26,20 @@ public class PostReaderImpl implements PostReader {
   }
 
   @Override
-  public boolean existsByTitle(final String title) {
+  public Post getPostWithCommentOrThrow(final Long postId) {
 
+    return postRepository.findWithCommentsUsersById(postId)
+        .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_POST));
+  }
+
+  @Override
+  public boolean existsByTitle(final String title) {
     return postRepository.existsByTitle(title);
   }
 
   @Override
   public List<Post> getPosts() {
-
-    return postRepository.findAll();
+    return postRepository.findAllByOrderByCreatedAtDesc();
   }
 
   @Override

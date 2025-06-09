@@ -27,7 +27,7 @@ public class GetPostByIdServiceImpl implements GetPostByIdService {
   @Override
   public PostItemServiceResponse execute(final Long userId, final Long postId) {
     final User user = userReader.getUserOrThrow(userId);
-    final Post post = postReader.getPostOrThrow(postId);
+    final Post post = postReader.getPostWithCommentOrThrow(postId);
 
     return PostItemServiceResponse.from(post);
   }

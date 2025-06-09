@@ -29,7 +29,6 @@ public sealed interface PostServiceResponseDto permits PostListServiceResponse,
 
       public static PostHeaderDto from(Post post) {
 
-        // TODO: n+1 방어
         return PostHeaderDto.builder()
             .postId(post.getId())
             .title(post.getTitle())

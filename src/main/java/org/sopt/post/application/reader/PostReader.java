@@ -8,6 +8,8 @@ public interface PostReader {
 
   Post getPostOrThrow(Long postId);
 
+  Post getPostWithCommentOrThrow(Long postId);
+
   boolean existsByTitle(String title);
 
   List<Post> getPosts();
