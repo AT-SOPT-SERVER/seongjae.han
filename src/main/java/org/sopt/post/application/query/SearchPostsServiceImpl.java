@@ -2,8 +2,8 @@ package org.sopt.post.application.query;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.sopt.post.PostTag;
 import org.sopt.post.application.dto.PostServiceRequestDto.SearchPostListServiceRequest;
+import org.sopt.post.application.dto.PostServiceResponseDto.PostListServiceResponse.PostHeaderDto;
 import org.sopt.post.application.reader.PostReader;
 import org.sopt.post.domain.Post;
 import org.sopt.post.application.dto.PostServiceResponseDto.PostListServiceResponse;
@@ -31,8 +31,7 @@ public class SearchPostsServiceImpl implements
 
     // TODO: n+1 방어
     return new PostListServiceResponse(posts.stream()
-        .map(post -> new PostListServiceResponse.PostHeaderDto(post.getTitle(),
-            post.getUser().getName()))
+        .map(PostHeaderDto::from)
         .toList());
   }
 }

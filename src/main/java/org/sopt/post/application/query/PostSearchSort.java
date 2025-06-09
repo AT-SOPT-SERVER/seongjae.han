@@ -18,14 +18,4 @@ public enum PostSearchSort {
   ) {
     this.description = description;
   }
-
-  public static PostSearchSort from(final String searchSort) {
-    try {
-      return PostSearchSort.valueOf(searchSort);
-    } catch (IllegalArgumentException e) {
-      throw new ApiException(ErrorCode.ILLEGAL_POST_SEARCH_SORT);
-    }
-  }
-
-
 }

@@ -24,11 +24,13 @@ public sealed interface PostServiceResponseDto permits PostListServiceResponse,
     }
 
     @Builder(access = AccessLevel.PROTECTED)
-    public record PostHeaderDto(String title, String writerName) {
+    public record PostHeaderDto(Long postId, String title, String writerName) {
 
       public static PostHeaderDto from(Post post) {
 
+        // TODO: n+1 방어
         return PostHeaderDto.builder()
+            .postId(post.getId())
             .title(post.getTitle())
             .writerName(post.getUser().getName())
             .build();
