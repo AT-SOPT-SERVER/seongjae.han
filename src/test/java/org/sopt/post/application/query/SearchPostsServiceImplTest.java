@@ -89,7 +89,6 @@ class SearchPostsServiceImplTest {
         PostSearchSort.POST_TITLE);
 
     given(userReader.getUserOrThrow(1L)).willThrow(new ApiException(ErrorCode.NOT_FOUND_USER));
-    given(postReader.searchPosts(serviceRequest)).willReturn(List.of(post1, post2, post3));
 
     // when & then
     assertThatThrownBy(() -> searchPostsService.execute(1L, serviceRequest))
@@ -98,19 +97,20 @@ class SearchPostsServiceImplTest {
   }
 
   @Test
-  @DisplayName("유저가 존재하지 않을 경우 검색에 실패한다.")
-  void searchPosts_WhenUserNotExist_ThenFail() {
+  @DisplayName("검색 결과가 없으면 빈 리스트를 반환한다.")
+  void searchPosts_WhenNoResult_ReturnsEmptyList() {
     // given
     final SearchPostListServiceRequest serviceRequest = SearchPostListServiceRequest.of(
-        "keyword",
-        PostSearchSort.POST_TITLE);
+        "keyword", PostSearchSort.POST_TITLE);
 
-    given(userReader.getUserOrThrow(1L)).willThrow(new ApiException(ErrorCode.NOT_FOUND_USER));
-    given(postReader.searchPosts(serviceRequest)).willReturn(List.of(post1, post2, post3));
+    given(userReader.getUserOrThrow(1L)).willReturn(user);
+    given(postReader.searchPosts(serviceRequest)).willReturn(List.of());
 
-    // when & then
-    assertThatThrownBy(() -> searchPostsService.execute(1L, serviceRequest))
-        .isInstanceOf(ApiException.class)
-        .hasMessage(ErrorCode.NOT_FOUND_USER.getMessage());
+    // when
+    final PostListServiceResponse result = searchPostsService.execute(1L, serviceRequest);
+
+    // then
+    assertThat(result).isNotNull();
+    assertThat(result.postHeaders()).isEmpty();
   }
 }
