@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 public enum ErrorCode {
 
   // 400번대 (Client Error)
+  CLIENT_BAD_REQUEST(HttpStatus.BAD_REQUEST, "c4000", "옳지 않은 요청입니다."),
   BLANK_POST_TITLE(HttpStatus.BAD_REQUEST, "c4001", "제목이 비어있습니다."),
   TOO_LONG_POST_TITLE(HttpStatus.BAD_REQUEST, "c4002", "제목은 30글자를 넘을 수 없습니다."),
   BLANK_POST_CONTENT(HttpStatus.BAD_REQUEST, "c4003", "게시글 내용이 비어있습니다."),

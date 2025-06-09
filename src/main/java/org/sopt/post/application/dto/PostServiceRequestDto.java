@@ -23,7 +23,7 @@ public sealed interface PostServiceRequestDto permits CreatePostServiceRequest,
   }
 
   @Builder(access = AccessLevel.PROTECTED)
-  record UpdatePostServiceRequest(Long postId, String title, String content) implements
+  record UpdatePostServiceRequest(long postId, String title, String content) implements
       PostServiceRequestDto {
 
     public static UpdatePostServiceRequest of(Long postId, String title, String content) {

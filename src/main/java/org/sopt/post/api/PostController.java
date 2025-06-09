@@ -1,5 +1,6 @@
 package org.sopt.post.api;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.sopt.post.api.dto.PostRequestDto.CreatePostRequest;
 import org.sopt.post.api.dto.PostRequestDto.SearchPostListRequest;
@@ -11,13 +12,8 @@ import org.sopt.post.application.command.DeletePostService;
 import org.sopt.post.application.command.UpdatePostService;
 import org.sopt.post.application.query.GetAllPostsService;
 import org.sopt.post.application.query.GetPostByIdService;
-import org.sopt.post.application.query.PostSearchSort;
 import org.sopt.post.application.query.SearchPostsService;
-import org.sopt.post.application.dto.PostServiceRequestDto.CreatePostServiceRequest;
-import org.sopt.post.application.dto.PostServiceRequestDto.UpdatePostServiceRequest;
 import org.sopt.global.response.ApiResponse;
-import org.sopt.post.application.dto.PostServiceResponseDto.PostListServiceResponse;
-import org.sopt.post.application.dto.PostServiceResponseDto.PostItemServiceResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -46,7 +41,7 @@ public class PostController {
   @PostMapping
   public ResponseEntity<ApiResponse<PostItemResponse>> createPost(
       @RequestHeader("userId") Long userId,
-      @RequestBody final CreatePostRequest createRequest) {
+      @Valid @RequestBody final CreatePostRequest createRequest) {
 
     return ResponseEntity.status(HttpStatus.CREATED)
         .body(ApiResponse.success(PostItemResponse.from(
@@ -56,7 +51,7 @@ public class PostController {
   @PutMapping
   public ResponseEntity<ApiResponse<PostItemResponse>> updatePostTitle(
       @RequestHeader(value = "userId") Long userId,
-      @RequestBody final UpdatePostRequest updateRequest) {
+      @Valid @RequestBody final UpdatePostRequest updateRequest) {
 
     return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(
         PostItemResponse.from(
@@ -85,7 +80,7 @@ public class PostController {
   @PostMapping("/search")
   public ResponseEntity<ApiResponse<PostListResponse>> searchPostsByKeyword(
       @RequestHeader(value = "userId") Long userId,
-      @RequestBody SearchPostListRequest searchPostListRequest
+      @Valid @RequestBody SearchPostListRequest searchPostListRequest
   ) {
     return ResponseEntity.status(HttpStatus.OK)
         .body(ApiResponse.success(

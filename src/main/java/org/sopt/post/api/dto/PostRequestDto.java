@@ -1,5 +1,6 @@
 package org.sopt.post.api.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
 import org.sopt.post.api.dto.PostRequestDto.CreatePostRequest;
@@ -14,7 +15,9 @@ public sealed interface PostRequestDto permits CreatePostRequest, SearchPostList
     UpdatePostRequest {
 
   @Builder(access = AccessLevel.PROTECTED)
-  record CreatePostRequest(String title, String content) implements PostRequestDto {
+  record CreatePostRequest(@NotNull(message = "게시물 제목은 필수값입니다.") String title,
+                           @NotNull(message = "게시물 내용은 필수값입니다.") String content) implements
+      PostRequestDto {
 
     public CreatePostServiceRequest toServiceRequest() {
 
@@ -24,7 +27,10 @@ public sealed interface PostRequestDto permits CreatePostRequest, SearchPostList
   }
 
   @Builder(access = AccessLevel.PROTECTED)
-  record UpdatePostRequest(Long postId, String title, String content) implements PostRequestDto {
+  record UpdatePostRequest(@NotNull(message = "게시물 아이디는 필수값입니다.") Long postId,
+                           @NotNull(message = "게시물 제목은 필수값입니다.") String title,
+                           @NotNull(message = "게시물 내용은 필수값입니다.") String content) implements
+      PostRequestDto {
 
     public UpdatePostServiceRequest toServiceRequest() {
       return UpdatePostServiceRequest.of(postId(), title(), content());
@@ -33,7 +39,9 @@ public sealed interface PostRequestDto permits CreatePostRequest, SearchPostList
   }
 
   @Builder(access = AccessLevel.PROTECTED)
-  record SearchPostListRequest(String keyword, PostSearchSort searchSort) implements PostRequestDto {
+  record SearchPostListRequest(@NotNull(message = "키워드는 필수값입니다.") String keyword,
+                               @NotNull(message = "검색 종류는 필수값입니다.") PostSearchSort searchSort) implements
+      PostRequestDto {
 
     public SearchPostListServiceRequest toServiceRequest() {
       return SearchPostListServiceRequest.of(keyword(), searchSort());
