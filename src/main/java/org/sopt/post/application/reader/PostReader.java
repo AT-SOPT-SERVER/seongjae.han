@@ -2,6 +2,8 @@ package org.sopt.post.application.reader;
 
 import java.util.List;
 import org.sopt.post.PostTag;
+import org.sopt.post.application.dto.PostServiceRequestDto;
+import org.sopt.post.application.dto.PostServiceRequestDto.SearchPostListServiceRequest;
 import org.sopt.post.domain.Post;
 
 public interface PostReader {
@@ -12,9 +14,5 @@ public interface PostReader {
 
   List<Post> getPosts();
 
-  List<Post> findPostsByTitleContaining(String keyword);
-
-  List<Post> findPostsByWriterNameContaining(String keyword);
-
-  List<Post> findPostsByTag(PostTag tag);
+  List<Post> searchPosts(SearchPostListServiceRequest serviceRequest);
 }

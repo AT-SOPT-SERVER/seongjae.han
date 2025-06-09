@@ -27,38 +27,12 @@ public class SearchPostsServiceImpl implements
       final SearchPostListServiceRequest serviceRequest) {
     final User user = userReader.getUserOrThrow(userId);
 
-    final String keyword = serviceRequest.keyword();
-    final PostSearchSort searchSort = serviceRequest.searchSort();
+    List<Post> posts = postReader.searchPosts(serviceRequest);
 
-    if (keyword.isBlank()) {
-      return new PostListServiceResponse(List.of());
-    }
-
-    List<Post> posts = getPosts(searchSort, keyword);
-
+    // TODO: n+1 방어
     return new PostListServiceResponse(posts.stream()
         .map(post -> new PostListServiceResponse.PostHeaderDto(post.getTitle(),
             post.getUser().getName()))
         .toList());
   }
-
-  /**
-   * 게시물을 검색하는 메서드입니다.
-   *
-   * @param searchSort 검색 종류 (작성자, 제목)
-   * @param keyword    검색어
-   * @return 검색된 게시물 리스트 (생성 내림차순)
-   */
-  private List<Post> getPosts(final PostSearchSort searchSort, final String keyword) {
-
-    return switch (searchSort) {
-      case POST_TITLE -> postReader.findPostsByTitleContaining(keyword);
-      case WRITER_NAME -> postReader.findPostsByWriterNameContaining(keyword);
-      case POST_TAG -> {
-        PostTag tag = PostTag.from(keyword);
-        yield postReader.findPostsByTag(tag);
-      }
-    };
-  }
-
 }
