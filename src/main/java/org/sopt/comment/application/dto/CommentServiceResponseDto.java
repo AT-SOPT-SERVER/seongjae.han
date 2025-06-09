@@ -71,5 +71,14 @@ public sealed interface CommentServiceResponseDto permits CommentListDto, Commen
           .hasPrevious(commentPage.hasPrevious())
           .build();
     }
+
+    public static CommentListDto from(final List<Comment> comments) {
+
+      final List<CommentItemDto> commentList = comments.stream().map(CommentItemDto::from).toList();
+      
+      return CommentListDto.builder()
+          .comments(commentList)
+          .build();
+    }
   }
 }

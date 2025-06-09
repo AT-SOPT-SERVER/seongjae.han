@@ -43,8 +43,7 @@ public class CreatePostServiceImpl implements
 
     timeIntervalUtil.startTimer();
 
-    return new PostItemServiceResponse(saved.getTitle(), saved.getContent(),
-        saved.getUser().getName());
+    return PostItemServiceResponse.from(saved);
   }
 
   /**

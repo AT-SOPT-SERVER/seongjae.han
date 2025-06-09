@@ -32,8 +32,7 @@ public class UpdatePostServiceImpl implements
 
     post.update(updateRequest.title(), updateRequest.content());
 
-    return new PostItemServiceResponse(post.getTitle(), post.getContent(),
-        post.getUser().getName());
+    return PostItemServiceResponse.from(post);
 
   }
 
