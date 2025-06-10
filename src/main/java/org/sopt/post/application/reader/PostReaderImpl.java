@@ -6,10 +6,11 @@ import org.sopt.global.error.exception.ApiException;
 import org.sopt.global.error.exception.ErrorCode;
 import org.sopt.post.PostTag;
 import org.sopt.post.application.dto.PostServiceRequestDto.SearchPostListServiceRequest;
-import org.sopt.post.application.dto.PostServiceResponseDto.PostListServiceResponse;
 import org.sopt.post.application.query.PostSearchSort;
 import org.sopt.post.domain.Post;
 import org.sopt.post.domain.PostRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -40,6 +41,11 @@ public class PostReaderImpl implements PostReader {
   @Override
   public List<Post> getPosts() {
     return postRepository.findAllByOrderByCreatedAtDesc();
+  }
+
+  @Override
+  public Page<Post> getPosts(final Pageable pageRequest) {
+    return postRepository.findAll(pageRequest);
   }
 
   @Override

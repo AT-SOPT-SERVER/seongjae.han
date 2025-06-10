@@ -1,11 +1,18 @@
 package org.sopt.comment.application.dto;
 
+import static org.sopt.global.constants.AppConstants.DEFAULT_PAGE_SIZE;
+
 import lombok.AccessLevel;
 import lombok.Builder;
 import org.sopt.comment.application.dto.CommentServiceRequestDto.CommentCreateServiceRequestDto;
 import org.sopt.comment.application.dto.CommentServiceRequestDto.CommentDeleteServiceRequestDto;
 import org.sopt.comment.application.dto.CommentServiceRequestDto.CommentListServiceRequestDto;
 import org.sopt.comment.application.dto.CommentServiceRequestDto.CommentUpdateServiceRequestDto;
+import org.sopt.global.constants.AppConstants;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 
 public sealed interface CommentServiceRequestDto permits CommentCreateServiceRequestDto,
     CommentDeleteServiceRequestDto, CommentListServiceRequestDto, CommentUpdateServiceRequestDto {
@@ -80,7 +87,18 @@ public sealed interface CommentServiceRequestDto permits CommentCreateServiceReq
     }
 
     public CommentListServiceRequestDto(Long postId) {
-      this(postId, 0, 20, "desc");
+      this(postId, 0, DEFAULT_PAGE_SIZE, "desc");
+    }
+
+    public Pageable toPageable() {
+      Sort sort = Sort.by(Direction.DESC, "createdAt");
+
+      // 오래된 댓글부터 보고 싶은 경우
+      if ("asc".equalsIgnoreCase(sortDirection())) {
+        sort = Sort.by(Direction.ASC, "createdAt");
+      }
+
+      return PageRequest.of(page(), size(), sort);
     }
   }
 }

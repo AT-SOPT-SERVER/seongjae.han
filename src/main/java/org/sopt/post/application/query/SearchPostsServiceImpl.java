@@ -28,8 +28,6 @@ public class SearchPostsServiceImpl implements
 
     List<Post> posts = postReader.searchPosts(serviceRequest);
 
-    return new PostListServiceResponse(posts.stream()
-        .map(PostHeaderDto::from)
-        .toList());
+    return PostListServiceResponse.from(posts);
   }
 }

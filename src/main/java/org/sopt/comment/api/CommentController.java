@@ -1,5 +1,7 @@
 package org.sopt.comment.api;
 
+import static org.sopt.global.constants.AppConstants.API_PREFIX;
+
 import lombok.RequiredArgsConstructor;
 import org.sopt.comment.api.dto.CommentRequestDto;
 import org.sopt.comment.api.dto.CommentRequestDto.CommentListRequestDto;
@@ -9,6 +11,7 @@ import org.sopt.comment.api.dto.CommentResponseDto.CommentListDto;
 import org.sopt.comment.application.command.CreateCommentService;
 import org.sopt.comment.application.command.UpdateCommentService;
 import org.sopt.comment.application.query.GetCommentListService;
+import org.sopt.global.constants.AppConstants;
 import org.sopt.global.response.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("api/v1/comment")
+@RequestMapping(API_PREFIX + "/comments")
 @RequiredArgsConstructor
 public class CommentController {
 

@@ -1,5 +1,7 @@
 package org.sopt.post.api;
 
+import static org.sopt.global.constants.AppConstants.API_PREFIX;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.sopt.post.api.dto.PostRequestDto.CreatePostRequest;
@@ -10,6 +12,7 @@ import org.sopt.post.api.dto.PostResponseDto.PostListResponse;
 import org.sopt.post.application.command.CreatePostService;
 import org.sopt.post.application.command.DeletePostService;
 import org.sopt.post.application.command.UpdatePostService;
+import org.sopt.post.application.dto.PostServiceRequestDto.GetAllPostsServiceRequest;
 import org.sopt.post.application.query.GetAllPostsService;
 import org.sopt.post.application.query.GetPostByIdService;
 import org.sopt.post.application.query.SearchPostsService;
@@ -24,11 +27,12 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/posts")
+@RequestMapping(API_PREFIX + "/posts")
 public class PostController {
 
   private final CreatePostService createPostService;
@@ -70,11 +74,14 @@ public class PostController {
 
   @GetMapping
   public ResponseEntity<ApiResponse<PostListResponse>> getAllPosts(
-      @RequestHeader(value = "userId") Long userId
+      @RequestHeader(value = "userId") Long userId,
+      @RequestParam(value = "page", required = false) Integer page,
+      @RequestParam(value = "size" ,required = false) Integer size,
+      @RequestParam(value = "sort", required = false) String sort
   ) {
     return ResponseEntity.status(HttpStatus.OK)
         .body(ApiResponse.success(
-            PostListResponse.from(getAllPostsService.execute(userId))));
+            PostListResponse.from(getAllPostsService.execute(userId, GetAllPostsServiceRequest.of(page, size, sort)))));
   }
 
   @PostMapping("/search")

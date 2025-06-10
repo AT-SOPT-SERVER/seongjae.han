@@ -29,7 +29,15 @@ public sealed interface PostResponseDto permits PostItemResponse, PostListRespon
   }
 
   @Builder(access = AccessLevel.PROTECTED)
-  record PostListResponse(List<PostHeaderDto> postHeaders) implements
+  record PostListResponse(
+      List<PostHeaderDto> postHeaders,
+      long totalElements,
+      int totalPages,
+      int currentPage,
+      int pageSize,
+      boolean hasNext,
+      boolean hasPrevious
+  ) implements
       PostResponseDto {
 
     public static PostListResponse from(PostListServiceResponse postListServiceResponse) {
@@ -38,8 +46,14 @@ public sealed interface PostResponseDto permits PostItemResponse, PostListRespon
       return PostListResponse.builder().postHeaders(
           postHeaderDtos.stream()
               .map(PostHeaderDto::from)
-              .toList()
-      ).build();
+              .toList())
+          .totalElements(postListServiceResponse.totalElements())
+          .totalPages(postListServiceResponse.totalPages())
+          .currentPage(postListServiceResponse.currentPage())
+          .pageSize(postListServiceResponse.pageSize())
+          .hasNext(postListServiceResponse.hasNext())
+          .hasPrevious(postListServiceResponse.hasPrevious())
+          .build();
     }
 
     @Builder(access = AccessLevel.PROTECTED)
