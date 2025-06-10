@@ -14,13 +14,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class UpdateCommentServiceImpl implements UpdateCommentService {
 
   private final CommentReader commentReader;
   private final UserReader userReader;
 
   @Override
-  @Transactional
   public CommentItemDto execute(final CommentUpdateServiceRequestDto commentUpdateRequestDto) {
 
     final User user = userReader.getUserOrThrow(commentUpdateRequestDto.userId());

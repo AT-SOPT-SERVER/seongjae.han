@@ -8,11 +8,13 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import org.sopt.comment.api.dto.CommentResponseDto.CommentItemDto;
 import org.sopt.comment.api.dto.CommentResponseDto.CommentListDto;
+import org.sopt.comment.api.dto.CommentResponseDto.CommentPageListDto;
 import org.sopt.comment.api.dto.CommentResponseDto.UserDto;
 import org.sopt.comment.application.dto.CommentServiceResponseDto;
 
 @JsonInclude(Include.NON_NULL)
-public sealed interface CommentResponseDto permits CommentListDto, CommentItemDto, UserDto {
+public sealed interface CommentResponseDto permits CommentItemDto, CommentListDto,
+    CommentPageListDto, UserDto {
 
   @Builder(access = AccessLevel.PROTECTED)
   record CommentItemDto(
@@ -47,7 +49,7 @@ public sealed interface CommentResponseDto permits CommentListDto, CommentItemDt
   }
 
   @Builder(access = AccessLevel.PROTECTED)
-  record CommentListDto(
+  record CommentPageListDto(
       List<CommentItemDto> comments,
       long totalElements,
       int totalPages,
@@ -57,14 +59,14 @@ public sealed interface CommentResponseDto permits CommentListDto, CommentItemDt
       boolean hasPrevious
   ) implements CommentResponseDto {
 
-    public static CommentListDto from(
-        final CommentServiceResponseDto.CommentListDto commentListServiceDto) {
+    public static CommentPageListDto from(
+        final CommentServiceResponseDto.CommentPageListDto commentListServiceDto) {
 
       List<CommentItemDto> responses = commentListServiceDto.comments().stream()
           .map(CommentItemDto::from)
           .toList();
 
-      return CommentListDto.builder()
+      return CommentPageListDto.builder()
           .comments(responses)
           .totalElements(commentListServiceDto.totalElements())
           .totalPages(commentListServiceDto.totalPages())
@@ -72,6 +74,24 @@ public sealed interface CommentResponseDto permits CommentListDto, CommentItemDt
           .pageSize(commentListServiceDto.pageSize())
           .hasNext(commentListServiceDto.hasNext())
           .hasPrevious(commentListServiceDto.hasPrevious())
+          .build();
+    }
+  }
+
+  @Builder(access = AccessLevel.PROTECTED)
+  record CommentListDto(
+      List<CommentItemDto> comments
+  ) implements CommentResponseDto {
+
+    public static CommentListDto from(
+        final CommentServiceResponseDto.CommentListDto commentListServiceDto) {
+
+      List<CommentItemDto> comments = commentListServiceDto.comments().stream()
+          .map(CommentItemDto::from)
+          .toList();
+
+      return CommentListDto.builder()
+          .comments(comments)
           .build();
     }
   }

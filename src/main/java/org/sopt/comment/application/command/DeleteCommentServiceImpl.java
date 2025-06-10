@@ -10,9 +10,11 @@ import org.sopt.global.error.exception.ErrorCode;
 import org.sopt.user.application.reader.UserReader;
 import org.sopt.user.domain.User;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class DeleteCommentServiceImpl implements
     DeleteCommentService {
 

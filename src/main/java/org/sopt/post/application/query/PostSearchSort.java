@@ -1,8 +1,10 @@
-package org.sopt.post.api;
+package org.sopt.post.application.query;
 
+import lombok.Getter;
 import org.sopt.global.error.exception.ApiException;
 import org.sopt.global.error.exception.ErrorCode;
 
+@Getter
 public enum PostSearchSort {
 
   POST_TITLE("게시물 제목"),
@@ -15,18 +17,5 @@ public enum PostSearchSort {
       final String description
   ) {
     this.description = description;
-  }
-
-  public static PostSearchSort from(final String searchSort) {
-    try {
-      return PostSearchSort.valueOf(searchSort);
-    } catch (IllegalArgumentException e) {
-      throw new ApiException(ErrorCode.ILLEGAL_POST_SEARCH_SORT);
-    }
-  }
-
-
-  public String getDescription() {
-    return description;
   }
 }
