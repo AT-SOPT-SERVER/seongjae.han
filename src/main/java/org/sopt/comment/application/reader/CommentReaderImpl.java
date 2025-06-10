@@ -1,5 +1,6 @@
 package org.sopt.comment.application.reader;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.sopt.comment.domain.Comment;
 import org.sopt.comment.domain.CommentRepository;
