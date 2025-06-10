@@ -1,13 +1,14 @@
 package org.sopt.post.application.command;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
-import static org.mockito.BDDMockito.willThrow;
+import static org.mockito.BDDMockito.willDoNothing;
 
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.sopt.global.error.exception.ApiException;
 import org.sopt.global.error.exception.ErrorCode;
+import org.sopt.like.application.reader.LikeReader;
+import org.sopt.like.application.writer.LikeWriter;
 import org.sopt.post.application.reader.PostReader;
 import org.sopt.post.application.writer.PostWriter;
 import org.sopt.post.domain.Post;
@@ -39,6 +42,12 @@ class DeletePostServiceImplTest {
   @Mock
   private UserReader userReader;
 
+  @Mock
+  private LikeReader likeReader;
+
+  @Mock
+  private LikeWriter likeWriter;
+
   private User anotherUser;
   private User writer;
   private Post post;
@@ -56,6 +65,9 @@ class DeletePostServiceImplTest {
     // given
     given(userReader.getUserOrThrow(1L)).willReturn(writer);
     given(postReader.getPostOrThrow(3L)).willReturn(post);
+    given(likeReader.getByPostId(3L)).willReturn(List.of());
+    willDoNothing()
+        .given(likeWriter).deleteBatch(anyList());
 
     // when
     assertThatCode(() -> deletePostService.execute(1L, 3L))

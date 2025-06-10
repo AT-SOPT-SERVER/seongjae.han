@@ -74,7 +74,7 @@ class SearchPostsServiceImplTest {
     assertThat(result.postHeaders()).hasSize(3);
 
     assertThat(result.postHeaders())
-        .extracting("commentId")
+        .extracting("postId")
         .containsExactlyInAnyOrderElementsOf(
             List.of(3L, 4L, 5L)
         );
