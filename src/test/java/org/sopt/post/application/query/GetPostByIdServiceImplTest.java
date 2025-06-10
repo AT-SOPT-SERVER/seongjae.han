@@ -49,7 +49,7 @@ class GetPostByIdServiceImplTest {
   void getPostById_Success() {
     // given
     given(userReader.getUserOrThrow(1L)).willReturn(user);
-    given(postReader.getPostOrThrow(2L)).willReturn(post);
+    given(postReader.getPostWithCommentOrThrow(2L)).willReturn(post);
 
     // when
     final PostItemServiceResponse result = getPostByIdService.execute(1L, 2L);
@@ -78,8 +78,7 @@ class GetPostByIdServiceImplTest {
   void getPostById_WhenPostNotExist_Fail() {
     // given
     given(userReader.getUserOrThrow(1L)).willReturn(user);
-    given(postReader.getPostOrThrow(2L)).willThrow(new ApiException(ErrorCode.NOT_FOUND_POST));
-
+    given(postReader.getPostWithCommentOrThrow(2L)).willThrow(new ApiException(ErrorCode.NOT_FOUND_POST));
 
     // when & then
     assertThatThrownBy(() -> getPostByIdService.execute(1L, 2L))

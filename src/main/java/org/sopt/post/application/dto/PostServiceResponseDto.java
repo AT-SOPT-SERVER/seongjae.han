@@ -4,6 +4,7 @@ import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import org.sopt.comment.application.dto.CommentServiceResponseDto.CommentListDto;
+import org.sopt.comment.application.dto.CommentServiceResponseDto.CommentPageListDto;
 import org.sopt.post.domain.Post;
 import org.sopt.post.application.dto.PostServiceResponseDto.PostItemServiceResponse;
 import org.sopt.post.application.dto.PostServiceResponseDto.PostListServiceResponse;

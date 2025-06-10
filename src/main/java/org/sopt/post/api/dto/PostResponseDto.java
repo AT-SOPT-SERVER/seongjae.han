@@ -8,8 +8,6 @@ import org.sopt.post.api.dto.PostResponseDto.PostItemResponse;
 import org.sopt.post.api.dto.PostResponseDto.PostListResponse;
 import org.sopt.post.application.dto.PostServiceResponseDto.PostItemServiceResponse;
 import org.sopt.post.application.dto.PostServiceResponseDto.PostListServiceResponse;
-import org.sopt.post.application.dto.PostServiceResponseDto.PostListServiceResponse.PostHeaderDto;
-import org.sopt.post.domain.Post;
 
 public sealed interface PostResponseDto permits PostItemResponse, PostListResponse {
 

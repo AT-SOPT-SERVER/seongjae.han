@@ -7,11 +7,10 @@ import org.sopt.comment.api.dto.CommentRequestDto;
 import org.sopt.comment.api.dto.CommentRequestDto.CommentListRequestDto;
 import org.sopt.comment.api.dto.CommentRequestDto.CommentUpdateRequestDto;
 import org.sopt.comment.api.dto.CommentResponseDto.CommentItemDto;
-import org.sopt.comment.api.dto.CommentResponseDto.CommentListDto;
+import org.sopt.comment.api.dto.CommentResponseDto.CommentPageListDto;
 import org.sopt.comment.application.command.CreateCommentService;
 import org.sopt.comment.application.command.UpdateCommentService;
 import org.sopt.comment.application.query.GetCommentListService;
-import org.sopt.global.constants.AppConstants;
 import org.sopt.global.response.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -49,11 +48,11 @@ public class CommentController {
   }
 
   @PostMapping("/list")
-  public ResponseEntity<ApiResponse<CommentListDto>> list(
+  public ResponseEntity<ApiResponse<CommentPageListDto>> list(
       @RequestBody CommentListRequestDto commentListRequestDto
   ) {
 
-    return ResponseEntity.ok(ApiResponse.success(CommentListDto.from(
+    return ResponseEntity.ok(ApiResponse.success(CommentPageListDto.from(
         getCommentListService.execute(commentListRequestDto.toServiceRequest()))));
   }
 }

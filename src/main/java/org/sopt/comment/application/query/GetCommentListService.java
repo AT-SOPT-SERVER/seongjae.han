@@ -1,9 +1,9 @@
 package org.sopt.comment.application.query;
 
 import org.sopt.comment.application.dto.CommentServiceRequestDto.CommentListServiceRequestDto;
-import org.sopt.comment.application.dto.CommentServiceResponseDto.CommentListDto;
+import org.sopt.comment.application.dto.CommentServiceResponseDto.CommentPageListDto;
 
 public interface GetCommentListService {
 
-  public CommentListDto execute(CommentListServiceRequestDto commentListRequestDto);
+  public CommentPageListDto execute(CommentListServiceRequestDto commentListRequestDto);
 }

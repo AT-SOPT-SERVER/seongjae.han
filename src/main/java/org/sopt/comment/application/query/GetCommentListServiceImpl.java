@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.sopt.comment.application.reader.CommentReader;
 import org.sopt.comment.domain.Comment;
 import org.sopt.comment.application.dto.CommentServiceRequestDto.CommentListServiceRequestDto;
-import org.sopt.comment.application.dto.CommentServiceResponseDto.CommentListDto;
+import org.sopt.comment.application.dto.CommentServiceResponseDto.CommentPageListDto;
 import org.sopt.post.application.reader.PostReader;
 import org.sopt.post.domain.Post;
 import org.springframework.data.domain.Page;
@@ -21,7 +21,7 @@ public class GetCommentListServiceImpl implements GetCommentListService {
   private final CommentReader commentReader;
 
   @Override
-  public CommentListDto execute(final CommentListServiceRequestDto commentListRequestDto) {
+  public CommentPageListDto execute(final CommentListServiceRequestDto commentListRequestDto) {
     final Post post = postReader.getPostOrThrow(commentListRequestDto.postId());
 
     final Pageable pageRequest = commentListRequestDto.toPageable();
@@ -32,6 +32,6 @@ public class GetCommentListServiceImpl implements GetCommentListService {
     );
 
     // 최종 응답 DTO 생성
-    return CommentListDto.from(commentPage);
+    return CommentPageListDto.from(commentPage);
   }
 }

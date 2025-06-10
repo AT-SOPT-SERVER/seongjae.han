@@ -46,7 +46,7 @@ public class Post extends BaseEntity {
   private User user;
 
   @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
-  private List<Comment> comments;
+  private List<Comment> comments = List.of();
 
   protected Post() {
   }

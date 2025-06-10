@@ -6,14 +6,16 @@ import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
+import org.sopt.comment.application.dto.CommentServiceResponseDto.CommentListDto;
 import org.sopt.comment.domain.Comment;
 import org.sopt.comment.application.dto.CommentServiceResponseDto.CommentItemDto;
-import org.sopt.comment.application.dto.CommentServiceResponseDto.CommentListDto;
+import org.sopt.comment.application.dto.CommentServiceResponseDto.CommentPageListDto;
 import org.sopt.comment.application.dto.CommentServiceResponseDto.UserDto;
 import org.springframework.data.domain.Page;
 
 @JsonInclude(Include.NON_NULL)
-public sealed interface CommentServiceResponseDto permits CommentListDto, CommentItemDto, UserDto {
+public sealed interface CommentServiceResponseDto permits CommentItemDto, CommentListDto,
+    CommentPageListDto, UserDto {
 
   @Builder(access = AccessLevel.PROTECTED)
   record CommentItemDto(
@@ -46,7 +48,7 @@ public sealed interface CommentServiceResponseDto permits CommentListDto, Commen
   }
 
   @Builder
-  record CommentListDto(
+  record CommentPageListDto(
       List<CommentItemDto> comments,
       long totalElements,
       int totalPages,
@@ -56,12 +58,12 @@ public sealed interface CommentServiceResponseDto permits CommentListDto, Commen
       boolean hasPrevious
   ) implements CommentServiceResponseDto {
 
-    public static CommentListDto from(final Page<Comment> commentPage) {
+    public static CommentPageListDto from(final Page<Comment> commentPage) {
       final List<CommentItemDto> comments = commentPage.getContent().stream()
           .map(CommentItemDto::from)
           .toList();
 
-      return CommentListDto.builder()
+      return CommentPageListDto.builder()
           .comments(comments)
           .totalElements(commentPage.getTotalElements())
           .totalPages(commentPage.getTotalPages())
@@ -71,11 +73,16 @@ public sealed interface CommentServiceResponseDto permits CommentListDto, Commen
           .hasPrevious(commentPage.hasPrevious())
           .build();
     }
+  }
 
+  @Builder
+  record CommentListDto(
+      List<CommentItemDto> comments
+  ) implements CommentServiceResponseDto {
     public static CommentListDto from(final List<Comment> comments) {
 
       final List<CommentItemDto> commentList = comments.stream().map(CommentItemDto::from).toList();
-      
+
       return CommentListDto.builder()
           .comments(commentList)
           .build();

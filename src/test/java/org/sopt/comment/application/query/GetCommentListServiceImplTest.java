@@ -14,7 +14,7 @@ import org.sopt.comment.application.reader.CommentReader;
 import org.sopt.comment.domain.Comment;
 import org.sopt.comment.application.dto.CommentServiceRequestDto.CommentListServiceRequestDto;
 import org.sopt.comment.application.dto.CommentServiceResponseDto.CommentItemDto;
-import org.sopt.comment.application.dto.CommentServiceResponseDto.CommentListDto;
+import org.sopt.comment.application.dto.CommentServiceResponseDto.CommentPageListDto;
 import org.sopt.global.error.exception.ApiException;
 import org.sopt.global.error.exception.ErrorCode;
 import org.sopt.post.application.reader.PostReader;
@@ -83,7 +83,7 @@ class GetCommentListServiceImplTest {
     given(commentReader.getCommentsByPostId(1L, expectedPageable)).willReturn(commentPage);
 
     // when
-    CommentListDto result = getCommentListService.execute(basicRequest);
+    CommentPageListDto result = getCommentListService.execute(basicRequest);
 
     // then
     assertThat(result).isNotNull();
@@ -120,7 +120,7 @@ class GetCommentListServiceImplTest {
     given(commentReader.getCommentsByPostId(1L, descPageable)).willReturn(commentPage);
 
     // when
-    CommentListDto result = getCommentListService.execute(descRequest);
+    CommentPageListDto result = getCommentListService.execute(descRequest);
 
     // then
     assertThat(result.comments()).hasSize(3);
@@ -144,7 +144,7 @@ class GetCommentListServiceImplTest {
     given(commentReader.getCommentsByPostId(1L, secondPagePageable)).willReturn(commentPage);
 
     // when
-    CommentListDto result = getCommentListService.execute(secondPageRequest);
+    CommentPageListDto result = getCommentListService.execute(secondPageRequest);
 
     // then
     assertThat(result.comments()).hasSize(1);
@@ -166,7 +166,7 @@ class GetCommentListServiceImplTest {
     given(commentReader.getCommentsByPostId(1L, expectedPageable)).willReturn(emptyPage);
 
     // when
-    CommentListDto result = getCommentListService.execute(basicRequest);
+    CommentPageListDto result = getCommentListService.execute(basicRequest);
 
     // then
     assertThat(result.comments()).isEmpty();
@@ -211,8 +211,8 @@ class GetCommentListServiceImplTest {
   void getCommentList_whenDefaultRequest_thenAppliesDefaultValues() {
     // given
     CommentListServiceRequestDto defaultRequest = new CommentListServiceRequestDto(
-        1L); // 기본값: page=0, size=20, sort=asc
-    Pageable defaultPageable = PageRequest.of(0, 20, Sort.by(Direction.DESC, "createdAt"));
+        1L); // 기본값: page=0, size=10, sort=asc
+    Pageable defaultPageable = PageRequest.of(0, 10, Sort.by(Direction.DESC, "createdAt"));
 
     List<Comment> comments = List.of(comment1);
     Page<Comment> commentPage = new PageImpl<>(comments, defaultPageable, 1);
@@ -221,12 +221,12 @@ class GetCommentListServiceImplTest {
     given(commentReader.getCommentsByPostId(1L, defaultPageable)).willReturn(commentPage);
 
     // when
-    CommentListDto result = getCommentListService.execute(defaultRequest);
+    CommentPageListDto result = getCommentListService.execute(defaultRequest);
 
     // then
     assertThat(result).isNotNull();
     assertThat(result.currentPage()).isEqualTo(0);
-    assertThat(result.pageSize()).isEqualTo(20);
+    assertThat(result.pageSize()).isEqualTo(10);
 
     then(commentReader).should().getCommentsByPostId(1L, defaultPageable);
   }
@@ -245,7 +245,7 @@ class GetCommentListServiceImplTest {
     given(commentReader.getCommentsByPostId(1L, defaultPageable)).willReturn(commentPage);
 
     // when
-    CommentListDto result = getCommentListService.execute(invalidSortRequest);
+    CommentPageListDto result = getCommentListService.execute(invalidSortRequest);
 
     // then
     assertThat(result).isNotNull();
