@@ -17,6 +17,7 @@ public enum ErrorCode {
   ILLEGAL_POST_TAG(HttpStatus.BAD_REQUEST, "c4008", "존재하지 않는 태그입니다."),
   ILLEGAL_POST_SEARCH_SORT(HttpStatus.BAD_REQUEST, "c4009", "존재하지 않는 게시물 검색 종류입니다."),
   DUPLICATE_POST_TITLE(HttpStatus.CONFLICT, "c4090", "이미 존재하는 게시글 제목입니다."),
+  POST_LIKE_ALREADY_EXIST(HttpStatus.CONFLICT, "c4091", "이미 좋아요가 눌러진 게시글입니다."),
   USER_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "c4011", "유저 정보가 존재하지 않습니다."),
   USER_NOT_PERMITTED(HttpStatus.FORBIDDEN, "c4031", "허용되지 않은 액션입니다."),
   NOT_FOUND_POST(HttpStatus.NOT_FOUND, "c4041", "게시글을 찾을 수 없습니다."),

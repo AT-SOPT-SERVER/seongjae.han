@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum LikeTargetType {
+public enum TargetType {
 
   POST("게시물"), COMMENT("댓글");
 
