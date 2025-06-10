@@ -13,6 +13,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
 import org.sopt.comment.domain.Comment;
@@ -45,8 +46,8 @@ public class Post extends BaseEntity {
   @JoinColumn(name = "user_id")
   private User user;
 
-  @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
-  private List<Comment> comments = List.of();
+  @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, orphanRemoval = true)
+  private List<Comment> comments = new ArrayList<>();
 
   protected Post() {
   }
@@ -72,5 +73,9 @@ public class Post extends BaseEntity {
 
     this.title = newTitle;
     this.content = content;
+  }
+
+  public void clearAllComments() {
+    this.comments.clear();
   }
 }

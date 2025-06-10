@@ -26,6 +26,7 @@ public class DeletePostServiceImpl implements DeletePostService {
     final Post post = postReader.getPostOrThrow(postId);
 
     validateUserPostOwnership(user, post);
+    post.clearAllComments();
 
     postWriter.delete(post);
   }
