@@ -1,11 +1,8 @@
 package org.sopt.post.application.dto;
 
-import static org.sopt.global.constants.AppConstants.DEFAULT_PAGE_SIZE;
-
-import java.util.Optional;
 import lombok.AccessLevel;
 import lombok.Builder;
-import org.sopt.global.constants.AppConstants;
+import org.sopt.global.util.PaginationUtils;
 import org.sopt.post.application.dto.PostServiceRequestDto.CreatePostServiceRequest;
 import org.sopt.post.application.dto.PostServiceRequestDto.GetAllPostsServiceRequest;
 import org.sopt.post.application.dto.PostServiceRequestDto.SearchPostListServiceRequest;
@@ -47,15 +44,37 @@ public sealed interface PostServiceRequestDto permits CreatePostServiceRequest,
   }
 
   @Builder(access = AccessLevel.PROTECTED)
-  record SearchPostListServiceRequest(String keyword, PostSearchSort searchSort) implements
+  record SearchPostListServiceRequest(
+      int page,
+      int size,
+      String sortDirection,
+      String keyword,
+      PostSearchSort searchSort
+  ) implements
       PostServiceRequestDto {
 
-    public static SearchPostListServiceRequest of(String keyword, PostSearchSort searchSort) {
+    public static SearchPostListServiceRequest of(Integer page, Integer size, String sortDirection,
+        String keyword, PostSearchSort searchSort) {
+
+      int safePage = PaginationUtils.correctPage(page);
+      int safeSize = PaginationUtils.correctSize(size);
+      String safeDirection = ("desc".equalsIgnoreCase(sortDirection)) ? "desc" : "asc";
 
       return SearchPostListServiceRequest.builder()
+          .page(safePage)
+          .size(safeSize)
+          .sortDirection(safeDirection)
           .keyword(keyword)
           .searchSort(searchSort)
           .build();
+    }
+
+    public Pageable toPageable() {
+      Direction direction = "asc".equalsIgnoreCase(sortDirection())
+          ? Direction.ASC : Direction.DESC;
+      Sort sort = Sort.by(direction, "createdAt");
+
+      return PageRequest.of(page(), size(), sort);
     }
   }
 
@@ -68,14 +87,14 @@ public sealed interface PostServiceRequestDto permits CreatePostServiceRequest,
 
     public static GetAllPostsServiceRequest of(Integer page, Integer size, String sortDirection) {
 
-      int safePage = page != null ? page : 0;
-      int safeSize = size != null ? size : DEFAULT_PAGE_SIZE;
-      String safeSortDirection = sortDirection != null ? sortDirection : "asc";
+      int safePage = PaginationUtils.correctPage(page);
+      int safeSize = PaginationUtils.correctSize(size);
+      String safeDirection = ("desc".equalsIgnoreCase(sortDirection)) ? "desc" : "asc";
 
       return GetAllPostsServiceRequest.builder()
           .page(safePage)
           .size(safeSize)
-          .sortDirection(safeSortDirection)
+          .sortDirection(safeDirection)
           .build();
     }
 

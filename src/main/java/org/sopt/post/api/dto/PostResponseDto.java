@@ -55,11 +55,12 @@ public sealed interface PostResponseDto permits PostItemResponse, PostListRespon
     }
 
     @Builder(access = AccessLevel.PROTECTED)
-    public record PostHeaderDto(String title, String writerName) {
+    public record PostHeaderDto(Long postId, String title, String writerName) {
 
       public static PostHeaderDto from(PostListServiceResponse.PostHeaderDto postHeaderDto) {
 
         return PostHeaderDto.builder()
+            .postId(postHeaderDto.postId())
             .title(postHeaderDto.title())
             .writerName(postHeaderDto.writerName())
             .build();

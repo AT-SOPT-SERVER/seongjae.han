@@ -1,7 +1,7 @@
 package org.sopt.post.application.reader;
 
 import java.util.List;
-import org.sopt.post.application.dto.PostServiceRequestDto.SearchPostListServiceRequest;
+import org.sopt.post.application.query.PostSearchSort;
 import org.sopt.post.domain.Post;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,7 +16,7 @@ public interface PostReader {
 
   List<Post> getPosts();
 
-  List<Post> searchPosts(SearchPostListServiceRequest serviceRequest);
-
   Page<Post> getPosts(Pageable pageRequest);
+
+  Page<Post> searchPosts(Pageable pageable, PostSearchSort postSearchSort, String keyword);
 }

@@ -8,7 +8,7 @@ import org.sopt.comment.application.dto.CommentServiceRequestDto.CommentCreateSe
 import org.sopt.comment.application.dto.CommentServiceRequestDto.CommentDeleteServiceRequestDto;
 import org.sopt.comment.application.dto.CommentServiceRequestDto.CommentListServiceRequestDto;
 import org.sopt.comment.application.dto.CommentServiceRequestDto.CommentUpdateServiceRequestDto;
-import org.sopt.global.constants.AppConstants;
+import org.sopt.global.util.PaginationUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -82,12 +82,23 @@ public sealed interface CommentServiceRequestDto permits CommentCreateServiceReq
       String sortDirection
   ) implements CommentServiceRequestDto {
 
-    public CommentListServiceRequestDto(Long postId, int page, int size) {
-      this(postId, page, size, "desc");
-    }
-
     public CommentListServiceRequestDto(Long postId) {
       this(postId, 0, DEFAULT_PAGE_SIZE, "desc");
+    }
+
+    public static CommentListServiceRequestDto of(
+        final Long postId,
+        final int page,
+        final int size,
+        final String sortDirection
+    ) {
+
+      return CommentListServiceRequestDto.builder()
+          .postId(postId)
+          .page(PaginationUtils.correctPage(page))
+          .size(PaginationUtils.correctSize(size))
+          .sortDirection(sortDirection)
+          .build();
     }
 
     public Pageable toPageable() {

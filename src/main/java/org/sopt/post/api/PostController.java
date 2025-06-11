@@ -76,12 +76,13 @@ public class PostController {
   public ResponseEntity<ApiResponse<PostListResponse>> getAllPosts(
       @RequestHeader(value = "userId") Long userId,
       @RequestParam(value = "page", required = false) Integer page,
-      @RequestParam(value = "size" ,required = false) Integer size,
+      @RequestParam(value = "size", required = false) Integer size,
       @RequestParam(value = "sort", required = false) String sort
   ) {
     return ResponseEntity.status(HttpStatus.OK)
         .body(ApiResponse.success(
-            PostListResponse.from(getAllPostsService.execute(userId, GetAllPostsServiceRequest.of(page, size, sort)))));
+            PostListResponse.from(getAllPostsService.execute(userId,
+                GetAllPostsServiceRequest.of(page, size, sort)))));
   }
 
   @PostMapping("/search")

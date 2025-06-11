@@ -1,7 +1,5 @@
 package org.sopt.comment.api.dto;
 
-import static org.sopt.global.constants.AppConstants.DEFAULT_PAGE_SIZE;
-
 import lombok.AccessLevel;
 import lombok.Builder;
 import org.sopt.comment.api.dto.CommentRequestDto.CommentCreateRequestDto;
@@ -13,7 +11,6 @@ import org.sopt.comment.application.dto.CommentServiceRequestDto.CommentCreateSe
 import org.sopt.comment.application.dto.CommentServiceRequestDto.CommentDeleteServiceRequestDto;
 import org.sopt.comment.application.dto.CommentServiceRequestDto.CommentListServiceRequestDto;
 import org.sopt.comment.application.dto.CommentServiceRequestDto.CommentUpdateServiceRequestDto;
-import org.sopt.global.constants.AppConstants;
 
 public sealed interface CommentRequestDto permits CommentCreateRequestDto,
     CommentDeleteRequestDto, CommentListRequestDto, CommentUpdateRequestDto {
@@ -64,19 +61,13 @@ public sealed interface CommentRequestDto permits CommentCreateRequestDto,
   record CommentListRequestDto(
       Long postId,
       int page,
-        int size,
+      int size,
       String sortDirection
   ) implements CommentRequestDto {
 
-    public CommentListRequestDto {
-      if (size == 0) {
-        size = DEFAULT_PAGE_SIZE;
-      }
-    }
-
     @Override
     public CommentListServiceRequestDto toServiceRequest() {
-      return new CommentListServiceRequestDto(postId(), page(), size(), sortDirection());
+      return CommentListServiceRequestDto.of(postId(), page(), size(), sortDirection());
     }
   }
 }

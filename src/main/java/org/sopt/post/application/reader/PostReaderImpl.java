@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.sopt.global.error.exception.ApiException;
 import org.sopt.global.error.exception.ErrorCode;
 import org.sopt.post.PostTag;
-import org.sopt.post.application.dto.PostServiceRequestDto.SearchPostListServiceRequest;
 import org.sopt.post.application.query.PostSearchSort;
 import org.sopt.post.domain.Post;
 import org.sopt.post.domain.PostRepository;
@@ -49,20 +48,14 @@ public class PostReaderImpl implements PostReader {
   }
 
   @Override
-  public List<Post> searchPosts(final SearchPostListServiceRequest serviceRequest) {
-    final String keyword = serviceRequest.keyword();
-    final PostSearchSort searchSort = serviceRequest.searchSort();
-
-    if (keyword.isBlank()) {
-      return List.of();
-    }
-
-    return switch (searchSort) {
-      case POST_TITLE -> postRepository.findPostsByTitleContaining(keyword);
-      case WRITER_NAME -> postRepository.findPostsByWriterNameContaining(keyword);
+  public Page<Post> searchPosts(final Pageable pageable, final PostSearchSort postSearchSort,
+      final String keyword) {
+    return switch (postSearchSort) {
+      case POST_TITLE -> postRepository.findPostsByTitleContaining(keyword, pageable);
+      case WRITER_NAME -> postRepository.findPostsByWriterNameContaining(keyword, pageable);
       case POST_TAG -> {
         PostTag tag = PostTag.from(keyword);
-        yield postRepository.findPostsByTag(tag);
+        yield postRepository.findPostsByTag(tag, pageable);
       }
     };
   }

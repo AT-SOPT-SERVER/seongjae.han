@@ -40,11 +40,15 @@ public sealed interface PostRequestDto permits CreatePostRequest, SearchPostList
 
   @Builder(access = AccessLevel.PROTECTED)
   record SearchPostListRequest(@NotNull(message = "키워드는 필수값입니다.") String keyword,
-                               @NotNull(message = "검색 종류는 필수값입니다.") PostSearchSort searchSort) implements
+                               @NotNull(message = "검색 종류는 필수값입니다.") PostSearchSort searchSort,
+                               Integer page,
+                               Integer size,
+                               String sortDirection
+  ) implements
       PostRequestDto {
 
     public SearchPostListServiceRequest toServiceRequest() {
-      return SearchPostListServiceRequest.of(keyword(), searchSort());
+      return SearchPostListServiceRequest.of(page(), size(), sortDirection(), keyword(), searchSort());
     }
   }
 }

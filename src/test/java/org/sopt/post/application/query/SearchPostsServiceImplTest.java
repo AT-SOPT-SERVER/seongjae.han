@@ -2,8 +2,6 @@ package org.sopt.post.application.query;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.Assertions.tuple;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 
 import java.util.List;
@@ -11,7 +9,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -25,6 +22,7 @@ import org.sopt.support.fixture.PostFixture;
 import org.sopt.support.fixture.UserFixture;
 import org.sopt.user.application.reader.UserReader;
 import org.sopt.user.domain.User;
+import org.springframework.data.domain.PageImpl;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -55,16 +53,20 @@ class SearchPostsServiceImplTest {
     post3 = PostFixture.create(5L, writer);
   }
 
-  @DisplayName("제목으로 검색이 성공한다.")
+  @DisplayName("제목으로 검색 페이지네이션이 성공한다.")
   @Test
   void searchPosts_Success() {
     // given
     final SearchPostListServiceRequest serviceRequest = SearchPostListServiceRequest.of(
+        null,
+        null,
+        null,
         "keyword",
         PostSearchSort.POST_TITLE);
 
     given(userReader.getUserOrThrow(1L)).willReturn(user);
-    given(postReader.searchPosts(serviceRequest)).willReturn(List.of(post1, post2, post3));
+    given(postReader.searchPosts(serviceRequest.toPageable(), serviceRequest.searchSort(),
+        serviceRequest.keyword())).willReturn(new PageImpl<>(List.of(post1, post2, post3)));
 
     // when
     final PostListServiceResponse result = searchPostsService.execute(1L, serviceRequest);
@@ -72,6 +74,7 @@ class SearchPostsServiceImplTest {
     // then
     assertThat(result).isNotNull();
     assertThat(result.postHeaders()).hasSize(3);
+    assertThat(result.pageSize()).isEqualTo(10);
 
     assertThat(result.postHeaders())
         .extracting("postId")
@@ -85,6 +88,9 @@ class SearchPostsServiceImplTest {
   void searchPosts_WhenUserNotExist_ThenFail() {
     // given
     final SearchPostListServiceRequest serviceRequest = SearchPostListServiceRequest.of(
+        null,
+        null,
+        null,
         "keyword",
         PostSearchSort.POST_TITLE);
 
@@ -101,10 +107,14 @@ class SearchPostsServiceImplTest {
   void searchPosts_WhenNoResult_ReturnsEmptyList() {
     // given
     final SearchPostListServiceRequest serviceRequest = SearchPostListServiceRequest.of(
+        null,
+        null,
+        null,
         "keyword", PostSearchSort.POST_TITLE);
 
     given(userReader.getUserOrThrow(1L)).willReturn(user);
-    given(postReader.searchPosts(serviceRequest)).willReturn(List.of());
+    given(postReader.searchPosts(serviceRequest.toPageable(), serviceRequest.searchSort(),
+        serviceRequest.keyword())).willReturn(new PageImpl<>(List.of()));
 
     // when
     final PostListServiceResponse result = searchPostsService.execute(1L, serviceRequest);
