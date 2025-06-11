@@ -24,6 +24,7 @@ public enum ErrorCode {
   NOT_FOUND_POST(HttpStatus.NOT_FOUND, "c4041", "게시글을 찾을 수 없습니다."),
   NOT_FOUND_USER(HttpStatus.NOT_FOUND, "c4042", "유저를 찾을 수 없습니다."),
   NOT_FOUND_COMMENT(HttpStatus.NOT_FOUND, "c4043", "댓글을 찾을 수 없습니다."),
+  NOT_FOUND_Like(HttpStatus.NOT_FOUND, "c4044", "좋아요를 찾을 수 없습니다."),
   TOO_MANY_POST_REQUESTS(HttpStatus.TOO_MANY_REQUESTS, "c4290", "게시글은 3분 간격으로만 작성할 수 있습니다."),
 
   // 500번대 (Server Error)

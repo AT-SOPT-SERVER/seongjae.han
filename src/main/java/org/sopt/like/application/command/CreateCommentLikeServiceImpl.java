@@ -7,7 +7,6 @@ import org.sopt.global.error.exception.ApiException;
 import org.sopt.global.error.exception.ErrorCode;
 import org.sopt.like.application.dto.LikeServiceRequestDto.CreateCommentLikeServiceRequest;
 import org.sopt.like.application.dto.LikeServiceResponseDto.CreateCommentLikeServiceResponse;
-import org.sopt.like.application.dto.LikeServiceResponseDto.CreatePostLikeServiceResponse;
 import org.sopt.like.application.reader.LikeReader;
 import org.sopt.like.application.writer.LikeWriter;
 import org.sopt.like.domain.Like;
@@ -33,12 +32,18 @@ public class CreateCommentLikeServiceImpl implements CreateCommentLikeService {
   ) {
     final User user = userReader.getUserOrThrow(userId);
     final Comment comment = commentReader.getCommentOrThrow(serviceRequest.commentId());
-    if (likeReader.existCommentLike(user, comment)) {
-      throw new ApiException(ErrorCode.COMMENT_LIKE_ALREADY_EXIST);
-    }
+
+    validateCommentLikeDuplicate(user, comment);
 
     final Like like = Like.ofComment(serviceRequest.commentId(), user);
     Like saved = likeWriter.save(like);
+
     return CreateCommentLikeServiceResponse.from(saved);
+  }
+
+  private void validateCommentLikeDuplicate(final User user, final Comment comment) {
+    if (likeReader.existCommentLike(user, comment)) {
+      throw new ApiException(ErrorCode.COMMENT_LIKE_ALREADY_EXIST);
+    }
   }
 }
