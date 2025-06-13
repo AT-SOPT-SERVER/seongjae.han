@@ -1,12 +1,13 @@
 package org.sopt.post.application.reader;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.sopt.global.error.exception.ApiException;
 import org.sopt.global.error.exception.ErrorCode;
-import org.sopt.post.PostTag;
 import org.sopt.post.application.query.PostSearchSort;
 import org.sopt.post.domain.Post;
+import org.sopt.post.domain.PostQueryRepository;
 import org.sopt.post.domain.PostRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +18,8 @@ import org.springframework.stereotype.Service;
 public class PostReaderImpl implements PostReader {
 
   private final PostRepository postRepository;
+  private final PostQueryRepository postQueryRepository;
+  private final JPAQueryFactory queryFactory;
 
   @Override
   public Post getPostOrThrow(final Long postId) {
@@ -39,24 +42,18 @@ public class PostReaderImpl implements PostReader {
 
   @Override
   public List<Post> getPosts() {
-    return postRepository.findAllByOrderByCreatedAtDesc();
+    return postQueryRepository.getPosts();
   }
 
   @Override
   public Page<Post> getPosts(final Pageable pageRequest) {
-    return postRepository.findAll(pageRequest);
+    return postQueryRepository.getPosts(pageRequest);
   }
 
   @Override
   public Page<Post> searchPosts(final Pageable pageable, final PostSearchSort postSearchSort,
       final String keyword) {
-    return switch (postSearchSort) {
-      case POST_TITLE -> postRepository.findPostsByTitleContaining(keyword, pageable);
-      case WRITER_NAME -> postRepository.findPostsByWriterNameContaining(keyword, pageable);
-      case POST_TAG -> {
-        PostTag tag = PostTag.from(keyword);
-        yield postRepository.findPostsByTag(tag, pageable);
-      }
-    };
+
+    return postQueryRepository.searchPosts(pageable, postSearchSort, keyword);
   }
 }

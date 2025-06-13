@@ -6,11 +6,16 @@ plugins {
 
 group = 'org.gdsc-cau.team5'
 version = '1.0-SNAPSHOT'
-sourceCompatibility = '17'
+sourceCompatibility = '21'
 
 repositories {
     mavenCentral()
 }
+
+ext {
+    queryDslVersion = "6.10.1"
+}
+
 
 dependencies {
     // spring web
@@ -29,6 +34,33 @@ dependencies {
 
     // validation
     implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // query-dsl
+    implementation "io.github.openfeign.querydsl:querydsl-core:${queryDslVersion}"
+    implementation "io.github.openfeign.querydsl:querydsl-jpa:${queryDslVersion}"
+    annotationProcessor "io.github.openfeign.querydsl:querydsl-apt:${queryDslVersion}:jpa"
+    annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+    annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+}
+
+def querydslDir = layout.buildDirectory.dir("generated/querydsl").get().asFile;
+
+sourceSets {
+    main {
+        java {
+            srcDirs += querydslDir
+        }
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.generatedSourceOutputDirectory = file(querydslDir)
+}
+
+tasks.named("clean") {
+    doLast {
+        delete file(querydslDir)
+    }
 }
 
 test {
