@@ -45,3 +45,6 @@ bin/
 .idea/
 
 application.yml
+
+# queryDSL 생성되는 QModel 폴더
+src/main/generated
