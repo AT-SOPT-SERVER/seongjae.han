@@ -46,5 +46,4 @@ bin/
 
 application.yml
 
-# queryDSL 생성되는 QModel 폴더
-src/main/generated
+src/main/resources/application-test.yml

@@ -1,5 +1,6 @@
 package org.sopt.post.application.reader;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.sopt.global.error.exception.ApiException;
@@ -8,6 +9,7 @@ import org.sopt.post.PostTag;
 import org.sopt.post.application.query.PostSearchSort;
 import org.sopt.post.domain.Post;
 import org.sopt.post.domain.PostRepository;
+import org.sopt.post.domain.QPost;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 public class PostReaderImpl implements PostReader {
 
   private final PostRepository postRepository;
+  private final JPAQueryFactory queryFactory;
 
   @Override
   public Post getPostOrThrow(final Long postId) {
@@ -39,13 +42,16 @@ public class PostReaderImpl implements PostReader {
 
   @Override
   public List<Post> getPosts() {
-    return postRepository.findAllByOrderByCreatedAtDesc();
+    QPost post = QPost.post;
+    return queryFactory.selectFrom(post)
+        .fetch();
   }
 
   @Override
   public Page<Post> getPosts(final Pageable pageRequest) {
     return postRepository.findAll(pageRequest);
   }
+
 
   @Override
   public Page<Post> searchPosts(final Pageable pageable, final PostSearchSort postSearchSort,
