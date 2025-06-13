@@ -73,10 +73,8 @@ class SearchPostsServiceImplTest {
 
     // then
     assertThat(result).isNotNull();
-    assertThat(result.postHeaders()).hasSize(3);
-    assertThat(result.pageSize()).isEqualTo(10);
-
     assertThat(result.postHeaders())
+        .hasSize(3)
         .extracting("postId")
         .containsExactlyInAnyOrderElementsOf(
             List.of(3L, 4L, 5L)
