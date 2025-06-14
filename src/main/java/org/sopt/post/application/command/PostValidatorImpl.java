@@ -17,6 +17,5 @@ public class PostValidatorImpl implements PostValidator {
     if (postReader.existsByTitle(title)) {
       throw new ApiException(ErrorCode.DUPLICATE_POST_TITLE);
     }
-
   }
 }

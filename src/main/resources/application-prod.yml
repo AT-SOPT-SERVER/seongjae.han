@@ -2,7 +2,7 @@ spring:
   jpa:
     open-in-view: false
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: true
@@ -10,7 +10,7 @@ spring:
         show_sql: true
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/test_db
+    url: jdbc:postgresql://localhost:5432/sopt-assignment
     username: root
     password: 20010310
     driver-class-name: org.postgresql.Driver

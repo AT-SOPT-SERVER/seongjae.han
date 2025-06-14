@@ -16,8 +16,8 @@ import org.sopt.global.error.exception.ApiException;
 import org.sopt.global.error.exception.ErrorCode;
 import org.sopt.post.application.dto.PostServiceRequestDto.SearchPostListServiceRequest;
 import org.sopt.post.application.dto.PostServiceResponseDto.PostListServiceResponse;
-import org.sopt.post.application.reader.PostReader;
 import org.sopt.post.domain.Post;
+import org.sopt.post.domain.PostQueryRepository;
 import org.sopt.support.fixture.PostFixture;
 import org.sopt.support.fixture.UserFixture;
 import org.sopt.user.application.reader.UserReader;
@@ -36,7 +36,7 @@ class SearchPostsServiceImplTest {
   private UserReader userReader;
 
   @Mock
-  private PostReader postReader;
+  private PostQueryRepository postQueryRepository;
 
   private User user;
   private User writer;
@@ -65,7 +65,7 @@ class SearchPostsServiceImplTest {
         PostSearchSort.POST_TITLE);
 
     given(userReader.getUserOrThrow(1L)).willReturn(user);
-    given(postReader.searchPosts(serviceRequest.toPageable(), serviceRequest.searchSort(),
+    given(postQueryRepository.searchPosts(serviceRequest.toPageable(), serviceRequest.searchSort(),
         serviceRequest.keyword())).willReturn(new PageImpl<>(List.of(post1, post2, post3)));
 
     // when
@@ -111,7 +111,7 @@ class SearchPostsServiceImplTest {
         "keyword", PostSearchSort.POST_TITLE);
 
     given(userReader.getUserOrThrow(1L)).willReturn(user);
-    given(postReader.searchPosts(serviceRequest.toPageable(), serviceRequest.searchSort(),
+    given(postQueryRepository.searchPosts(serviceRequest.toPageable(), serviceRequest.searchSort(),
         serviceRequest.keyword())).willReturn(new PageImpl<>(List.of()));
 
     // when
