@@ -1,6 +1,5 @@
 package org.sopt.post.application.reader;
 
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.sopt.global.error.exception.ApiException;
@@ -19,7 +18,6 @@ public class PostReaderImpl implements PostReader {
 
   private final PostRepository postRepository;
   private final PostQueryRepository postQueryRepository;
-  private final JPAQueryFactory queryFactory;
 
   @Override
   public Post getPostOrThrow(final Long postId) {

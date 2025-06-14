@@ -6,22 +6,22 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.Hibernate;
-import org.hibernate.cache.spi.support.AbstractReadWriteAccess.Item;
-import org.sopt.post.domain.Post;
 import org.sopt.global.entity.BaseEntity;
 import org.sopt.global.error.exception.ApiException;
 import org.sopt.global.error.exception.ErrorCode;
 import org.sopt.global.util.GraphemeUtil;
+import org.sopt.post.domain.Post;
 
 @Getter
 @Entity
 @NoArgsConstructor
+@Table(name = "users")
 public class User extends BaseEntity {
 
   @Id
