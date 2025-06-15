@@ -34,18 +34,27 @@ public class User extends BaseEntity {
   @Column(name = "email", nullable = false)
   private String email;
 
-  private static final int USER_NAME_MAX_LENGTH = 10;
+  @Column(name = "loginId", nullable = false)
+  private String loginId;
 
-  protected User(final String name, final String email) {
+  @Column(name = "password", nullable = false)
+  private String password;
+
+  protected User(final String name, final String email, final String loginId, final String password) {
     this.name = name;
     this.email = email;
+    this.loginId = loginId;
+    this.password = password;
   }
 
-  public static User of(final String name, final String email) {
+  private static final int USER_NAME_MAX_LENGTH = 10;
+
+  public static User createUser(final String loginId, final String password, final String name,
+      final String email) {
     throwIfFieldsBlank(name, email);
     throwIfNameLengthLong(name);
 
-    return new User(name, email);
+    return new User(name, email, loginId, password);
   }
 
   @OneToMany(mappedBy = "user")

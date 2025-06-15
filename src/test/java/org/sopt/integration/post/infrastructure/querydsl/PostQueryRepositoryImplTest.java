@@ -37,7 +37,7 @@ class PostQueryRepositoryImplTest {
 
   @BeforeEach
   void setUp() {
-    final User user = User.of("name", "email@.com");
+    final User user = User.createUser("name", "email@.com");
     userRepository.save(user);
     IntStream.rangeClosed(1, 20).forEach(i -> {
       postRepository.save(Post.of("title" + i, "content" + i, user));
