@@ -14,3 +14,6 @@ spring:
     username: root
     password: 20010310
     driver-class-name: org.postgresql.Driver
+
+jwt:
+  secret: "kq9HjD8l5PZ9n+SrmCojNlmkhO3IGzGph5rr5s3h5LE="

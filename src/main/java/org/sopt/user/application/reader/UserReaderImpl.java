@@ -19,4 +19,10 @@ public class UserReaderImpl implements UserReader {
     return userRepository.findById(userId)
         .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_USER));
   }
+
+  @Override
+  public User getUserByLoginIdOrThrow(final String loginId) {
+    return userRepository.findByLoginId(loginId)
+        .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_USER));
+  }
 }

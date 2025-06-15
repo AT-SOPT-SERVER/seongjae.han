@@ -23,7 +23,8 @@ public class LoggingFilter extends OncePerRequestFilter {
     long start = System.currentTimeMillis();
     filterChain.doFilter(request, response);
     long duration = System.currentTimeMillis() - start;
-
-    loggingUtil.info("[LOG] %s %s %dms%n", request.getMethod(), request.getRequestURI(), duration);
+    final String formatted = String.format("[LOG] %s %s %dms%n", request.getMethod(),
+        request.getRequestURI(), duration);
+    loggingUtil.info(formatted);
   }
 }

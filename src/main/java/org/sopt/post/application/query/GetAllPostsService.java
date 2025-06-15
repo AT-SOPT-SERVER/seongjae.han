@@ -5,5 +5,5 @@ import org.sopt.post.application.dto.PostServiceResponseDto.PostListServiceRespo
 
 public interface GetAllPostsService {
 
-  PostListServiceResponse execute(Long userId, GetAllPostsServiceRequest getAllPostsServiceRequest);
+  PostListServiceResponse execute(GetAllPostsServiceRequest getAllPostsServiceRequest);
 }
