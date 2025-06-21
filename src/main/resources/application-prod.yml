@@ -1,0 +1,16 @@
+spring:
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        show_sql: true
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/sopt-assignment
+    username: root
+    password: 20010310
+    driver-class-name: org.postgresql.Driver
